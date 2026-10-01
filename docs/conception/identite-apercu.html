@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gambade — Identité visuelle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --forest: #2F5D50;
+      --sage: #8FAE8B;
+      --sand: #F5F0E6;
+      --bark: #3B3127;
+      --ochre: #E08E45;
+      --river: #4A90A4;
+      --white: #FFFFFF;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 16px 48px;
+      font-family: "Nunito", sans-serif;
+      background: var(--sand);
+      color: var(--bark);
+    }
+    main { max-width: 900px; margin: 0 auto; }
+    h1 { font-weight: 800; color: var(--forest); margin-bottom: 4px; }
+    h2 { font-weight: 800; color: var(--forest); margin-top: 40px; }
+    .subtitle { margin-top: 0; opacity: 0.8; }
+
+    /* Palette */
+    .palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    .swatch { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(59, 49, 39, 0.15); }
+    .swatch-color { height: 72px; }
+    .swatch-info { padding: 8px 10px; font-size: 14px; }
+    .swatch-info strong { display: block; }
+
+    /* Typographie */
+    .type-sample { background: var(--white); border-radius: 12px; padding: 16px; }
+    .big-number { font-size: 56px; font-weight: 800; line-height: 1; color: var(--forest); }
+
+    /* Logo */
+    .logos { display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+    .logo-with-name { display: flex; align-items: center; gap: 12px; font-size: 32px; font-weight: 800; color: var(--forest); }
+
+    /* Maquettes */
+    .phones { display: flex; gap: 24px; flex-wrap: wrap; }
+    .phone {
+      width: 300px;
+      max-width: 100%;
+      background: var(--sand);
+      border: 8px solid var(--bark);
+      border-radius: 32px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .phone-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; color: var(--forest); }
+    .dog-photo { width: 36px; height: 36px; border-radius: 50%; background: var(--sage); }
+    .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 18px;
+      font-family: inherit;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--white);
+      width: 100%;
+    }
+    .btn-start { background: var(--forest); padding: 28px; font-size: 20px; }
+    .btn-dog { background: var(--ochre); color: var(--bark); padding: 26px; font-size: 22px; }
+    .btn-play { background: var(--ochre); color: var(--bark); opacity: 0.85; }
+    .btn-swim { background: var(--river); }
+    .btn-stop { background: var(--white); color: var(--bark); border: 2px solid var(--bark); }
+    .btn-row { display: flex; gap: 10px; }
+    .stats { display: flex; gap: 8px; }
+    .stat { flex: 1; background: var(--sage); color: var(--bark); border-radius: 12px; padding: 10px 4px; text-align: center; }
+    .stat b { display: block; font-size: 20px; }
+    .stat span { font-size: 12px; }
+    .card { background: var(--white); border-radius: 12px; padding: 12px; font-size: 14px; }
+    .gps { font-size: 14px; display: flex; justify-content: space-between; }
+    .gps-dot { color: #3C9A5F; }
+    .timer { text-align: center; }
+    .timer .big-number { font-size: 52px; }
+    .timer small { display: block; font-size: 14px; opacity: 0.7; margin-bottom: 8px; }
+    .navbar { display: flex; justify-content: space-around; border-top: 1px solid var(--sage); padding-top: 10px; font-size: 13px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Gambade</h1>
+  <p class="subtitle">Aperçu de l'identité visuelle — ambiance « Nature &amp; détente »</p>
+
+  <h2>Palette</h2>
+  <div class="palette">
+    <div class="swatch"><div class="swatch-color" style="background:#2F5D50"></div><div class="swatch-info"><strong>Vert forêt</strong>#2F5D50<br>Principale</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#8FAE8B"></div><div class="swatch-info"><strong>Vert sauge</strong>#8FAE8B<br>Secondaire</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F5F0E6; border-bottom:1px solid #ddd"></div><div class="swatch-info"><strong>Beige sable</strong>#F5F0E6<br>Fond</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#3B3127"></div><div class="swatch-info"><strong>Brun écorce</strong>#3B3127<br>Texte</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#E08E45"></div><div class="swatch-info"><strong>Ocre</strong>#E08E45<br>Accent (+1 chien, jeu)</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#4A90A4"></div><div class="swatch-info"><strong>Bleu rivière</strong>#4A90A4<br>Baignade</div></div>
+  </div>
+
+  <h2>Police : Nunito</h2>
+  <div class="type-sample">
+    <div class="big-number">00:24:15 · 1,8 km</div>
+    <p style="font-weight:800; font-size:22px; margin-bottom:4px">Prêt pour une balade avec Rex ?</p>
+    <p style="margin-top:0">Texte courant : Rex a rencontré 4 chiens et joué 12 minutes au bord de la rivière.</p>
+  </div>
+
+  <h2>Logo</h2>
+  <div class="logos">
+    <svg width="96" height="96" viewBox="0 0 100 100" aria-label="Logo Gambade">
+      <rect width="100" height="100" rx="24" fill="#2F5D50"/>
+      <ellipse cx="50" cy="63" rx="17" ry="14" fill="#F5F0E6"/>
+      <ellipse cx="29" cy="44" rx="7" ry="9" fill="#F5F0E6" transform="rotate(-20 29 44)"/>
+      <ellipse cx="42" cy="32" rx="7" ry="9.5" fill="#F5F0E6" transform="rotate(-6 42 32)"/>
+      <ellipse cx="58" cy="32" rx="7" ry="9.5" fill="#F5F0E6" transform="rotate(6 58 32)"/>
+      <ellipse cx="71" cy="44" rx="7" ry="9" fill="#F5F0E6" transform="rotate(20 71 44)"/>
+    </svg>
+    <svg width="48" height="48" viewBox="0 0 100 100" aria-label="Logo petit format">
+      <rect width="100" height="100" rx="24" fill="#2F5D50"/>
+      <ellipse cx="50" cy="63" rx="17" ry="14" fill="#F5F0E6"/>
+      <ellipse cx="29" cy="44" rx="7" ry="9" fill="#F5F0E6" transform="rotate(-20 29 44)"/>
+      <ellipse cx="42" cy="32" rx="7" ry="9.5" fill="#F5F0E6" transform="rotate(-6 42 32)"/>
+      <ellipse cx="58" cy="32" rx="7" ry="9.5" fill="#F5F0E6" transform="rotate(6 58 32)"/>
+      <ellipse cx="71" cy="44" rx="7" ry="9" fill="#F5F0E6" transform="rotate(20 71 44)"/>
+    </svg>
+    <div class="logo-with-name">
+      <svg width="44" height="44" viewBox="0 0 100 100" aria-hidden="true">
+        <rect width="100" height="100" rx="24" fill="#2F5D50"/>
+        <ellipse cx="50" cy="63" rx="17" ry="14" fill="#F5F0E6"/>
+        <ellipse cx="29" cy="44" rx="7" ry="9" fill="#F5F0E6" transform="rotate(-20 29 44)"/>
+        <ellipse cx="42" cy="32" rx="7" ry="9.5" fill="#F5F0E6" transform="rotate(-6 42 32)"/>
+        <ellipse cx="58" cy="32" rx="7" ry="9.5" fill="#F5F0E6" transform="rotate(6 58 32)"/>
+        <ellipse cx="71" cy="44" rx="7" ry="9" fill="#F5F0E6" transform="rotate(20 71 44)"/>
+      </svg>
+      Gambade
+    </div>
+  </div>
+
+  <h2>Exemples d'écrans</h2>
+  <div class="phones">
+    <!-- Écran 2 : Accueil -->
+    <div class="phone">
+      <div class="phone-header">Gambade <div class="dog-photo"></div></div>
+      <div style="font-weight:600">Salut ! Prêt pour une balade avec Rex ?</div>
+      <button class="btn btn-start">▶ Démarrer une balade</button>
+      <div style="font-weight:800">Cette semaine</div>
+      <div class="stats">
+        <div class="stat"><b>12,4</b><span>km</span></div>
+        <div class="stat"><b>3h20</b><span>temps</span></div>
+        <div class="stat"><b>9</b><span>chiens</span></div>
+      </div>
+      <div style="font-weight:800">Dernière balade</div>
+      <div class="card">Hier 18h · 2,3 km · 35 min · 🐕 4</div>
+      <div class="navbar"><span>🏠 Accueil</span><span>📋 Balades</span><span>🐶 Mon chien</span></div>
+    </div>
+
+    <!-- Écran 3 : Balade en cours -->
+    <div class="phone">
+      <div class="gps"><span><span class="gps-dot">●</span> GPS ok</span><span>avec Rex 🐶</span></div>
+      <div class="timer">
+        <div class="big-number">00:24:15</div><small>durée</small>
+        <div class="big-number">1,8 km</div><small>distance</small>
+      </div>
+      <button class="btn btn-dog">🐕 +1 chien (4)</button>
+      <div class="btn-row">
+        <button class="btn btn-play">🎾 Jeu</button>
+        <button class="btn btn-swim">💦 Baignade</button>
+      </div>
+      <button class="btn btn-stop">■ Terminer</button>
+    </div>
+  </div>
+</main>
+</body>
+</html>
