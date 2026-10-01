@@ -17,7 +17,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] **Schéma de la base de données** ([conception/base-de-donnees.md](conception/base-de-donnees.md)) : les tables, leurs colonnes et leurs liens. *Test :* chaque info affichée dans les wireframes a sa place dans le schéma.
 
 ## Phase 1 — MVP 🥇
-- [ ] **Créer le projet** : `rails new gambade` avec PostgreSQL, y déplacer `CLAUDE.md` et `docs/`, puis Git et GitHub. *Test :* une page d'accueil s'affiche sur `localhost:3000`.
+- [x] **Créer le projet** : `rails new gambade` avec PostgreSQL, y déplacer `CLAUDE.md` et `docs/`, puis Git et GitHub. *Test :* une page d'accueil s'affiche sur `localhost:3000`.
 - [ ] **Mise en ligne** sur un hébergeur gratuit (choisi à ce moment-là). *Test :* le site s'ouvre en HTTPS sur mon téléphone.
 - [ ] **Connexion** avec Devise (inscription désactivée, compte unique, « Se souvenir de moi »). *Test :* se connecter, fermer le navigateur, revenir sans avoir à se reconnecter ; vérifier qu'on ne peut pas créer de compte.
 - [ ] **Profil du chien** : modèle `Dog` et photo stockée sur Cloudinary. *Test :* créer et modifier la fiche de mon chien, avec sa photo.
