@@ -1,0 +1,33 @@
+<%= form_with model: walk do |f| %>
+  <% if walk.errors.any? %>
+    <ul class="alert">
+      <% walk.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :started_at, "Départ" %>
+    <%= f.datetime_local_field :started_at, required: true %>
+  </div>
+
+  <div>
+    <%= f.label :duration_minutes, "Durée (minutes)" %>
+    <%= f.number_field :duration_minutes, min: 1, required: true, inputmode: "numeric" %>
+  </div>
+
+  <div>
+    <%= f.label :distance_km, "Distance (km)" %>
+    <%= f.text_field :distance_km, value: walk.distance_km&.to_s&.tr(".", ","), inputmode: "decimal", placeholder: "2,3" %>
+  </div>
+
+  <div data-controller="counter">
+    <%= f.label :dogs_met_count, "Chiens rencontrés" %>
+    <button type="button" data-action="counter#decrement">−</button>
+    <%= f.number_field :dogs_met_count, min: 0, readonly: true, data: { counter_target: "input" } %>
+    <button type="button" data-action="counter#increment">+</button>
+  </div>
+
+  <%= f.submit "✓ Enregistrer" %>
+<% end %>

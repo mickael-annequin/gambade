@@ -1,0 +1,12 @@
+<%= link_to "← Retour", walks_path %>
+<%= link_to "✏️ Modifier", edit_walk_path(@walk) %>
+<%= button_to "🗑️ Supprimer", walk_path(@walk), method: :delete,
+              form: { data: { turbo_confirm: "Supprimer cette balade ?" } } %>
+
+<h1><%= l(@walk.started_at, format: "%A %-d %B · %Hh%M").capitalize %></h1>
+
+<p>
+  <%= walk_duration(@walk.duration_seconds) %> ·
+  <%= walk_distance(@walk.distance_meters) %> ·
+  <%= pluralize(@walk.dogs_met_count, "chien", plural: "chiens") %>
+</p>

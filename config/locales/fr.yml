@@ -3,12 +3,18 @@ fr:
   activerecord:
     models:
       dog: "Chien"
+      walk: "Balade"
     attributes:
       dog:
         name: "Nom"
         breed: "Race"
         birth_date: "Date de naissance"
         photo: "Photo"
+      walk:
+        started_at: "Départ"
+        duration_seconds: "Durée"
+        distance_meters: "Distance"
+        dogs_met_count: "Chiens rencontrés"
     errors:
       models:
         dog:
@@ -26,3 +32,14 @@ fr:
       taken: "est déjà utilisé(e)"
       too_long: "est trop long (pas plus de %{count} caractères)"
       too_short: "est trop court (au moins %{count} caractères)"
+      not_a_number: "doit être un nombre"
+      not_an_integer: "doit être un nombre entier"
+      greater_than: "doit être supérieur(e) à %{count}"
+      greater_than_or_equal_to: "doit être supérieur(e) ou égal(e) à %{count}"
+  date:
+    day_names: [dimanche, lundi, mardi, mercredi, jeudi, vendredi, samedi]
+    abbr_day_names: [dim, lun, mar, mer, jeu, ven, sam]
+    month_names: [~, janvier, février, mars, avril, mai, juin, juillet, août, septembre, octobre, novembre, décembre]
+    abbr_month_names: [~, janv., févr., mars, avr., mai, juin, juil., août, sept., oct., nov., déc.]
+    formats:
+      default: "%d/%m/%Y"

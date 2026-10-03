@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_03_092738) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_03_093547) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,7 +61,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_092738) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  create_table "walks", force: :cascade do |t|
+    t.bigint "dog_id", null: false
+    t.datetime "started_at", null: false
+    t.integer "duration_seconds", null: false
+    t.integer "distance_meters", default: 0, null: false
+    t.integer "dogs_met_count", default: 0, null: false
+    t.boolean "tracked", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dog_id", "started_at"], name: "index_walks_on_dog_id_and_started_at"
+    t.index ["dog_id"], name: "index_walks_on_dog_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "dogs", "users"
+  add_foreign_key "walks", "dogs"
 end
