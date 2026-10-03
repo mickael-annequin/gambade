@@ -20,7 +20,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] **Créer le projet** : `rails new gambade` avec PostgreSQL, y déplacer `CLAUDE.md` et `docs/`, puis Git et GitHub. *Test :* une page d'accueil s'affiche sur `localhost:3000`.
 - [x] **Mise en ligne** sur Render (appli) + Neon (base PostgreSQL), offres gratuites : https://gambade.onrender.com. *Test :* le site s'ouvre en HTTPS sur mon téléphone.
 - [x] **Connexion** avec Devise (inscription désactivée, compte unique, « Se souvenir de moi »). *Test :* se connecter, fermer le navigateur, revenir sans avoir à se reconnecter ; vérifier qu'on ne peut pas créer de compte.
-- [ ] **Profil du chien** : modèle `Dog` et photo stockée sur Cloudinary. *Test :* créer et modifier la fiche de mon chien, avec sa photo.
+- [x] **Profil du chien** : modèle `Dog` et photo stockée sur Cloudinary. *Test :* créer et modifier la fiche de mon chien, avec sa photo.
 - [ ] **Balades saisies à la main** : modèle `Walk` et pages pour créer, lire, modifier et supprimer une balade. *Test :* créer, modifier et supprimer une balade.
 - [ ] **Carte Mapbox** sur la page d'une balade. *Test :* la carte s'affiche centrée sur ma ville.
 - [ ] **Suivi GPS en direct** (contrôleur Stimulus) : Démarrer et Terminer, chrono, km, indicateur GPS, points enregistrés en base (pas de carte pendant la balade). *Test :* un tour du pâté de maisons, puis retrouver le trajet sur la carte de la balade.
