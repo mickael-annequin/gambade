@@ -5,16 +5,21 @@
   </div>
 <% end %>
 
-<div class="page-actions">
-  <%= link_to "← Retour", walks_path, class: "back-link" %>
-  <div class="page-actions-buttons">
-    <%= link_to "✏️ Modifier", edit_walk_path(@walk), class: "btn btn-sm btn-outline-primary" %>
-    <% if @walk.tracked? %>
-      <%= link_to "✂️ Couper la fin", edit_walk_trim_path(@walk), class: "btn btn-sm btn-outline-primary" %>
+<%= link_to "← Retour", walks_path, class: "back-link" %>
+
+<div class="walk-actions">
+  <%= link_to edit_walk_path(@walk), class: "walk-action" do %>
+    <span class="walk-action-icon">✏️</span> <span class="walk-action-label">Modifier</span>
+  <% end %>
+  <% if @walk.tracked? %>
+    <%= link_to edit_walk_trim_path(@walk), class: "walk-action" do %>
+      <span class="walk-action-icon">✂️</span> <span class="walk-action-label">Couper la fin</span>
     <% end %>
-    <%= button_to "🗑️ Supprimer", walk_path(@walk), method: :delete, class: "btn btn-sm btn-outline-danger",
-                  form: { data: { turbo_confirm: "Supprimer cette balade ?" } } %>
-  </div>
+  <% end %>
+  <%= button_to walk_path(@walk), method: :delete, class: "walk-action walk-action-danger",
+                form: { data: { turbo_confirm: "Supprimer cette balade ?" } } do %>
+    <span class="walk-action-icon">🗑️</span> <span class="walk-action-label">Supprimer</span>
+  <% end %>
 </div>
 
 <h1 class="walk-title"><%= l(@walk.started_at, format: "%A %-d %B · %Hh%M").capitalize %></h1>

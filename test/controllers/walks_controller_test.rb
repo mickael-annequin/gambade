@@ -50,12 +50,14 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     get walk_path(walks(:morning))
     assert_response :success
     assert_select "[data-controller='map']", count: 0
-    assert_select "a", text: "✂️ Couper la fin", count: 0
+    assert_select ".walk-action", text: /Couper la fin/, count: 0
+    assert_select ".walk-action", 2
   end
 
   test "offers to cut the end of a tracked walk" do
     get walk_path(walks(:evening))
-    assert_select "a[href='#{edit_walk_trim_path(walks(:evening))}']", "✂️ Couper la fin"
+    assert_select "a.walk-action[href='#{edit_walk_trim_path(walks(:evening))}']", /Couper la fin/
+    assert_select ".walk-action", 3
   end
 
   test "creates a walk entered by hand" do
