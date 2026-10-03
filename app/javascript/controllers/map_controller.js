@@ -65,9 +65,10 @@ export default class extends Controller {
     new mapboxgl.Marker({ color: END_COLOR }).setLngLat(this.trackValue.at(-1)).addTo(this.map)
     this.encountersValue.forEach((encounter) => this.#addEncounterMarker(encounter))
 
-    // Zoom so that the whole walk fits in the map.
+    // Zoom so that the whole walk, and every dog met, fits in the map.
     const bounds = new mapboxgl.LngLatBounds(this.trackValue[0], this.trackValue[0])
     this.trackValue.forEach((point) => bounds.extend(point))
+    this.encountersValue.forEach(({ coordinates }) => bounds.extend(coordinates))
     this.map.fitBounds(bounds, { padding: 40, maxZoom: 17, duration: 0 })
   }
 }
