@@ -10,6 +10,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "[data-controller='tracking']"
     assert_select "nav", count: 0
+    assert_select "[data-tracking-target='suggestion'][hidden] button[data-tracking-confirm-param='false']", "■ Terminer"
   end
 
   test "saves a tracked walk with its GPS points" do

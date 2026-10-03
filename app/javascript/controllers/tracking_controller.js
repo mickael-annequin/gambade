@@ -9,6 +9,11 @@ const SECONDS_BETWEEN_POINTS = 5
 const MAX_ACCURACY_METERS = 30 // less precise positions are ignored
 const MIN_MOVE_METERS = 5 // smaller moves are GPS noise while standing still
 const MAX_POSITION_AGE_SECONDS = 60 // max gap between a dog met and the position used to place it
+const CAR_SPEED_KMH = 30 // faster than this is not walking: these positions are not counted
+const CAR_SECONDS = 60 // fast for this long: "in the car?" question
+const LEFT_START_METERS = 300 // farther than this from the start: the walk has really left
+const BACK_TO_START_METERS = 50 // closer than this after having left: "back to start?" question
+const MIN_WALK_METERS_BEFORE_BACK = 1000
 const EARTH_RADIUS_METERS = 6371000
 
 const STATUSES = {
@@ -23,7 +28,7 @@ const STATUSES = {
 }
 
 export default class extends Controller {
-  static targets = ["status", "duration", "distance", "finishButton", "dogsCount"]
+  static targets = ["status", "duration", "distance", "finishButton", "dogsCount", "suggestion", "suggestionMessage"]
   static values = { saveUrl: String }
 
   connect() {
@@ -61,13 +66,12 @@ export default class extends Controller {
     navigator.vibrate?.(60)
   }
 
-  async finish() {
+  // From the banner, the question was already asked: no confirmation (data-tracking-confirm-param="false").
+  async finish({ params } = {}) {
     if (!this.endedAt) {
-      if (!confirm("Terminer la balade ?")) return
+      if (params?.confirm !== false && !confirm("Terminer la balade ?")) return
 
-      this.endedAt = new Date()
-      this.#stopTracking()
-      this.#persist()
+      this.#end()
     }
     this.finishButtonTarget.disabled = true
     this.finishButtonTarget.textContent = "Enregistrement…"
@@ -85,6 +89,23 @@ export default class extends Controller {
     }
   }
 
+  // "Continuer" on the banner.
+  keepWalking() {
+    this.suggestedEndAt = null
+    this.suggestionTarget.hidden = true
+  }
+
+  // In the car, the walk really ended when the car started: what came after is dropped.
+  #end() {
+    this.endedAt = this.suggestedEndAt || new Date()
+    this.points = this.points.filter((point) => new Date(point.recorded_at) <= this.endedAt)
+    this.encounters = this.encounters.filter((encounter) => new Date(encounter.met_at) <= this.endedAt)
+    this.suggestionTarget.hidden = true
+    this.#stopTracking()
+    this.#persist()
+    this.#showDuration()
+  }
+
   #restoreOrStart() {
     const saved = loadWalk()
     if (saved) {
@@ -93,12 +114,14 @@ export default class extends Controller {
       this.points = saved.points
       this.distanceMeters = saved.distanceMeters
       this.encounters = saved.encounters || []
+      this.leftStart = saved.leftStart || false
     } else {
       this.startedAt = new Date()
       this.endedAt = null
       this.points = []
       this.distanceMeters = 0
       this.encounters = []
+      this.leftStart = false
       this.#persist()
     }
   }
@@ -109,7 +132,8 @@ export default class extends Controller {
       endedAt: this.endedAt?.toISOString(),
       points: this.points,
       distanceMeters: this.distanceMeters,
-      encounters: this.encounters
+      encounters: this.encounters,
+      leftStart: this.leftStart
     })
   }
 
@@ -132,6 +156,8 @@ export default class extends Controller {
     if (accuracy > MAX_ACCURACY_METERS) return
 
     const recordedAt = new Date(position.timestamp)
+    if (this.#isInCar(position, recordedAt)) return
+
     const point = { latitude, longitude, accuracy, recorded_at: recordedAt.toISOString() }
     const lastPoint = this.points.at(-1)
 
@@ -148,6 +174,54 @@ export default class extends Controller {
     this.points.push(point)
     this.#persist()
     this.#showDistance()
+    this.#watchReturnToStart(point)
+  }
+
+  // Speed from the GPS when it gives it, else computed from the previous position.
+  // Fast for a minute: probably in the car, "Terminer" was forgotten.
+  #isInCar({ coords }, at) {
+    const previous = this.previousFix
+    this.previousFix = { latitude: coords.latitude, longitude: coords.longitude, at }
+    let metersPerSecond = coords.speed
+    if (metersPerSecond == null && previous && at > previous.at) {
+      metersPerSecond = distanceBetween(previous, coords) / ((at - previous.at) / 1000)
+    }
+    if (metersPerSecond == null || metersPerSecond * 3.6 < CAR_SPEED_KMH) {
+      this.fastSince = null
+      this.askedAboutCar = false
+      return false
+    }
+
+    this.fastSince ??= previous?.at || at
+    if (!this.askedAboutCar && (at - this.fastSince) / 1000 >= CAR_SECONDS) {
+      this.askedAboutCar = true
+      this.#suggestFinish("🚗 Tu sembles être en voiture. Terminer la balade ?", this.fastSince)
+    }
+    return true
+  }
+
+  // Walks are usually loops: coming back near the start, after having really left, probably means the end.
+  // After "Continuer", the question comes back only after leaving again (figure-8 walks).
+  #watchReturnToStart(point) {
+    const start = this.points[0]
+    if (point === start) return
+
+    const fromStart = distanceBetween(start, point)
+    if (fromStart > LEFT_START_METERS && !this.leftStart) {
+      this.leftStart = true
+      this.#persist()
+    } else if (this.leftStart && fromStart < BACK_TO_START_METERS && this.distanceMeters >= MIN_WALK_METERS_BEFORE_BACK) {
+      this.leftStart = false
+      this.#persist()
+      this.#suggestFinish("🔁 Tu es revenu au point de départ. Terminer la balade ?", null)
+    }
+  }
+
+  #suggestFinish(message, endAt) {
+    this.suggestedEndAt = endAt
+    this.suggestionMessageTarget.textContent = message
+    this.suggestionTarget.hidden = false
+    navigator.vibrate?.([200, 100, 200])
   }
 
   // Gives the position just received to dogs met a few seconds before, when the GPS had no position yet.

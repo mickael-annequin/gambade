@@ -6,6 +6,12 @@
     · avec <%= current_dog.name %> 🐶
   </p>
 
+  <div data-tracking-target="suggestion" hidden>
+    <p data-tracking-target="suggestionMessage"></p>
+    <button type="button" data-action="tracking#finish" data-tracking-confirm-param="false">■ Terminer</button>
+    <button type="button" data-action="tracking#keepWalking">Continuer</button>
+  </div>
+
   <p><strong data-tracking-target="duration">00:00:00</strong><br>durée</p>
   <p><strong data-tracking-target="distance">0,0 km</strong><br>distance</p>
 
