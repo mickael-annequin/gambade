@@ -30,7 +30,9 @@
 
   <% show_navbar = user_signed_in? && !content_for?(:hide_nav) %>
   <body>
-    <main class="container py-3 <%= "with-navbar-bottom" if show_navbar %>">
+    <%# Bottom padding: room for the tab bar (with-navbar-bottom), or a small margin (pb-3).
+        Not "py-3": its !important would override the room needed by the tab bar. %>
+    <main class="container pt-3 <%= show_navbar ? "with-navbar-bottom" : "pb-3" %>">
       <% if notice %><div class="alert alert-success"><%= notice %></div><% end %>
       <% if alert %><div class="alert alert-warning"><%= alert %></div><% end %>
       <%= yield %>

@@ -12,6 +12,8 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_select "img[src^='https://api.mapbox.com/'][loading='lazy']", 1
     assert_select "span[aria-label='Balade sans trajet GPS']", 1
     assert_select ".navbar-bottom a.active[aria-current='page']", /Balades/
+    # Bootstrap's py-3 (!important) once hid the end of pages under the tab bar.
+    assert_select "main.with-navbar-bottom:not(.py-3):not(.pb-3)"
   end
 
   test "shows a walk with its GPS track on the map" do
