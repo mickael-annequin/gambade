@@ -1,0 +1,9 @@
+// Gambade palette (docs/conception/identite.md)
+$forest: #2F5D50;  // main: headers, "Démarrer" button, logo
+$sage: #8FAE8B;    // stat cards, soft elements
+$sand: #F5F0E6;    // app background
+$bark: #3B3127;    // text (softer than pure black)
+$ochre: #E08E45;   // "+1 chien" button, play 🎾
+$river: #4A90A4;   // swim 💦
+
+// Readability rule: on ochre and sage, text is bark brown, not white (contrast in full sun).

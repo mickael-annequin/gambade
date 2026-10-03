@@ -6,6 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Gambade">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#2F5D50">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -18,22 +19,28 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.32.0/mapbox-gl.css" rel="stylesheet">
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%# Compiled from app/assets/stylesheets/application.scss %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
+  <% show_navbar = user_signed_in? && !content_for?(:hide_nav) %>
   <body>
-    <% if notice %><p class="notice"><%= notice %></p><% end %>
-    <% if alert %><p class="alert"><%= alert %></p><% end %>
-    <%= yield %>
+    <main class="container py-3 <%= "with-navbar-bottom" if show_navbar %>">
+      <% if notice %><div class="alert alert-success"><%= notice %></div><% end %>
+      <% if alert %><div class="alert alert-warning"><%= alert %></div><% end %>
+      <%= yield %>
+    </main>
 
-    <% if user_signed_in? && !content_for?(:hide_nav) %>
-      <nav>
-        <%= link_to "🏠 Accueil", root_path %>
-        <%= link_to "📋 Balades", walks_path %>
-        <%= link_to "🐶 Mon chien", dog_path %>
+    <% if show_navbar %>
+      <nav class="navbar-bottom">
+        <%= link_to "🏠 Accueil", root_path, class: ("active" if controller_name == "pages") %>
+        <%= link_to "📋 Balades", walks_path, class: ("active" if %w[walks walk_trims encounters].include?(controller_name)) %>
+        <%= link_to "🐶 Mon chien", dog_path, class: ("active" if controller_name == "dogs") %>
       </nav>
     <% end %>
   </body>

@@ -1,6 +1,6 @@
 <%= form_with model: dog, url: dog_path do |f| %>
   <% if dog.errors.any? %>
-    <ul class="alert">
+    <ul class="alert alert-danger">
       <% dog.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>

@@ -1,6 +1,6 @@
 <%= form_with model: walk do |f| %>
   <% if walk.errors.any? %>
-    <ul class="alert">
+    <ul class="alert alert-danger">
       <% walk.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>

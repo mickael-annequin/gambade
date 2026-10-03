@@ -66,3 +66,7 @@ gem "devise", "~> 5.0"
 gem "cloudinary", "~> 2.4"
 
 gem "dotenv-rails", "~> 3.2", groups: [ :development, :test ]
+
+gem "dartsass-rails", "~> 0.5.1"
+
+gem "bootstrap", "~> 5.3"

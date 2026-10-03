@@ -4,7 +4,7 @@
 
 <%= form_with model: @encounter, url: walk_encounter_path(@walk, @encounter) do |f| %>
   <% if @encounter.errors.any? %>
-    <ul class="alert">
+    <ul class="alert alert-danger">
       <% @encounter.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>

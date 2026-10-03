@@ -1,0 +1,25 @@
+// Navigation bar fixed at the bottom of the screen, easy to reach with the thumb.
+.navbar-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  background: white;
+  border-top: 1px solid rgba($bark, 0.1);
+  padding-bottom: env(safe-area-inset-bottom); // phones without a home button
+
+  a {
+    flex: 1;
+    padding: 0.75rem 0;
+    text-align: center;
+    font-weight: 600;
+    color: $bark;
+    text-decoration: none;
+
+    &.active { color: $forest; }
+  }
+}
+
+// Room for the bar, so it never hides the end of a page.
+.with-navbar-bottom { padding-bottom: 5rem; }
