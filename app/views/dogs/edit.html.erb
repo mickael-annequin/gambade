@@ -1,4 +1,6 @@
-<%= link_to "← Annuler", dog_path, class: "back-link" %>
-<h1 class="walk-title mt-2">Modifier le profil</h1>
+<div class="title-row">
+  <%= back_button dog_path, label: "Annuler" %>
+  <h1 class="walk-title">Modifier le profil</h1>
+</div>
 
 <%= render "form", dog: @dog %>

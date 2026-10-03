@@ -1,5 +1,7 @@
-<%= link_to "← Annuler", walk_path(@walk), class: "back-link" %>
-<h1 class="walk-title mt-2">✂️ Couper la fin</h1>
+<div class="title-row">
+  <%= back_button walk_path(@walk), label: "Annuler" %>
+  <h1 class="walk-title">✂️ Couper la fin</h1>
+</div>
 <p>Fais glisser le curseur jusqu'au moment où la balade s'est vraiment terminée.
    Tout ce qui a été enregistré après sera supprimé.</p>
 

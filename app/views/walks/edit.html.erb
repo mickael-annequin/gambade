@@ -1,4 +1,6 @@
-<%= link_to "← Annuler", walk_path(@walk), class: "back-link" %>
-<h1 class="walk-title mt-2">Modifier la balade</h1>
+<div class="title-row">
+  <%= back_button walk_path(@walk), label: "Annuler" %>
+  <h1 class="walk-title">Modifier la balade</h1>
+</div>
 
 <%= render "form", walk: @walk %>

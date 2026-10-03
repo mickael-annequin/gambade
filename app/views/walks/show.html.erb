@@ -5,7 +5,10 @@
   </div>
 <% end %>
 
-<%= link_to "← Retour", walks_path, class: "back-link" %>
+<div class="title-row">
+  <%= back_button walks_path %>
+  <h1 class="walk-title"><%= l(@walk.started_at, format: "%A %-d %B · %Hh%M").capitalize %></h1>
+</div>
 
 <div class="walk-actions">
   <%= link_to edit_walk_path(@walk), class: "walk-action" do %>
@@ -21,8 +24,6 @@
     <span class="walk-action-icon">🗑️</span> <span class="walk-action-label">Supprimer</span>
   <% end %>
 </div>
-
-<h1 class="walk-title"><%= l(@walk.started_at, format: "%A %-d %B · %Hh%M").capitalize %></h1>
 
 <% track = @walk.track_coordinates %>
 <% if track.any? %>

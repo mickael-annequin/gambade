@@ -1,5 +1,7 @@
-<%= link_to "← Retour à la balade", walk_path(@walk), class: "back-link" %>
-<h1 class="walk-title mt-2">Rencontre de <%= l(@encounter.met_at, format: "%Hh%M") %></h1>
+<div class="title-row">
+  <%= back_button walk_path(@walk), label: "Retour à la balade" %>
+  <h1 class="walk-title">Rencontre de <%= l(@encounter.met_at, format: "%Hh%M") %></h1>
+</div>
 <p>Tout est facultatif.</p>
 
 <%= form_with model: @encounter, url: walk_encounter_path(@walk, @encounter) do |f| %>
