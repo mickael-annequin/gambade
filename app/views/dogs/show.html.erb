@@ -1,6 +1,11 @@
 <h1>Mon chien</h1>
 <%= link_to "✏️ Modifier", edit_dog_path %>
 
+<% if @dog.photo.attached? %>
+  <%= cl_image_tag @dog.photo.key, width: 300, height: 300, crop: :fill, gravity: :auto,
+                   fetch_format: :auto, quality: :auto, alt: @dog.name %>
+<% end %>
+
 <h2><%= @dog.name %></h2>
 <p><%= dog_details(@dog) %></p>
 

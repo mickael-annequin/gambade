@@ -8,12 +8,16 @@ fr:
         name: "Nom"
         breed: "Race"
         birth_date: "Date de naissance"
+        photo: "Photo"
     errors:
       models:
         dog:
           attributes:
             birth_date:
               in_future: "ne peut pas être dans le futur"
+            photo:
+              not_an_image: "doit être une image"
+              too_big: "est trop lourde (10 Mo maximum)"
   errors:
     format: "%{attribute} %{message}"
     messages:

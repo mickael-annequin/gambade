@@ -8,6 +8,11 @@
   <% end %>
 
   <div>
+    <%= f.label :photo, "Photo" %>
+    <%= f.file_field :photo, accept: "image/*" %>
+  </div>
+
+  <div>
     <%= f.label :name, "Nom" %>
     <%= f.text_field :name, required: true %>
   </div>

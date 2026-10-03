@@ -1,9 +1,11 @@
 class Dog < ApplicationRecord
   belongs_to :user
+  has_one_attached :photo
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :breed, length: { maximum: 50 }
   validate :birth_date_not_in_future
+  validate :photo_is_an_image
 
   # Age in full years, computed from the birth date so it stays up to date.
   def age
@@ -20,6 +22,16 @@ class Dog < ApplicationRecord
   def birth_date_not_in_future
     if birth_date.present? && birth_date > Date.current
       errors.add(:birth_date, :in_future)
+    end
+  end
+
+  def photo_is_an_image
+    return unless photo.attached?
+
+    if !photo.content_type.start_with?("image/")
+      errors.add(:photo, :not_an_image)
+    elsif photo.byte_size > 10.megabytes
+      errors.add(:photo, :too_big)
     end
   end
 end

@@ -24,4 +24,17 @@ class DogTest < ActiveSupport::TestCase
   test "has no age without a birth date" do
     assert_nil Dog.new(name: "Rex").age
   end
+
+  test "accepts an image as photo" do
+    dog = dogs(:rex)
+    dog.photo.attach(io: file_fixture("dog.png").open, filename: "dog.png", content_type: "image/png")
+    assert dog.valid?
+  end
+
+  test "refuses a photo that is not an image" do
+    dog = dogs(:rex)
+    dog.photo.attach(io: file_fixture("notes.txt").open, filename: "notes.txt", content_type: "text/plain")
+    assert_not dog.valid?
+    assert_includes dog.errors[:photo], "doit être une image"
+  end
 end
