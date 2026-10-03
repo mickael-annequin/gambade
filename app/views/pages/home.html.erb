@@ -1,7 +1,7 @@
 <h1>Gambade 🐶</h1>
 <p>Salut ! Prêt pour une balade avec <%= current_dog.name %> ?</p>
 
-<div data-controller="ongoing-walk">
+<div data-controller="ongoing-walk" data-ongoing-walk-start-label-value="▶ Démarrer une balade">
   <div data-ongoing-walk-target="banner" hidden>
     <p data-ongoing-walk-target="message"></p>
     <button type="button" data-action="ongoing-walk#abandon">Abandonner</button>
