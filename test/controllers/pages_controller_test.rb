@@ -13,6 +13,13 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", /Gambade/
   end
 
+  test "home page can offer to resume a walk saved in the phone" do
+    sign_in users(:mika)
+    get root_path
+    assert_select "[data-controller='ongoing-walk'] [data-ongoing-walk-target='banner'][hidden]"
+    assert_select "a[href='#{new_tracked_walk_path}']", "▶ Démarrer une balade"
+  end
+
   test "home page asks to create the dog profile on first visit" do
     sign_in users(:newcomer)
     get root_path

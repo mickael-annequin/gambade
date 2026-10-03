@@ -1,6 +1,13 @@
 <h1>Gambade 🐶</h1>
 <p>Salut ! Prêt pour une balade avec <%= current_dog.name %> ?</p>
 
-<%= link_to "▶ Démarrer une balade", new_tracked_walk_path %>
+<div data-controller="ongoing-walk">
+  <div data-ongoing-walk-target="banner" hidden>
+    <p data-ongoing-walk-target="message"></p>
+    <button type="button" data-action="ongoing-walk#abandon">Abandonner</button>
+  </div>
+
+  <%= link_to "▶ Démarrer une balade", new_tracked_walk_path, data: { ongoing_walk_target: "startButton" } %>
+</div>
 
 <p><%= link_to "+ Ajouter une balade à la main", new_walk_path %></p>
