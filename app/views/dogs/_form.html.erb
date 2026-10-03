@@ -1,0 +1,26 @@
+<%= form_with model: dog, url: dog_path do |f| %>
+  <% if dog.errors.any? %>
+    <ul class="alert">
+      <% dog.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :name, "Nom" %>
+    <%= f.text_field :name, required: true %>
+  </div>
+
+  <div>
+    <%= f.label :breed, "Race" %>
+    <%= f.text_field :breed %>
+  </div>
+
+  <div>
+    <%= f.label :birth_date, "Date de naissance" %>
+    <%= f.date_field :birth_date, max: Date.current %>
+  </div>
+
+  <%= f.submit "Enregistrer" %>
+<% end %>

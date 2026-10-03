@@ -1,0 +1,24 @@
+# French texts for model names and validation errors.
+fr:
+  activerecord:
+    models:
+      dog: "Chien"
+    attributes:
+      dog:
+        name: "Nom"
+        breed: "Race"
+        birth_date: "Date de naissance"
+    errors:
+      models:
+        dog:
+          attributes:
+            birth_date:
+              in_future: "ne peut pas être dans le futur"
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "doit être rempli(e)"
+      invalid: "n'est pas valide"
+      taken: "est déjà utilisé(e)"
+      too_long: "est trop long (pas plus de %{count} caractères)"
+      too_short: "est trop court (au moins %{count} caractères)"
