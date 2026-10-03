@@ -8,7 +8,7 @@ import { loadWalk, saveWalk, clearWalk } from "walk_storage"
 const SECONDS_BETWEEN_POINTS = 5
 const MAX_ACCURACY_METERS = 30 // less precise positions are ignored
 const MIN_MOVE_METERS = 5 // smaller moves are GPS noise while standing still
-const MAX_POSITION_AGE_SECONDS = 60 // older positions are not used to place a dog met
+const MAX_POSITION_AGE_SECONDS = 60 // max gap between a dog met and the position used to place it
 const EARTH_RADIUS_METERS = 6371000
 
 const STATUSES = {
@@ -44,7 +44,8 @@ export default class extends Controller {
     this.#stopTracking()
   }
 
-  // "+1 chien": remembers when, and where if the GPS knows the position.
+  // "+1 chien": remembers when, and where. Without a recent position yet,
+  // the dog will be placed at the next position received (see #locateWaitingEncounters).
   addDog() {
     if (this.endedAt) return
 
@@ -126,6 +127,7 @@ export default class extends Controller {
   #addPosition(position) {
     const { latitude, longitude, accuracy } = position.coords
     this.lastPosition = { latitude, longitude, at: new Date() }
+    this.#locateWaitingEncounters()
     this.#showStatus(accuracy <= 15 ? "good" : accuracy <= MAX_ACCURACY_METERS ? "weak" : "bad")
     if (accuracy > MAX_ACCURACY_METERS) return
 
@@ -146,6 +148,17 @@ export default class extends Controller {
     this.points.push(point)
     this.#persist()
     this.#showDistance()
+  }
+
+  // Gives the position just received to dogs met a few seconds before, when the GPS had no position yet.
+  #locateWaitingEncounters() {
+    const { latitude, longitude, at } = this.lastPosition
+    const waiting = this.encounters.filter((encounter) =>
+      encounter.latitude === undefined && (at - new Date(encounter.met_at)) / 1000 < MAX_POSITION_AGE_SECONDS)
+    if (waiting.length === 0) return
+
+    waiting.forEach((encounter) => Object.assign(encounter, { latitude, longitude }))
+    this.#persist()
   }
 
   // Screen Wake Lock: the screen stays on, so the browser keeps receiving positions.
