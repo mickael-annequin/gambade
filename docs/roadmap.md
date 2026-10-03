@@ -27,10 +27,11 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] **Protection anti-perte** : écran maintenu allumé, points sauvegardés dans le téléphone, reprise d'une balade interrompue, points imprécis ignorés. *Test :* fermer l'app en pleine balade, la rouvrir et reprendre.
 - [x] **Bouton « +1 chien »** avec le lieu de la rencontre. *Test :* les rencontres apparaissent sur la carte de la balade.
 - [x] **Boutons « Jeu » et « Baignade »** (début/fin, utilisables en même temps). *Test :* faire une phase de chaque, dont une en même temps, et retrouver leurs durées et leurs lieux.
-- [ ] **Résumé de fin de balade** avec ajout facultatif de détails sur chaque rencontre (nom, race, ressenti, note). *Test :* compléter une rencontre et retrouver ses détails.
+- [x] **Résumé de fin de balade** avec ajout facultatif de détails sur chaque rencontre (nom, race, ressenti, note). *Test :* compléter une rencontre et retrouver ses détails.
 - [ ] **Liste des balades**, chacune avec sa carte et ses stats. *Test :* une vraie balade complète avec mon chien. 🎉 **MVP terminé !**
 
 ## Phase 2 — V1 complète 🥈
+- [ ] Détails d'une rencontre **pendant** la balade : après « +1 chien », un petit encart facultatif (nom, 😊 😐 😠) qui se referme tout seul si on l'ignore — pour ne pas oublier qui était qui quand on croise plusieurs chiens
 - [ ] Notes de balade (humeur, besoins, commentaire)
 - [ ] Carnet d'amis : table `friends`, lien rencontre → ami, classement des amis les plus croisés (dans « Mon chien »)
 - [ ] Import de photos placées sur le trajet
