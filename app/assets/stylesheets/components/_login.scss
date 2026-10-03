@@ -1,0 +1,19 @@
+// Sign-in page: logo, name and a centered form.
+.login {
+  max-width: 400px;
+  margin: 3rem auto 0;
+  text-align: center;
+
+  h1 {
+    margin: 1rem 0 0.25rem;
+    font-size: 2.5rem;
+    color: $forest;
+  }
+
+  form { text-align: left; }
+}
+
+.login-tagline {
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}

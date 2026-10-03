@@ -6,6 +6,7 @@ class DogsControllerTest < ActionDispatch::IntegrationTest
     get dog_path
     assert_response :success
     assert_select "h2", "Rex"
+    assert_equal [ "3,4", "2", "5" ], css_select(".stat-card-number").map { |node| node.text.strip }
   end
 
   test "creates the dog profile on first visit" do

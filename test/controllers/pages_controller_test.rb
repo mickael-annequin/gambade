@@ -44,6 +44,12 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_dog_path
   end
 
+  test "the sign in page shows the logo" do
+    get new_user_session_path
+    assert_response :success
+    assert_select ".login img[src*='logo']"
+  end
+
   test "there is no public sign up page" do
     get "/users/sign_up"
     assert_response :not_found

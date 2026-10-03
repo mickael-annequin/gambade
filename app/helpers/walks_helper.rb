@@ -20,7 +20,12 @@ module WalksHelper
 
   # 2300 -> "2,3 km"
   def walk_distance(meters)
-    "#{number_with_precision(meters / 1000.0, precision: 1, separator: ',')} km"
+    "#{walk_km(meters)} km"
+  end
+
+  # 2300 -> "2,3"
+  def walk_km(meters)
+    number_with_precision(meters / 1000.0, precision: 1, separator: ",")
   end
 
   # "Aujourd'hui", "Hier" or "mardi 29 septembre"

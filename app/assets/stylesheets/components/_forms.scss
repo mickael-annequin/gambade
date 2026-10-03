@@ -1,0 +1,41 @@
+// Forms: "−  4  +" counter, mood buttons, trim slider.
+.counter {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.counter-button {
+  width: 4rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.counter-value {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+// 😊 😐 😠 as big buttons to touch, instead of small round radio buttons.
+.mood-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.mood-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 0.25rem;
+  font-size: 0.9rem;
+}
+
+.mood-emoji {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.trim-slider {
+  height: 2.5rem; // easier to grab with the thumb
+}

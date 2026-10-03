@@ -1,5 +1,5 @@
-<%= link_to "← Retour à la balade", walk_path(@walk) %>
-<h1>Rencontre de <%= l(@encounter.met_at, format: "%Hh%M") %></h1>
+<%= link_to "← Retour à la balade", walk_path(@walk), class: "back-link" %>
+<h1 class="walk-title mt-2">Rencontre de <%= l(@encounter.met_at, format: "%Hh%M") %></h1>
 <p>Tout est facultatif.</p>
 
 <%= form_with model: @encounter, url: walk_encounter_path(@walk, @encounter) do |f| %>
@@ -11,31 +11,37 @@
     </ul>
   <% end %>
 
-  <div>
-    <%= f.label :dog_name, "Nom du chien" %>
-    <%= f.text_field :dog_name, placeholder: "Filou" %>
+  <div class="mb-3">
+    <%= f.label :dog_name, "Nom du chien", class: "form-label" %>
+    <%= f.text_field :dog_name, placeholder: "Filou", class: "form-control form-control-lg" %>
   </div>
 
-  <div>
-    <%= f.label :breed, "Race" %>
-    <%= f.text_field :breed, placeholder: "Beagle" %>
+  <div class="mb-3">
+    <%= f.label :breed, "Race", class: "form-label" %>
+    <%= f.text_field :breed, placeholder: "Beagle", class: "form-control form-control-lg" %>
   </div>
 
-  <fieldset>
-    <legend>Comment ça s'est passé ?</legend>
-    <% EncountersHelper::MOODS.each do |mood, label| %>
-      <%= f.radio_button :mood, mood %>
-      <%= f.label "mood_#{mood}", label %>
-    <% end %>
+  <fieldset class="mb-3">
+    <legend class="form-label fs-6">Comment ça s'est passé ?</legend>
+    <div class="mood-buttons">
+      <% EncountersHelper::MOODS.each do |mood, label| %>
+        <%= f.radio_button :mood, mood, class: "btn-check" %>
+        <%= f.label "mood_#{mood}", class: "btn btn-outline-primary mood-button" do %>
+          <span class="mood-emoji"><%= label.split.first %></span>
+          <%= label.split.drop(1).join(" ") %>
+        <% end %>
+      <% end %>
+    </div>
   </fieldset>
 
-  <div>
-    <%= f.label :note, "Note" %>
-    <%= f.text_area :note, rows: 3, placeholder: "Très joueur, a couru après la balle…" %>
+  <div class="mb-4">
+    <%= f.label :note, "Note", class: "form-label" %>
+    <%= f.text_area :note, rows: 3, placeholder: "Très joueur, a couru après la balle…", class: "form-control" %>
   </div>
 
-  <%= f.submit "✓ Enregistrer" %>
+  <%= f.submit "✓ Enregistrer", class: "btn btn-primary btn-lg w-100" %>
 <% end %>
 
 <%= button_to "🗑️ Supprimer cette rencontre", walk_encounter_path(@walk, @encounter), method: :delete,
+              class: "btn btn-link text-danger w-100 mt-3",
               form: { data: { turbo_confirm: "Supprimer cette rencontre ? (appui en trop sur « +1 chien »)" } } %>

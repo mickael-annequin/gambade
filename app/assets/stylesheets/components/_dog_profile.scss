@@ -1,0 +1,29 @@
+// "Mon chien": big round photo, name, breed and age.
+.dog-profile {
+  text-align: center;
+
+  h2 {
+    margin: 0.75rem 0 0.25rem;
+    font-size: 2rem;
+    color: $forest;
+  }
+
+  p { opacity: 0.8; }
+}
+
+.dog-profile-photo {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid white;
+  box-shadow: 0 4px 12px rgba($bark, 0.2);
+}
+
+.dog-profile-photo-empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($sage, 0.45);
+  font-size: 4rem;
+}

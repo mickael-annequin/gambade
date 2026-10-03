@@ -7,27 +7,31 @@
     </ul>
   <% end %>
 
-  <div>
-    <%= f.label :started_at, "Départ" %>
-    <%= f.datetime_local_field :started_at %>
+  <div class="mb-3">
+    <%= f.label :started_at, "Départ", class: "form-label" %>
+    <%= f.datetime_local_field :started_at, class: "form-control form-control-lg" %>
   </div>
 
-  <div>
-    <%= f.label :duration_minutes, "Durée (minutes)" %>
-    <%= f.number_field :duration_minutes, min: 1, inputmode: "numeric" %>
+  <div class="mb-3">
+    <%= f.label :duration_minutes, "Durée (minutes)", class: "form-label" %>
+    <%= f.number_field :duration_minutes, min: 1, inputmode: "numeric", class: "form-control form-control-lg" %>
   </div>
 
-  <div>
-    <%= f.label :distance_km, "Distance (km)" %>
-    <%= f.text_field :distance_km, value: walk.distance_km&.to_s&.tr(".", ","), inputmode: "decimal", placeholder: "2,3" %>
+  <div class="mb-3">
+    <%= f.label :distance_km, "Distance (km)", class: "form-label" %>
+    <%= f.text_field :distance_km, value: walk.distance_km&.to_s&.tr(".", ","), inputmode: "decimal",
+                                   placeholder: "2,3", class: "form-control form-control-lg" %>
   </div>
 
-  <div data-controller="counter">
-    <%= f.label :dogs_met_count, "Chiens rencontrés" %>
-    <button type="button" data-action="counter#decrement">−</button>
-    <%= f.number_field :dogs_met_count, min: 0, readonly: true, data: { counter_target: "input" } %>
-    <button type="button" data-action="counter#increment">+</button>
+  <div class="mb-4" data-controller="counter">
+    <%= f.label :dogs_met_count, "Chiens rencontrés", class: "form-label" %>
+    <div class="counter">
+      <button type="button" class="btn btn-outline-primary counter-button" data-action="counter#decrement">−</button>
+      <%= f.number_field :dogs_met_count, min: 0, readonly: true, class: "form-control counter-value",
+                                          data: { counter_target: "input" } %>
+      <button type="button" class="btn btn-outline-primary counter-button" data-action="counter#increment">+</button>
+    </div>
   </div>
 
-  <%= f.submit "✓ Enregistrer" %>
+  <%= f.submit "✓ Enregistrer", class: "btn btn-primary btn-lg w-100" %>
 <% end %>

@@ -1,4 +1,4 @@
-<%= link_to "← Annuler", walk_path(@walk) %>
-<h1>Modifier la balade</h1>
+<%= link_to "← Annuler", walk_path(@walk), class: "back-link" %>
+<h1 class="walk-title mt-2">Modifier la balade</h1>
 
 <%= render "form", walk: @walk %>

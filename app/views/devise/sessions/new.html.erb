@@ -1,20 +1,24 @@
-<h1>Gambade 🐶</h1>
+<div class="login">
+  <%= image_tag "logo.svg", width: 96, height: 96, alt: "" %>
+  <h1>Gambade</h1>
+  <p class="login-tagline">Le compagnon de balade de ton chien 🐾</p>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div>
-    <%= f.label :email, "Email" %>
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+    <div class="mb-3">
+      <%= f.label :email, "Email", class: "form-label" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control form-control-lg" %>
+    </div>
 
-  <div>
-    <%= f.label :password, "Mot de passe" %>
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
+    <div class="mb-3">
+      <%= f.label :password, "Mot de passe", class: "form-label" %>
+      <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-lg" %>
+    </div>
 
-  <div>
-    <%= f.check_box :remember_me, checked: true %>
-    <%= f.label :remember_me, "Se souvenir de moi" %>
-  </div>
+    <div class="form-check mb-4">
+      <%= f.check_box :remember_me, checked: true, class: "form-check-input" %>
+      <%= f.label :remember_me, "Se souvenir de moi", class: "form-check-label" %>
+    </div>
 
-  <%= f.submit "Se connecter" %>
-<% end %>
+    <%= f.submit "Se connecter", class: "btn btn-primary btn-lg w-100" %>
+  <% end %>
+</div>

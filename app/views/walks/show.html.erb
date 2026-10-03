@@ -1,21 +1,27 @@
 <% if params[:finished] %>
-  <p><strong>Bravo ! Balade terminée 🎉</strong></p>
-  <p>Tu peux ajouter des détails sur les chiens rencontrés, si tu veux.</p>
+  <div class="finished-banner">
+    <strong>Bravo ! Balade terminée 🎉</strong>
+    <p>Tu peux ajouter des détails sur les chiens rencontrés, si tu veux.</p>
+  </div>
 <% end %>
 
-<%= link_to "← Retour", walks_path %>
-<%= link_to "✏️ Modifier", edit_walk_path(@walk) %>
-<% if @walk.tracked? %>
-  <%= link_to "✂️ Couper la fin", edit_walk_trim_path(@walk) %>
-<% end %>
-<%= button_to "🗑️ Supprimer", walk_path(@walk), method: :delete,
-              form: { data: { turbo_confirm: "Supprimer cette balade ?" } } %>
+<div class="page-actions">
+  <%= link_to "← Retour", walks_path, class: "back-link" %>
+  <div class="page-actions-buttons">
+    <%= link_to "✏️ Modifier", edit_walk_path(@walk), class: "btn btn-sm btn-outline-primary" %>
+    <% if @walk.tracked? %>
+      <%= link_to "✂️ Couper la fin", edit_walk_trim_path(@walk), class: "btn btn-sm btn-outline-primary" %>
+    <% end %>
+    <%= button_to "🗑️ Supprimer", walk_path(@walk), method: :delete, class: "btn btn-sm btn-outline-danger",
+                  form: { data: { turbo_confirm: "Supprimer cette balade ?" } } %>
+  </div>
+</div>
 
-<h1><%= l(@walk.started_at, format: "%A %-d %B · %Hh%M").capitalize %></h1>
+<h1 class="walk-title"><%= l(@walk.started_at, format: "%A %-d %B · %Hh%M").capitalize %></h1>
 
 <% track = @walk.track_coordinates %>
 <% if track.any? %>
-  <div style="height: 300px"
+  <div class="walk-map"
        data-controller="map"
        data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"
        data-map-center-value="<%= track.first.to_json %>"
@@ -25,21 +31,31 @@
   </div>
 <% end %>
 
-<p>
-  <%= walk_duration(@walk.duration_seconds) %> ·
-  <%= walk_distance(@walk.distance_meters) %> ·
-  <%= pluralize(@walk.dogs_met_count, "chien", plural: "chiens") %>
-</p>
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-card-number"><%= walk_duration(@walk.duration_seconds) %></div>
+    <div class="stat-card-label">durée</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-number"><%= walk_km(@walk.distance_meters) %></div>
+    <div class="stat-card-label">km</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-number"><%= @walk.dogs_met_count %></div>
+    <div class="stat-card-label"><%= @walk.dogs_met_count > 1 ? "chiens" : "chien" %></div>
+  </div>
+</div>
+
 <% [ walk_play_summary(@walk), walk_swim_summary(@walk) ].compact.each do |summary| %>
-  <p><%= summary %></p>
+  <p class="activity-summary"><%= summary %></p>
 <% end %>
 
 <% encounters = @walk.encounters.in_order %>
 <% if encounters.any? %>
-  <h2>Rencontres<%= " (facultatif)" if params[:finished] %></h2>
-  <ul>
+  <h2 class="section-title">Rencontres<%= " (facultatif)" if params[:finished] %></h2>
+  <ul class="list-group encounter-list">
     <% encounters.each.with_index(1) do |encounter, number| %>
-      <li>
+      <li class="list-group-item">
         <%= link_to edit_walk_encounter_path(@walk, encounter) do %>
           <%= encounter_number(number) %> <%= l(encounter.met_at, format: "%Hh%M") %>
           · <%= encounter_details(encounter) || "+ détails" %>
@@ -51,5 +67,5 @@
 <% end %>
 
 <% if params[:finished] %>
-  <%= link_to "✓ C'est tout bon", walks_path %>
+  <%= link_to "✓ C'est tout bon", walks_path, class: "btn btn-primary btn-lg w-100 mt-4" %>
 <% end %>

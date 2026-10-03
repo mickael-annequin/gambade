@@ -1,12 +1,34 @@
-<h1>Mon chien</h1>
-<%= link_to "✏️ Modifier", edit_dog_path %>
+<div class="page-header">
+  <h1>Mon chien</h1>
+  <%= link_to "✏️ Modifier", edit_dog_path, class: "btn btn-sm btn-outline-primary" %>
+</div>
 
-<% if @dog.photo.attached? %>
-  <%= cl_image_tag @dog.photo.key, width: 300, height: 300, crop: :fill, gravity: :auto,
-                   fetch_format: :auto, quality: :auto, alt: @dog.name %>
-<% end %>
+<div class="dog-profile">
+  <% if @dog.photo.attached? %>
+    <%= cl_image_tag @dog.photo.key, width: 320, height: 320, crop: :fill, gravity: :auto,
+                     fetch_format: :auto, quality: :auto, class: "dog-profile-photo", alt: @dog.name %>
+  <% else %>
+    <div class="dog-profile-photo dog-profile-photo-empty">🐶</div>
+  <% end %>
+  <h2><%= @dog.name %></h2>
+  <p><%= dog_details(@dog) %></p>
+</div>
 
-<h2><%= @dog.name %></h2>
-<p><%= dog_details(@dog) %></p>
+<h2 class="section-title">Depuis le début</h2>
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-card-number"><%= walk_km(@walks.sum(:distance_meters)) %></div>
+    <div class="stat-card-label">km</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-number"><%= @walks.count %></div>
+    <div class="stat-card-label">balades</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-number"><%= @walks.sum(:dogs_met_count) %></div>
+    <div class="stat-card-label">chiens</div>
+  </div>
+</div>
 
-<%= button_to "Se déconnecter", destroy_user_session_path, method: :delete %>
+<%= button_to "Se déconnecter", destroy_user_session_path, method: :delete,
+              class: "btn btn-outline-secondary w-100 mt-5" %>

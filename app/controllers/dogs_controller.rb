@@ -3,6 +3,7 @@ class DogsController < ApplicationController
   before_action :redirect_if_dog_exists, only: %i[new create]
 
   def show
+    @walks = @dog.walks
   end
 
   def new

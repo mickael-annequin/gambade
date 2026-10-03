@@ -20,7 +20,7 @@
 <h2 class="section-title">Cette semaine</h2>
 <div class="stat-cards">
   <div class="stat-card">
-    <div class="stat-card-number"><%= number_with_precision(@week_walks.sum(:distance_meters) / 1000.0, precision: 1, separator: ",") %></div>
+    <div class="stat-card-number"><%= walk_km(@week_walks.sum(:distance_meters)) %></div>
     <div class="stat-card-label">km</div>
   </div>
   <div class="stat-card">

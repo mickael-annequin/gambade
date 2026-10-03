@@ -10,7 +10,8 @@ class EncountersControllerTest < ActionDispatch::IntegrationTest
   test "shows the optional details form" do
     get edit_walk_encounter_path(@walk, @encounter)
     assert_response :success
-    assert_select "input[type='radio'][value='joyful']"
+    assert_select "input[type='radio'][value='joyful'].btn-check"
+    assert_select "label.mood-button", 3
   end
 
   test "saves the details of a dog met" do
