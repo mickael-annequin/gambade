@@ -1,0 +1,13 @@
+<% content_for :hide_nav, true %>
+
+<div data-controller="tracking" data-tracking-save-url-value="<%= tracked_walks_path %>">
+  <p>
+    <span data-tracking-target="status">🟠 Recherche du GPS…</span>
+    · avec <%= current_dog.name %> 🐶
+  </p>
+
+  <p><strong data-tracking-target="duration">00:00:00</strong><br>durée</p>
+  <p><strong data-tracking-target="distance">0,0 km</strong><br>distance</p>
+
+  <button type="button" data-tracking-target="finishButton" data-action="tracking#finish">■ Terminer</button>
+</div>

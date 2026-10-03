@@ -29,7 +29,7 @@
     <% if alert %><p class="alert"><%= alert %></p><% end %>
     <%= yield %>
 
-    <% if user_signed_in? %>
+    <% if user_signed_in? && !content_for?(:hide_nav) %>
       <nav>
         <%= link_to "🏠 Accueil", root_path %>
         <%= link_to "📋 Balades", walks_path %>

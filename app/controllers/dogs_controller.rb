@@ -31,14 +31,13 @@ class DogsController < ApplicationController
 
   private
 
-  # For now the app follows a single dog: the first one of the account.
   def set_dog
-    @dog = current_user.dogs.first
+    @dog = current_dog
     redirect_to new_dog_path if @dog.nil?
   end
 
   def redirect_if_dog_exists
-    redirect_to dog_path if current_user.dogs.exists?
+    redirect_to dog_path if current_dog
   end
 
   def dog_params

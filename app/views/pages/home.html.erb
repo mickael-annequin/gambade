@@ -1,4 +1,6 @@
 <h1>Gambade 🐶</h1>
-<p>Bientôt ici : le bouton « Démarrer une balade » !</p>
+<p>Salut ! Prêt pour une balade avec <%= current_dog.name %> ?</p>
 
-<%= link_to "+ Ajouter une balade à la main", new_walk_path %>
+<%= link_to "▶ Démarrer une balade", new_tracked_walk_path %>
+
+<p><%= link_to "+ Ajouter une balade à la main", new_walk_path %></p>

@@ -10,6 +10,39 @@ class Walk < ApplicationRecord
 
   scope :most_recent_first, -> { order(started_at: :desc) }
 
+  EARTH_RADIUS_METERS = 6_371_000
+
+  # Saves a walk recorded live on the phone, with all its GPS points, in one go.
+  def self.create_from_track!(dog:, started_at:, ended_at:, points:)
+    transaction do
+      walk = dog.walks.create!(
+        started_at: started_at,
+        duration_seconds: [ (ended_at - started_at).round, 1 ].max,
+        distance_meters: distance_along(points).round,
+        tracked: true
+      )
+      if points.any?
+        now = Time.current
+        walk.track_points.insert_all!(points.map { |point| point.merge(created_at: now, updated_at: now) })
+      end
+      walk
+    end
+  end
+
+  # Total length of the path going through the points, in meters.
+  def self.distance_along(points)
+    points.each_cons(2).sum { |from, to| distance_between(from, to) }
+  end
+
+  # Distance "as the crow flies" between two GPS points (haversine formula).
+  def self.distance_between(from, to)
+    lat1, lat2 = from[:latitude].to_f * Math::PI / 180, to[:latitude].to_f * Math::PI / 180
+    delta_lat = lat2 - lat1
+    delta_lng = (to[:longitude].to_f - from[:longitude].to_f) * Math::PI / 180
+    a = Math.sin(delta_lat / 2)**2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(delta_lng / 2)**2
+    2 * EARTH_RADIUS_METERS * Math.asin(Math.sqrt(a))
+  end
+
   # The form works in minutes and km; the database stores seconds and meters.
   def duration_minutes
     duration_seconds && duration_seconds / 60

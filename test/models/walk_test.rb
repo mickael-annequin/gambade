@@ -34,4 +34,10 @@ class WalkTest < ActiveSupport::TestCase
   test "an empty distance means 0 km" do
     assert_equal 0, Walk.new(distance_km: "").distance_meters
   end
+
+  test "measures the distance along GPS points" do
+    points = [ { latitude: 48.4206, longitude: 1.5012 }, { latitude: 48.4296, longitude: 1.5012 },
+               { latitude: 48.4206, longitude: 1.5012 } ]
+    assert_in_delta 2002, Walk.distance_along(points), 2
+  end
 end
