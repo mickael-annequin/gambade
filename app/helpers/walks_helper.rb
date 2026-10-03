@@ -21,6 +21,22 @@ module WalksHelper
     l(date, format: "%A %-d %B")
   end
 
+  # "🎾 12 min de jeu", or nil without play
+  def walk_play_summary(walk)
+    plays = walk.activities.select(&:play?)
+    return if plays.empty?
+
+    "🎾 #{walk_duration(plays.sum(&:duration_seconds))} de jeu"
+  end
+
+  # "💦 1 baignade (8 min)", or nil without swim
+  def walk_swim_summary(walk)
+    swims = walk.activities.select(&:swim?)
+    return if swims.empty?
+
+    "💦 #{pluralize(swims.size, 'baignade', plural: 'baignades')} (#{walk_duration(swims.sum(&:duration_seconds))})"
+  end
+
   # "Octobre 2026"
   def walk_month(date)
     l(date, format: "%B %Y").capitalize

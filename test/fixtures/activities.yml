@@ -1,0 +1,13 @@
+play:
+  walk: evening
+  kind: play
+  started_at: 2026-10-01 18:10:00 +02:00
+  ended_at: 2026-10-01 18:22:00 +02:00
+  latitude: 48.420900
+  longitude: 1.501600
+
+swim:
+  walk: evening
+  kind: swim
+  started_at: 2026-10-01 18:20:00 +02:00
+  ended_at: 2026-10-01 18:28:00 +02:00

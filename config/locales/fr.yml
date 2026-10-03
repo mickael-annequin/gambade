@@ -24,6 +24,10 @@ fr:
             photo:
               not_an_image: "doit être une image"
               too_big: "est trop lourde (10 Mo maximum)"
+        activity:
+          attributes:
+            ended_at:
+              before_start: "ne peut pas être avant le début"
   errors:
     format: "%{attribute} %{message}"
     messages:

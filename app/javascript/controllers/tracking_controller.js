@@ -16,6 +16,11 @@ const BACK_TO_START_METERS = 50 // closer than this after having left: "back to 
 const MIN_WALK_METERS_BEFORE_BACK = 1000
 const EARTH_RADIUS_METERS = 6371000
 
+const ACTIVITIES = {
+  play: { icon: "🎾", label: "🎾 JEU" },
+  swim: { icon: "💦", label: "💦 BAIGNADE" }
+}
+
 const STATUSES = {
   searching: "🟠 Recherche du GPS…",
   good: "🟢 GPS ok",
@@ -28,7 +33,8 @@ const STATUSES = {
 }
 
 export default class extends Controller {
-  static targets = ["status", "duration", "distance", "finishButton", "dogsCount", "suggestion", "suggestionMessage"]
+  static targets = ["status", "duration", "distance", "finishButton", "dogsCount", "suggestion", "suggestionMessage",
+    "playButton", "swimButton"]
   static values = { saveUrl: String }
 
   connect() {
@@ -36,10 +42,14 @@ export default class extends Controller {
     this.#showDuration()
     this.#showDistance()
     this.#showDogsCount()
+    this.#showActivities()
 
     if (this.endedAt) return this.#showRetry() // finished, but the last save failed
 
-    this.timer = setInterval(() => this.#showDuration(), 1000)
+    this.timer = setInterval(() => {
+      this.#showDuration()
+      this.#showActivities()
+    }, 1000)
     this.#watchPosition()
     this.#keepScreenOn()
   }
@@ -54,15 +64,22 @@ export default class extends Controller {
   addDog() {
     if (this.endedAt) return
 
-    const encounter = { met_at: new Date().toISOString() }
-    const position = this.lastPosition
-    if (position && (new Date() - position.at) / 1000 < MAX_POSITION_AGE_SECONDS) {
-      encounter.latitude = position.latitude
-      encounter.longitude = position.longitude
-    }
-    this.encounters.push(encounter)
+    this.encounters.push({ met_at: new Date().toISOString(), ...this.#recentPosition() })
     this.#persist()
     this.#showDogsCount()
+    navigator.vibrate?.(60)
+  }
+
+  // 🎾 / 💦 buttons (data-tracking-kind-param): a first press starts the phase, the next one stops it.
+  // Play and swim are independent: both can run at the same time.
+  toggleActivity({ params: { kind } }) {
+    if (this.endedAt) return
+
+    const running = this.#runningActivity(kind)
+    if (running) running.ended_at = new Date().toISOString()
+    else this.activities.push({ kind, started_at: new Date().toISOString(), ...this.#recentPosition() })
+    this.#persist()
+    this.#showActivities()
     navigator.vibrate?.(60)
   }
 
@@ -95,11 +112,17 @@ export default class extends Controller {
     this.suggestionTarget.hidden = true
   }
 
-  // In the car, the walk really ended when the car started: what came after is dropped.
+  // Running phases stop with the walk. In the car, the walk really ended when the car started:
+  // what came after is dropped.
   #end() {
     this.endedAt = this.suggestedEndAt || new Date()
+    const endedAt = this.endedAt.toISOString()
     this.points = this.points.filter((point) => new Date(point.recorded_at) <= this.endedAt)
     this.encounters = this.encounters.filter((encounter) => new Date(encounter.met_at) <= this.endedAt)
+    this.activities = this.activities.filter((activity) => new Date(activity.started_at) <= this.endedAt)
+    this.activities.forEach((activity) => {
+      if (!activity.ended_at || new Date(activity.ended_at) > this.endedAt) activity.ended_at = endedAt
+    })
     this.suggestionTarget.hidden = true
     this.#stopTracking()
     this.#persist()
@@ -115,6 +138,7 @@ export default class extends Controller {
       this.distanceMeters = saved.distanceMeters
       this.encounters = saved.encounters || []
       this.leftStart = saved.leftStart || false
+      this.activities = saved.activities || []
     } else {
       this.startedAt = new Date()
       this.endedAt = null
@@ -122,6 +146,7 @@ export default class extends Controller {
       this.distanceMeters = 0
       this.encounters = []
       this.leftStart = false
+      this.activities = []
       this.#persist()
     }
   }
@@ -133,7 +158,8 @@ export default class extends Controller {
       points: this.points,
       distanceMeters: this.distanceMeters,
       encounters: this.encounters,
-      leftStart: this.leftStart
+      leftStart: this.leftStart,
+      activities: this.activities
     })
   }
 
@@ -224,14 +250,31 @@ export default class extends Controller {
     navigator.vibrate?.([200, 100, 200])
   }
 
-  // Gives the position just received to dogs met a few seconds before, when the GPS had no position yet.
+  // { latitude, longitude } if the GPS knows where we are, else {} (placed later, see #locateWaitingEncounters).
+  #recentPosition() {
+    const position = this.lastPosition
+    if (!position || (new Date() - position.at) / 1000 >= MAX_POSITION_AGE_SECONDS) return {}
+
+    return { latitude: position.latitude, longitude: position.longitude }
+  }
+
+  #runningActivity(kind) {
+    return this.activities.find((activity) => activity.kind === kind && !activity.ended_at)
+  }
+
+  // Gives the position just received to dogs met (and play/swim phases started) a few seconds before,
+  // when the GPS had no position yet.
   #locateWaitingEncounters() {
     const { latitude, longitude, at } = this.lastPosition
-    const waiting = this.encounters.filter((encounter) =>
-      encounter.latitude === undefined && (at - new Date(encounter.met_at)) / 1000 < MAX_POSITION_AGE_SECONDS)
+    const isWaiting = (item, time) =>
+      item.latitude === undefined && (at - new Date(time)) / 1000 < MAX_POSITION_AGE_SECONDS
+    const waiting = [
+      ...this.encounters.filter((encounter) => isWaiting(encounter, encounter.met_at)),
+      ...this.activities.filter((activity) => isWaiting(activity, activity.started_at))
+    ]
     if (waiting.length === 0) return
 
-    waiting.forEach((encounter) => Object.assign(encounter, { latitude, longitude }))
+    waiting.forEach((item) => Object.assign(item, { latitude, longitude }))
     this.#persist()
   }
 
@@ -269,7 +312,8 @@ export default class extends Controller {
           started_at: this.startedAt.toISOString(),
           ended_at: this.endedAt.toISOString(),
           track_points: this.points,
-          encounters: this.encounters
+          encounters: this.encounters,
+          activities: this.activities
         }
       })
     })
@@ -300,6 +344,20 @@ export default class extends Controller {
     this.distanceTarget.textContent = `${(this.distanceMeters / 1000).toFixed(1).replace(".", ",")} km`
   }
 
+  // "🎾 JEU", or "🎾 03:12 ■ Arrêter" while the phase is running.
+  #showActivities() {
+    for (const [kind, { icon, label }] of Object.entries(ACTIVITIES)) {
+      const running = this.#runningActivity(kind)
+      const button = this[`${kind}ButtonTarget`]
+      if (running) {
+        const seconds = Math.floor((new Date() - new Date(running.started_at)) / 1000)
+        button.textContent = `${icon} ${formatMinutesSeconds(seconds)} ■ Arrêter`
+      } else {
+        button.textContent = label
+      }
+    }
+  }
+
   #showDogsCount() {
     this.dogsCountTarget.textContent = this.encounters.length
   }
@@ -317,4 +375,9 @@ function distanceBetween(from, to) {
   const a = Math.sin(deltaLat / 2) ** 2 +
     Math.cos(toRadians(from.latitude)) * Math.cos(toRadians(to.latitude)) * Math.sin(deltaLng / 2) ** 2
   return 2 * EARTH_RADIUS_METERS * Math.asin(Math.sqrt(a))
+}
+
+// 192 -> "03:12"
+function formatMinutesSeconds(seconds) {
+  return [Math.floor(seconds / 60), seconds % 60].map((n) => String(n).padStart(2, "0")).join(":")
 }

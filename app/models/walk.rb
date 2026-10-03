@@ -2,6 +2,7 @@ class Walk < ApplicationRecord
   belongs_to :dog
   has_many :track_points, dependent: :delete_all
   has_many :encounters, dependent: :destroy
+  has_many :activities, dependent: :delete_all
 
   validates :started_at, presence: true
   validates :duration_seconds, presence: true, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
@@ -13,8 +14,8 @@ class Walk < ApplicationRecord
 
   EARTH_RADIUS_METERS = 6_371_000
 
-  # Saves a walk recorded live on the phone, with all its GPS points and dogs met, in one go.
-  def self.create_from_track!(dog:, started_at:, ended_at:, points:, encounters: [])
+  # Saves a walk recorded live on the phone, with its GPS points, dogs met and play/swim phases, in one go.
+  def self.create_from_track!(dog:, started_at:, ended_at:, points:, encounters: [], activities: [])
     transaction do
       walk = dog.walks.create!(
         started_at: started_at,
@@ -28,6 +29,7 @@ class Walk < ApplicationRecord
         walk.track_points.insert_all!(points.map { |point| point.merge(created_at: now, updated_at: now) })
       end
       encounters.each { |encounter| walk.encounters.create!(encounter) }
+      activities.each { |activity| walk.activities.create!(activity) }
       walk
     end
   end
@@ -69,12 +71,25 @@ class Walk < ApplicationRecord
     transaction do
       track_points.where("recorded_at > ?", ended_at).delete_all
       encounters.where("met_at > ?", ended_at).destroy_all
+      activities.where("started_at > ?", ended_at).delete_all
+      activities.where("ended_at > ?", ended_at).update_all(ended_at: ended_at)
       points = track_points.in_order.map { |point| { latitude: point.latitude, longitude: point.longitude } }
       update!(
         duration_seconds: [ (ended_at - started_at).round, 1 ].max,
         distance_meters: self.class.distance_along(points).round,
         dogs_met_count: encounters.count
       )
+    end
+  end
+
+  # Map markers for the play (🎾) and swim (💦) phases, at the place where they started.
+  def activity_markers
+    activities.in_order.filter_map do |activity|
+      next if activity.latitude.nil?
+
+      { icon: activity.play? ? "🎾" : "💦",
+        times: "#{activity.started_at.strftime('%Hh%M')}–#{activity.ended_at.strftime('%Hh%M')}",
+        coordinates: [ activity.longitude.to_f, activity.latitude.to_f ] }
     end
   end
 

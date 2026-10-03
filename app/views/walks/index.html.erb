@@ -14,6 +14,8 @@
         <strong><%= walk_day(walk.started_at) %></strong> · <%= l(walk.started_at, format: "%Hh%M") %><br>
         <%= walk_distance(walk.distance_meters) %> · <%= walk_duration(walk.duration_seconds) %><br>
         🐕 <%= walk.dogs_met_count %>
+        <%= "🎾" if walk.activities.any?(&:play?) %>
+        <%= "💦" if walk.activities.any?(&:swim?) %>
       </div>
     <% end %>
   <% end %>

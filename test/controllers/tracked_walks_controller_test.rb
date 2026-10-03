@@ -65,4 +65,17 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     end
     assert_equal 2, Walk.last.dogs_met_count
   end
+
+  test "saves the play and swim phases, even at the same time" do
+    activities = [
+      { kind: "play", started_at: "2026-10-03T16:05:00Z", ended_at: "2026-10-03T16:15:00Z", latitude: 48.421, longitude: 1.501 },
+      { kind: "swim", started_at: "2026-10-03T16:10:00Z", ended_at: "2026-10-03T16:12:00Z" },
+      { kind: "nap", started_at: "2026-10-03T16:20:00Z", ended_at: "2026-10-03T16:25:00Z" }
+    ]
+    assert_difference "Activity.count", 2 do
+      post tracked_walks_path, as: :json, params: { walk: {
+        started_at: "2026-10-03T16:00:00Z", ended_at: "2026-10-03T16:30:00Z", track_points: [], activities: activities
+      } }
+    end
+  end
 end

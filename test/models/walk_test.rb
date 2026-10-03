@@ -59,6 +59,8 @@ class WalkTest < ActiveSupport::TestCase
     assert_equal 1, walk.dogs_met_count
     assert_equal 600, walk.duration_seconds
     assert_equal 0, walk.distance_meters
+    assert_equal [ Time.zone.parse("2026-10-01 18:15:00") ], walk.activities.where(kind: "play").pluck(:ended_at)
+    assert_empty walk.activities.where(kind: "swim")
   end
 
   test "track progress gives the time and the distance walked at each point" do

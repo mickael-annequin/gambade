@@ -14,4 +14,10 @@ class WalksHelperTest < ActionView::TestCase
     assert_equal "Aujourd'hui", walk_day(Time.current)
     assert_equal "Hier", walk_day(1.day.ago)
   end
+
+  test "sums up play and swim phases" do
+    assert_equal "🎾 12 min de jeu", walk_play_summary(walks(:evening))
+    assert_equal "💦 1 baignade (8 min)", walk_swim_summary(walks(:evening))
+    assert_nil walk_play_summary(walks(:morning))
+  end
 end

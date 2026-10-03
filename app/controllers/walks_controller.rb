@@ -3,7 +3,7 @@ class WalksController < ApplicationController
   before_action :set_walk, only: %i[show edit update destroy]
 
   def index
-    @walks = current_dog.walks.most_recent_first
+    @walks = current_dog.walks.most_recent_first.includes(:activities)
   end
 
   def show

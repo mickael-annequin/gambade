@@ -13,7 +13,8 @@ export default class extends Controller {
     center: Array,
     zoom: { type: Number, default: 13 },
     track: { type: Array, default: [] }, // [[longitude, latitude], ...]
-    encounters: { type: Array, default: [] } // [{ label: "1–3", times: ["18h12", …], coordinates: [lng, lat] }, ...]
+    encounters: { type: Array, default: [] }, // [{ label: "1–3", times: ["18h12", …], coordinates: [lng, lat] }, ...]
+    activities: { type: Array, default: [] } // [{ icon: "🎾", times: "18h10–18h22", coordinates: [lng, lat] }, ...]
   }
 
   connect() {
@@ -59,6 +60,15 @@ export default class extends Controller {
     new mapboxgl.Marker({ element }).setLngLat(coordinates).setPopup(popup).addTo(this.map)
   }
 
+  // 🎾 or 💦 where a play or swim phase started; tapping it shows when.
+  #addActivityMarker({ icon, times, coordinates }) {
+    const element = document.createElement("div")
+    element.textContent = icon
+    Object.assign(element.style, { fontSize: "22px", cursor: "pointer" })
+    const popup = new mapboxgl.Popup({ offset: 16 }).setText(`${icon} ${times}`)
+    new mapboxgl.Marker({ element }).setLngLat(coordinates).setPopup(popup).addTo(this.map)
+  }
+
   #showTrack() {
     this.map.addSource("track", {
       type: "geojson",
@@ -75,11 +85,13 @@ export default class extends Controller {
     new mapboxgl.Marker({ color: START_COLOR }).setLngLat(this.trackValue[0]).addTo(this.map)
     new mapboxgl.Marker({ color: END_COLOR }).setLngLat(this.trackValue.at(-1)).addTo(this.map)
     this.encountersValue.forEach((encounter) => this.#addEncounterMarker(encounter))
+    this.activitiesValue.forEach((activity) => this.#addActivityMarker(activity))
 
-    // Zoom so that the whole walk, and every dog met, fits in the map.
+    // Zoom so that the whole walk, every dog met and every play/swim phase fit in the map.
     const bounds = new mapboxgl.LngLatBounds(this.trackValue[0], this.trackValue[0])
     this.trackValue.forEach((point) => bounds.extend(point))
     this.encountersValue.forEach(({ coordinates }) => bounds.extend(coordinates))
+    this.activitiesValue.forEach(({ coordinates }) => bounds.extend(coordinates))
     this.map.fitBounds(bounds, { padding: 40, maxZoom: 17, duration: 0 })
   }
 }

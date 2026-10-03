@@ -23,6 +23,14 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ { "label" => "1", "times" => [ "18h12" ], "coordinates" => [ 1.5015, 48.4208 ] } ], markers
   end
 
+  test "shows the play and swim phases of a walk" do
+    get walk_path(walks(:evening))
+    assert_select "p", "🎾 12 min de jeu"
+    assert_select "p", "💦 1 baignade (8 min)"
+    markers = JSON.parse(css_select("[data-controller='map']").first["data-map-activities-value"])
+    assert_equal [ { "icon" => "🎾", "times" => "18h10–18h22", "coordinates" => [ 1.5016, 48.4209 ] } ], markers
+  end
+
   test "shows a walk entered by hand without a map nor cut link" do
     get walk_path(walks(:morning))
     assert_response :success

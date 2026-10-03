@@ -13,7 +13,8 @@ class TrackedWalksController < ApplicationController
     return render_error if started_at.nil? || ended_at.nil?
 
     walk = Walk.create_from_track!(dog: current_dog, started_at: started_at, ended_at: ended_at,
-                                   points: track_points_params, encounters: encounters_params)
+                                   points: track_points_params, encounters: encounters_params,
+                                   activities: activities_params)
     render json: { url: walk_path(walk) }, status: :created
   rescue ActiveRecord::RecordInvalid
     render_error
@@ -40,6 +41,13 @@ class TrackedWalksController < ApplicationController
     encounters = params.fetch(:walk, {}).fetch(:encounters, [])
     encounters.map { |encounter| encounter.permit(:latitude, :longitude, :met_at).to_h.symbolize_keys }
               .select { |encounter| Encounter.new(encounter.merge(walk: Walk.new)).valid? }
+  end
+
+  # Play (🎾) and swim (💦) phases.
+  def activities_params
+    activities = params.fetch(:walk, {}).fetch(:activities, [])
+    activities.map { |activity| activity.permit(:kind, :started_at, :ended_at, :latitude, :longitude).to_h.symbolize_keys }
+              .select { |activity| Activity.new(activity.merge(walk: Walk.new)).valid? }
   end
 
   # Keeps only points with valid coordinates.
