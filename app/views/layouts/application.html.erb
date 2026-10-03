@@ -38,9 +38,15 @@
 
     <% if show_navbar %>
       <nav class="navbar-bottom">
-        <%= link_to "🏠 Accueil", root_path, class: ("active" if controller_name == "pages") %>
-        <%= link_to "📋 Balades", walks_path, class: ("active" if %w[walks walk_trims encounters].include?(controller_name)) %>
-        <%= link_to "🐶 Mon chien", dog_path, class: ("active" if controller_name == "dogs") %>
+        <% [ [ "🏠", "Accueil", root_path, %w[pages] ],
+             [ "📋", "Balades", walks_path, %w[walks walk_trims encounters] ],
+             [ "🐶", "Mon chien", dog_path, %w[dogs] ] ].each do |icon, label, path, controllers| %>
+          <%= link_to path, class: ("active" if controllers.include?(controller_name)),
+                            aria: { current: ("page" if controllers.include?(controller_name)) } do %>
+            <span class="navbar-bottom-icon"><%= icon %></span>
+            <span class="navbar-bottom-label"><%= label %></span>
+          <% end %>
+        <% end %>
       </nav>
     <% end %>
   </body>

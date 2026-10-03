@@ -1,25 +1,47 @@
-// Navigation bar fixed at the bottom of the screen, easy to reach with the thumb.
+// Navigation bar fixed at the bottom of the screen, like a mobile app tab bar:
+// big icon above a small label, the current tab in a sage pill.
 .navbar-bottom {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 10;
   display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom)); // phones without a home button
   background: white;
-  border-top: 1px solid rgba($bark, 0.1);
-  padding-bottom: env(safe-area-inset-bottom); // phones without a home button
+  box-shadow: 0 -2px 12px rgba($bark, 0.12);
 
   a {
     flex: 1;
-    padding: 0.75rem 0;
-    text-align: center;
-    font-weight: 600;
-    color: $bark;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    padding: 0.45rem 0;
+    border-radius: $border-radius-lg;
+    color: rgba($bark, 0.75);
     text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
 
-    &.active { color: $forest; }
+    &:active { transform: scale(0.95); }
+
+    &.active {
+      background: rgba($sage, 0.45);
+      color: $forest;
+    }
   }
 }
 
+.navbar-bottom-icon {
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.navbar-bottom-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
 // Room for the bar, so it never hides the end of a page.
-.with-navbar-bottom { padding-bottom: 5rem; }
+.with-navbar-bottom { padding-bottom: 6.5rem; }

@@ -11,6 +11,7 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", "Octobre 2026"
     assert_select "img[src^='https://api.mapbox.com/'][loading='lazy']", 1
     assert_select "span[aria-label='Balade sans trajet GPS']", 1
+    assert_select ".navbar-bottom a.active[aria-current='page']", /Balades/
   end
 
   test "shows a walk with its GPS track on the map" do
