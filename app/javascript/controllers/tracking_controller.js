@@ -8,6 +8,7 @@ import { loadWalk, saveWalk, clearWalk } from "walk_storage"
 const SECONDS_BETWEEN_POINTS = 5
 const MAX_ACCURACY_METERS = 30 // less precise positions are ignored
 const MIN_MOVE_METERS = 5 // smaller moves are GPS noise while standing still
+const MAX_POSITION_AGE_SECONDS = 60 // older positions are not used to place a dog met
 const EARTH_RADIUS_METERS = 6371000
 
 const STATUSES = {
@@ -22,13 +23,14 @@ const STATUSES = {
 }
 
 export default class extends Controller {
-  static targets = ["status", "duration", "distance", "finishButton"]
+  static targets = ["status", "duration", "distance", "finishButton", "dogsCount"]
   static values = { saveUrl: String }
 
   connect() {
     this.#restoreOrStart()
     this.#showDuration()
     this.#showDistance()
+    this.#showDogsCount()
 
     if (this.endedAt) return this.#showRetry() // finished, but the last save failed
 
@@ -40,6 +42,22 @@ export default class extends Controller {
   // Leaving the page stops the GPS but keeps the walk in the phone, ready to resume.
   disconnect() {
     this.#stopTracking()
+  }
+
+  // "+1 chien": remembers when, and where if the GPS knows the position.
+  addDog() {
+    if (this.endedAt) return
+
+    const encounter = { met_at: new Date().toISOString() }
+    const position = this.lastPosition
+    if (position && (new Date() - position.at) / 1000 < MAX_POSITION_AGE_SECONDS) {
+      encounter.latitude = position.latitude
+      encounter.longitude = position.longitude
+    }
+    this.encounters.push(encounter)
+    this.#persist()
+    this.#showDogsCount()
+    navigator.vibrate?.(60)
   }
 
   async finish() {
@@ -73,11 +91,13 @@ export default class extends Controller {
       this.endedAt = saved.endedAt ? new Date(saved.endedAt) : null
       this.points = saved.points
       this.distanceMeters = saved.distanceMeters
+      this.encounters = saved.encounters || []
     } else {
       this.startedAt = new Date()
       this.endedAt = null
       this.points = []
       this.distanceMeters = 0
+      this.encounters = []
       this.#persist()
     }
   }
@@ -87,7 +107,8 @@ export default class extends Controller {
       startedAt: this.startedAt.toISOString(),
       endedAt: this.endedAt?.toISOString(),
       points: this.points,
-      distanceMeters: this.distanceMeters
+      distanceMeters: this.distanceMeters,
+      encounters: this.encounters
     })
   }
 
@@ -104,6 +125,7 @@ export default class extends Controller {
 
   #addPosition(position) {
     const { latitude, longitude, accuracy } = position.coords
+    this.lastPosition = { latitude, longitude, at: new Date() }
     this.#showStatus(accuracy <= 15 ? "good" : accuracy <= MAX_ACCURACY_METERS ? "weak" : "bad")
     if (accuracy > MAX_ACCURACY_METERS) return
 
@@ -159,7 +181,8 @@ export default class extends Controller {
         walk: {
           started_at: this.startedAt.toISOString(),
           ended_at: this.endedAt.toISOString(),
-          track_points: this.points
+          track_points: this.points,
+          encounters: this.encounters
         }
       })
     })
@@ -188,6 +211,10 @@ export default class extends Controller {
 
   #showDistance() {
     this.distanceTarget.textContent = `${(this.distanceMeters / 1000).toFixed(1).replace(".", ",")} km`
+  }
+
+  #showDogsCount() {
+    this.dogsCountTarget.textContent = this.encounters.length
   }
 
   #showStatus(status) {

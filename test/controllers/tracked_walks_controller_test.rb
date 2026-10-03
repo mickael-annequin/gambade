@@ -50,4 +50,18 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     end
     assert_response :unprocessable_content
   end
+
+  test "saves the dogs met during the walk" do
+    encounters = [
+      { latitude: 48.4210, longitude: 1.5015, met_at: "2026-10-03T16:05:00Z" },
+      { met_at: "2026-10-03T16:07:00Z" },
+      { latitude: 999, longitude: 1.5, met_at: "2026-10-03T16:09:00Z" }
+    ]
+    assert_difference "Encounter.count", 2 do
+      post tracked_walks_path, as: :json, params: { walk: {
+        started_at: "2026-10-03T16:00:00Z", ended_at: "2026-10-03T16:30:00Z", track_points: [], encounters: encounters
+      } }
+    end
+    assert_equal 2, Walk.last.dogs_met_count
+  end
 end

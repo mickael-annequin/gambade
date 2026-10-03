@@ -17,6 +17,12 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_select "[data-controller='map'][data-map-track-value='[[1.5012,48.4206],[1.502,48.4211]]']"
   end
 
+  test "shows the dogs met on the map, numbered in time order" do
+    get walk_path(walks(:evening))
+    markers = JSON.parse(css_select("[data-controller='map']").first["data-map-encounters-value"])
+    assert_equal [ { "number" => 1, "coordinates" => [ 1.5015, 48.4208 ] } ], markers
+  end
+
   test "shows a walk entered by hand without a map" do
     get walk_path(walks(:morning))
     assert_response :success

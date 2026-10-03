@@ -1,6 +1,7 @@
 class Walk < ApplicationRecord
   belongs_to :dog
   has_many :track_points, dependent: :delete_all
+  has_many :encounters, dependent: :destroy
 
   validates :started_at, presence: true
   validates :duration_seconds, presence: true, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
@@ -12,19 +13,21 @@ class Walk < ApplicationRecord
 
   EARTH_RADIUS_METERS = 6_371_000
 
-  # Saves a walk recorded live on the phone, with all its GPS points, in one go.
-  def self.create_from_track!(dog:, started_at:, ended_at:, points:)
+  # Saves a walk recorded live on the phone, with all its GPS points and dogs met, in one go.
+  def self.create_from_track!(dog:, started_at:, ended_at:, points:, encounters: [])
     transaction do
       walk = dog.walks.create!(
         started_at: started_at,
         duration_seconds: [ (ended_at - started_at).round, 1 ].max,
         distance_meters: distance_along(points).round,
+        dogs_met_count: encounters.size,
         tracked: true
       )
       if points.any?
         now = Time.current
         walk.track_points.insert_all!(points.map { |point| point.merge(created_at: now, updated_at: now) })
       end
+      encounters.each { |encounter| walk.encounters.create!(encounter) }
       walk
     end
   end
@@ -46,6 +49,15 @@ class Walk < ApplicationRecord
   # [[longitude, latitude], ...] in time order, the format Mapbox expects.
   def track_coordinates
     track_points.in_order.pluck(:longitude, :latitude).map { |lng, lat| [ lng.to_f, lat.to_f ] }
+  end
+
+  # Dogs met, numbered in time order (1, 2, 3…), for those with a known position.
+  def encounter_markers
+    encounters.in_order.each_with_index.filter_map do |encounter, index|
+      next if encounter.latitude.nil?
+
+      { number: index + 1, coordinates: [ encounter.longitude.to_f, encounter.latitude.to_f ] }
+    end
   end
 
   # The form works in minutes and km; the database stores seconds and meters.
