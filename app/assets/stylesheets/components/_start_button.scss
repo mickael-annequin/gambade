@@ -1,0 +1,19 @@
+// "▶ Démarrer une balade": the main action of the app, very big and easy with the thumb.
+.start-button {
+  display: block;
+  margin: 1.25rem 0;
+  padding: 2.25rem 1rem;
+  border-radius: $border-radius-lg;
+  background: $forest;
+  color: white;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba($forest, 0.35);
+  transition: transform 0.1s;
+
+  &:hover { color: white; }
+  &:active { transform: scale(0.98); }
+}

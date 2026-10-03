@@ -1,13 +1,41 @@
-<h1>Gambade 🐶</h1>
-<p>Salut ! Prêt pour une balade avec <%= current_dog.name %> ?</p>
+<div class="page-header">
+  <h1>Gambade</h1>
+  <% if current_dog.photo.attached? %>
+    <%= cl_image_tag current_dog.photo.key, width: 56, height: 56, crop: :fill, gravity: :auto,
+                     fetch_format: :auto, quality: :auto, class: "avatar", alt: current_dog.name %>
+  <% end %>
+</div>
+<p class="lead">Salut ! Prêt pour une balade avec <%= current_dog.name %> ?</p>
 
 <div data-controller="ongoing-walk" data-ongoing-walk-start-label-value="▶ Démarrer une balade">
-  <div data-ongoing-walk-target="banner" hidden>
-    <p data-ongoing-walk-target="message"></p>
-    <button type="button" data-action="ongoing-walk#abandon">Abandonner</button>
+  <div class="alert alert-warning" data-ongoing-walk-target="banner" hidden>
+    <p class="mb-2" data-ongoing-walk-target="message"></p>
+    <button type="button" class="btn btn-sm btn-outline-dark" data-action="ongoing-walk#abandon">Abandonner</button>
   </div>
 
-  <%= link_to "▶ Démarrer une balade", new_tracked_walk_path, data: { ongoing_walk_target: "startButton" } %>
+  <%= link_to "▶ Démarrer une balade", new_tracked_walk_path, class: "start-button",
+              data: { ongoing_walk_target: "startButton" } %>
 </div>
 
-<p><%= link_to "+ Ajouter une balade à la main", new_walk_path %></p>
+<h2 class="section-title">Cette semaine</h2>
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-card-number"><%= number_with_precision(@week_walks.sum(:distance_meters) / 1000.0, precision: 1, separator: ",") %></div>
+    <div class="stat-card-label">km</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-number"><%= walk_duration(@week_walks.sum(:duration_seconds)) %></div>
+    <div class="stat-card-label">temps</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-number"><%= @week_walks.sum(:dogs_met_count) %></div>
+    <div class="stat-card-label">chiens</div>
+  </div>
+</div>
+
+<% if @last_walk %>
+  <h2 class="section-title">Dernière balade</h2>
+  <%= render "walks/walk_card", walk: @last_walk %>
+<% end %>
+
+<p class="text-center mt-4"><%= link_to "+ Ajouter une balade à la main", new_walk_path %></p>

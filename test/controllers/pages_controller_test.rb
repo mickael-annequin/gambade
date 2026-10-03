@@ -13,6 +13,24 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", /Gambade/
   end
 
+  test "home page sums up this week's walks and shows the last one" do
+    sign_in users(:mika)
+    travel_to Time.zone.parse("2026-10-03 12:00") do
+      get root_path
+    end
+    numbers = css_select(".stat-card-number").map { |node| node.text.strip }
+    assert_equal [ "3,4", "53 min", "5" ], numbers
+    assert_select ".walk-card[href='#{walk_path(walks(:evening))}']"
+  end
+
+  test "home page stats ignore walks from previous weeks" do
+    sign_in users(:mika)
+    travel_to Time.zone.parse("2026-10-20 12:00") do
+      get root_path
+    end
+    assert_equal [ "0,0", "0 min", "0" ], css_select(".stat-card-number").map { |node| node.text.strip }
+  end
+
   test "home page can offer to resume a walk saved in the phone" do
     sign_in users(:mika)
     get root_path

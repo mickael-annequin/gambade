@@ -1,0 +1,26 @@
+// Three small sage cards side by side: "12,4 km", "3 h 20", "9 chiens".
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.stat-card {
+  padding: 1rem 0.5rem;
+  border-radius: $border-radius-lg;
+  background: rgba($sage, 0.45);
+  color: $bark; // readable on sage (identity rule)
+  text-align: center;
+}
+
+.stat-card-number {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-card-label {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}

@@ -1,0 +1,39 @@
+// One walk in a list (walks list, "Dernière balade" on home): small map + text.
+.walk-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  padding: 0.6rem;
+  border-radius: $border-radius-lg;
+  background: white;
+  color: $bark;
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba($bark, 0.1);
+
+  &:hover { color: $bark; }
+}
+
+.walk-card-map {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  border-radius: $border-radius;
+  object-fit: cover;
+}
+
+.walk-card-map-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($sage, 0.35);
+  font-size: 2rem;
+}
+
+.walk-card-text {
+  line-height: 1.5;
+}
+
+.walk-card-icons {
+  font-size: 0.95rem;
+}

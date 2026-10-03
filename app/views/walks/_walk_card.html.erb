@@ -1,0 +1,18 @@
+<%# One walk in a list: small map (or 🐾 for a walk entered by hand), day, time and stats. %>
+<%= link_to walk_path(walk), class: "walk-card" do %>
+  <% image_url = walk_map_image_url(walk) %>
+  <% if image_url %>
+    <%= image_tag image_url, class: "walk-card-map", width: 88, height: 88, loading: "lazy", alt: "Trajet de la balade" %>
+  <% else %>
+    <span class="walk-card-map walk-card-map-empty" role="img" aria-label="Balade sans trajet GPS">🐾</span>
+  <% end %>
+  <div class="walk-card-text">
+    <div><strong><%= walk_day(walk.started_at) %></strong> · <%= l(walk.started_at, format: "%Hh%M") %></div>
+    <div><%= walk_distance(walk.distance_meters) %> · <%= walk_duration(walk.duration_seconds) %></div>
+    <div class="walk-card-icons">
+      🐕 <%= walk.dogs_met_count %>
+      <%= "🎾" if walk.activities.any?(&:play?) %>
+      <%= "💦" if walk.activities.any?(&:swim?) %>
+    </div>
+  </div>
+<% end %>
