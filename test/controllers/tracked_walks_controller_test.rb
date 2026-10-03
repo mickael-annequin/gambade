@@ -10,6 +10,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "[data-controller='tracking']"
     assert_select "nav", count: 0
+    assert_select "[data-tracking-target='dogPanel'][hidden] [data-tracking-mood-param='joyful']"
     assert_select "[data-tracking-target='suggestion'][hidden] button[data-tracking-confirm-param='false']", "■ Terminer"
   end
 
@@ -54,7 +55,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
 
   test "saves the dogs met during the walk" do
     encounters = [
-      { latitude: 48.4210, longitude: 1.5015, met_at: "2026-10-03T16:05:00Z" },
+      { latitude: 48.4210, longitude: 1.5015, met_at: "2026-10-03T16:05:00Z", dog_name: "Filou", mood: "joyful" },
       { met_at: "2026-10-03T16:07:00Z" },
       { latitude: 999, longitude: 1.5, met_at: "2026-10-03T16:09:00Z" }
     ]
@@ -64,6 +65,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
       } }
     end
     assert_equal 2, Walk.last.dogs_met_count
+    assert_equal [ [ "Filou", "joyful" ], [ nil, nil ] ], Walk.last.encounters.in_order.pluck(:dog_name, :mood)
   end
 
   test "saves the play and swim phases, even at the same time" do

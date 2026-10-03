@@ -14,6 +14,7 @@ const CAR_SECONDS = 60 // fast for this long: "in the car?" question
 const LEFT_START_METERS = 300 // farther than this from the start: the walk has really left
 const BACK_TO_START_METERS = 50 // closer than this after having left: "back to start?" question
 const MIN_WALK_METERS_BEFORE_BACK = 1000
+const DOG_PANEL_SECONDS = 10 // the "+1 chien" panel closes by itself if not touched
 const EARTH_RADIUS_METERS = 6371000
 
 const ACTIVITIES = {
@@ -34,7 +35,7 @@ const STATUSES = {
 
 export default class extends Controller {
   static targets = ["status", "duration", "distance", "finishButton", "dogsCount", "suggestion", "suggestionMessage",
-    "playButton", "swimButton"]
+    "playButton", "swimButton", "dogPanel", "dogPanelTitle", "dogName", "moodButton"]
   static values = { saveUrl: String }
 
   connect() {
@@ -61,13 +62,43 @@ export default class extends Controller {
 
   // "+1 chien": remembers when, and where. Without a recent position yet,
   // the dog will be placed at the next position received (see #locateWaitingEncounters).
+  // A small panel then opens to add the dog's name and mood, or to cancel a press made by mistake.
   addDog() {
     if (this.endedAt) return
 
+    this.#saveDogDetails() // two dogs in a row: keep what was typed for the first one
     this.encounters.push({ met_at: new Date().toISOString(), ...this.#recentPosition() })
     this.#persist()
     this.#showDogsCount()
     navigator.vibrate?.(60)
+    this.#openDogPanel(this.encounters.length - 1)
+  }
+
+  // As soon as the panel is used (typing, mood), it stays open.
+  keepDogPanelOpen() {
+    clearTimeout(this.dogPanelTimer)
+  }
+
+  // 😊 😐 😠 (data-tracking-mood-param); pressing the chosen one again unselects it.
+  chooseMood({ params: { mood } }) {
+    this.keepDogPanelOpen()
+    this.dogMood = this.dogMood === mood ? null : mood
+    this.#showMoods()
+  }
+
+  closeDogPanel() {
+    this.#saveDogDetails()
+    this.#hideDogPanel()
+  }
+
+  // "Annuler ce chien": the press on "+1 chien" was a mistake.
+  cancelDog() {
+    if (this.dogPanelIndex == null) return
+
+    this.encounters.splice(this.dogPanelIndex, 1)
+    this.#persist()
+    this.#showDogsCount()
+    this.#hideDogPanel()
   }
 
   // 🎾 / 💦 buttons (data-tracking-kind-param): a first press starts the phase, the next one stops it.
@@ -115,6 +146,7 @@ export default class extends Controller {
   // Running phases stop with the walk. In the car, the walk really ended when the car started:
   // what came after is dropped.
   #end() {
+    this.closeDogPanel()
     this.endedAt = this.suggestedEndAt || new Date()
     const endedAt = this.endedAt.toISOString()
     this.points = this.points.filter((point) => new Date(point.recorded_at) <= this.endedAt)
@@ -361,6 +393,41 @@ export default class extends Controller {
         button.textContent = label
       }
     }
+  }
+
+  #openDogPanel(index) {
+    this.dogPanelIndex = index
+    this.dogMood = null
+    this.dogNameTarget.value = ""
+    this.dogPanelTitleTarget.textContent = `🐕 Chien n°${index + 1} compté !`
+    this.#showMoods()
+    this.dogPanelTarget.hidden = false
+    clearTimeout(this.dogPanelTimer)
+    this.dogPanelTimer = setTimeout(() => this.closeDogPanel(), DOG_PANEL_SECONDS * 1000)
+  }
+
+  #hideDogPanel() {
+    clearTimeout(this.dogPanelTimer)
+    this.dogPanelIndex = null
+    this.dogPanelTarget.hidden = true
+    this.dogNameTarget.blur() // closes the phone keyboard
+  }
+
+  #saveDogDetails() {
+    const encounter = this.encounters[this.dogPanelIndex]
+    if (!encounter) return
+
+    encounter.dog_name = this.dogNameTarget.value.trim() || undefined
+    encounter.mood = this.dogMood || undefined
+    this.#persist()
+  }
+
+  #showMoods() {
+    this.moodButtonTargets.forEach((button) => {
+      const chosen = button.dataset.trackingMoodParam === this.dogMood
+      button.classList.toggle("is-chosen", chosen)
+      button.setAttribute("aria-pressed", chosen)
+    })
   }
 
   #showDogsCount() {

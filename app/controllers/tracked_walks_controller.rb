@@ -48,10 +48,10 @@ class TrackedWalksController < ApplicationController
     client_id && current_dog.walks.find_by(client_id: client_id)
   end
 
-  # Each "+1 chien": when, and where if the GPS knew the position.
+  # Each "+1 chien": when, where if the GPS knew the position, and maybe the name and mood given during the walk.
   def encounters_params
     encounters = params.fetch(:walk, {}).fetch(:encounters, [])
-    encounters.map { |encounter| encounter.permit(:latitude, :longitude, :met_at).to_h.symbolize_keys }
+    encounters.map { |encounter| encounter.permit(:latitude, :longitude, :met_at, :dog_name, :mood).to_h.symbolize_keys }
               .select { |encounter| Encounter.new(encounter.merge(walk: Walk.new)).valid? }
   end
 
