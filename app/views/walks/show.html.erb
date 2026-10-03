@@ -59,13 +59,22 @@
 <% encounters = @walk.encounters.in_order %>
 <% if encounters.any? %>
   <h2 class="section-title">Rencontres<%= " (facultatif)" if params[:finished] %></h2>
-  <ul class="list-group encounter-list">
+  <ul class="encounter-list">
     <% encounters.each.with_index(1) do |encounter, number| %>
-      <li class="list-group-item">
-        <%= link_to edit_walk_encounter_path(@walk, encounter) do %>
-          <%= encounter_number(number) %> <%= l(encounter.met_at, format: "%Hh%M") %>
-          · <%= encounter_details(encounter) || "+ détails" %>
-          <%= "(position inconnue)" if encounter.latitude.nil? %>
+      <li>
+        <%= link_to edit_walk_encounter_path(@walk, encounter), class: "encounter-card" do %>
+          <span class="encounter-number"><%= number %></span>
+          <span class="encounter-text">
+            <strong><%= l(encounter.met_at, format: "%Hh%M") %></strong>
+            <% details = encounter_details(encounter) %>
+            <span class="<%= details ? "encounter-details" : "encounter-details encounter-details-empty" %>">
+              <%= details || "+ Ajouter des détails" %>
+            </span>
+            <% if encounter.latitude.nil? %>
+              <small class="encounter-no-position">Position inconnue</small>
+            <% end %>
+          </span>
+          <span class="encounter-chevron" aria-hidden="true">›</span>
         <% end %>
       </li>
     <% end %>

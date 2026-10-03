@@ -73,10 +73,63 @@
   p { margin: 0.25rem 0 0; opacity: 0.9; }
 }
 
+// Dogs met: white cards like the walk cards, numbered with the same ochre badge as on the map.
 .encounter-list {
-  a {
-    display: block;
-    color: $bark;
-    text-decoration: none;
-  }
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.encounter-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 0.6rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: $border-radius-lg;
+  background: white;
+  color: $bark;
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba($bark, 0.12);
+  transition: transform 0.1s;
+
+  &:hover { color: $bark; }
+  &:active { transform: scale(0.98); }
+}
+
+// Same look as the map marker (map_controller.js): ochre, white border, bark number.
+.encounter-number {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: $ochre;
+  color: $bark;
+  font-weight: 800;
+  box-shadow: 0 1px 3px rgba($bark, 0.3);
+}
+
+.encounter-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+}
+
+.encounter-details-empty {
+  color: darken($ochre, 12%);
+  font-weight: 600;
+}
+
+.encounter-no-position {
+  opacity: 0.6;
+}
+
+.encounter-chevron {
+  font-size: 1.6rem;
+  color: rgba($bark, 0.4);
 }
