@@ -353,6 +353,7 @@ export default class extends Controller {
     for (const [kind, { icon, label }] of Object.entries(ACTIVITIES)) {
       const running = this.#runningActivity(kind)
       const button = this[`${kind}ButtonTarget`]
+      button.classList.toggle("is-running", Boolean(running))
       if (running) {
         const seconds = Math.floor((new Date() - new Date(running.started_at)) / 1000)
         button.textContent = `${icon} ${formatMinutesSeconds(seconds)} ■ Arrêter`

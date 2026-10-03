@@ -1,28 +1,44 @@
 <% content_for :hide_nav, true %>
 
-<div data-controller="tracking" data-tracking-save-url-value="<%= tracked_walks_path %>">
-  <p>
+<div class="tracking" data-controller="tracking" data-tracking-save-url-value="<%= tracked_walks_path %>">
+  <div class="tracking-header">
     <span data-tracking-target="status">🟠 Recherche du GPS…</span>
-    · avec <%= current_dog.name %> 🐶
-  </p>
-
-  <div data-tracking-target="suggestion" hidden>
-    <p data-tracking-target="suggestionMessage"></p>
-    <button type="button" data-action="tracking#finish" data-tracking-confirm-param="false">■ Terminer</button>
-    <button type="button" data-action="tracking#keepWalking">Continuer</button>
+    <span>avec <%= current_dog.name %> 🐶</span>
   </div>
 
-  <p><strong data-tracking-target="duration">00:00:00</strong><br>durée</p>
-  <p><strong data-tracking-target="distance">0,0 km</strong><br>distance</p>
+  <div class="tracking-suggestion" data-tracking-target="suggestion" hidden>
+    <p data-tracking-target="suggestionMessage"></p>
+    <div class="tracking-row">
+      <button type="button" class="btn btn-primary btn-lg"
+              data-action="tracking#finish" data-tracking-confirm-param="false">■ Terminer</button>
+      <button type="button" class="btn btn-outline-secondary btn-lg" data-action="tracking#keepWalking">Continuer</button>
+    </div>
+  </div>
 
-  <button type="button" data-action="tracking#addDog">
-    🐕 +1 CHIEN (<span data-tracking-target="dogsCount">0</span>)
-  </button>
+  <div class="tracking-stats">
+    <div>
+      <div class="tracking-number" data-tracking-target="duration">00:00:00</div>
+      <div class="tracking-label">durée</div>
+    </div>
+    <div>
+      <div class="tracking-number" data-tracking-target="distance">0,0 km</div>
+      <div class="tracking-label">distance</div>
+    </div>
+  </div>
 
-  <button type="button" data-tracking-target="playButton"
-          data-action="tracking#toggleActivity" data-tracking-kind-param="play">🎾 JEU</button>
-  <button type="button" data-tracking-target="swimButton"
-          data-action="tracking#toggleActivity" data-tracking-kind-param="swim">💦 BAIGNADE</button>
+  <div class="tracking-buttons">
+    <button type="button" class="tracking-button tracking-button-dog" data-action="tracking#addDog">
+      🐕 +1 CHIEN (<span data-tracking-target="dogsCount">0</span>)
+    </button>
 
-  <button type="button" data-tracking-target="finishButton" data-action="tracking#finish">■ Terminer</button>
+    <div class="tracking-row">
+      <button type="button" class="tracking-button tracking-button-play" data-tracking-target="playButton"
+              data-action="tracking#toggleActivity" data-tracking-kind-param="play">🎾 JEU</button>
+      <button type="button" class="tracking-button tracking-button-swim" data-tracking-target="swimButton"
+              data-action="tracking#toggleActivity" data-tracking-kind-param="swim">💦 BAIGNADE</button>
+    </div>
+
+    <button type="button" class="tracking-button tracking-button-finish"
+            data-tracking-target="finishButton" data-action="tracking#finish">■ Terminer</button>
+  </div>
 </div>
