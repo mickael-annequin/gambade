@@ -51,6 +51,33 @@ class Walk < ApplicationRecord
     track_points.in_order.pluck(:longitude, :latitude).map { |lng, lat| [ lng.to_f, lat.to_f ] }
   end
 
+  # Each GPS point with its time and the distance walked so far, for the "cut the end" slider.
+  def track_progress
+    meters = 0
+    previous = nil
+    track_points.in_order.map do |point|
+      meters += self.class.distance_between(previous, point) if previous
+      previous = point
+      { at: point.recorded_at.iso8601, time: point.recorded_at.strftime("%Hh%M"),
+        meters: meters.round, coordinates: [ point.longitude.to_f, point.latitude.to_f ] }
+    end
+  end
+
+  # Removes everything recorded after ended_at (e.g. the drive home when "Terminer" was forgotten),
+  # then recomputes the duration, the distance and the number of dogs met.
+  def trim_end!(ended_at)
+    transaction do
+      track_points.where("recorded_at > ?", ended_at).delete_all
+      encounters.where("met_at > ?", ended_at).destroy_all
+      points = track_points.in_order.map { |point| { latitude: point.latitude, longitude: point.longitude } }
+      update!(
+        duration_seconds: [ (ended_at - started_at).round, 1 ].max,
+        distance_meters: self.class.distance_along(points).round,
+        dogs_met_count: encounters.count
+      )
+    end
+  end
+
   ENCOUNTER_GROUP_METERS = 15
 
   # Map markers for the dogs met, numbered in time order (1, 2, 3…). Encounters closer than

@@ -23,10 +23,16 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ { "label" => "1", "times" => [ "18h12" ], "coordinates" => [ 1.5015, 48.4208 ] } ], markers
   end
 
-  test "shows a walk entered by hand without a map" do
+  test "shows a walk entered by hand without a map nor cut link" do
     get walk_path(walks(:morning))
     assert_response :success
     assert_select "[data-controller='map']", count: 0
+    assert_select "a", text: "✂️ Couper la fin", count: 0
+  end
+
+  test "offers to cut the end of a tracked walk" do
+    get walk_path(walks(:evening))
+    assert_select "a[href='#{edit_walk_trim_path(walks(:evening))}']", "✂️ Couper la fin"
   end
 
   test "creates a walk entered by hand" do

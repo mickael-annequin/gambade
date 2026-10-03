@@ -1,5 +1,8 @@
 <%= link_to "← Retour", walks_path %>
 <%= link_to "✏️ Modifier", edit_walk_path(@walk) %>
+<% if @walk.tracked? %>
+  <%= link_to "✂️ Couper la fin", edit_walk_trim_path(@walk) %>
+<% end %>
 <%= button_to "🗑️ Supprimer", walk_path(@walk), method: :delete,
               form: { data: { turbo_confirm: "Supprimer cette balade ?" } } %>
 

@@ -50,4 +50,21 @@ class WalkTest < ActiveSupport::TestCase
     assert_equal [ "1–3", "4" ], labels
     assert_equal [ "08h31", "08h32", "08h33" ], walk.encounter_markers.first[:times]
   end
+
+  test "cutting the end removes later points and dogs met, and updates the stats" do
+    walk = walks(:evening)
+    walk.trim_end!(Time.zone.parse("2026-10-01 18:15:00"))
+    assert_equal [ track_points(:start) ], walk.track_points.to_a
+    assert_equal [ encounters(:first) ], walk.encounters.to_a
+    assert_equal 1, walk.dogs_met_count
+    assert_equal 600, walk.duration_seconds
+    assert_equal 0, walk.distance_meters
+  end
+
+  test "track progress gives the time and the distance walked at each point" do
+    progress = walks(:evening).track_progress
+    assert_equal 0, progress.first[:meters]
+    assert_operator progress.last[:meters], :>, 50
+    assert_equal "18h05", progress.first[:time]
+  end
 end

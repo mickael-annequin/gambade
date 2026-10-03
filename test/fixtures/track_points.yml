@@ -3,11 +3,11 @@ start:
   latitude: 48.420600
   longitude: 1.501200
   accuracy: 8.5
-  recorded_at: 2026-10-01 18:05:00
+  recorded_at: 2026-10-01 18:05:00 +02:00
 
 next:
   walk: evening
   latitude: 48.421100
   longitude: 1.502000
   accuracy: 6.0
-  recorded_at: 2026-10-01 18:05:10
+  recorded_at: 2026-10-01 18:25:00 +02:00

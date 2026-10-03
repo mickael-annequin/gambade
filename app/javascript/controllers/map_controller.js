@@ -27,6 +27,17 @@ export default class extends Controller {
     if (this.trackValue.length > 0) this.map.on("load", () => this.#showTrack())
   }
 
+  // Shows (or moves) the ✂️ marker where the walk will be cut ("trim:moved" event).
+  showCut({ detail: { coordinates } }) {
+    if (!this.cutMarker) {
+      const element = document.createElement("div")
+      element.textContent = "✂️"
+      element.style.fontSize = "26px"
+      this.cutMarker = new mapboxgl.Marker({ element }).setLngLat(coordinates).addTo(this.map)
+    }
+    this.cutMarker.setLngLat(coordinates)
+  }
+
   // Free the map when Turbo leaves the page.
   disconnect() {
     this.map?.remove()

@@ -1,0 +1,22 @@
+<%= link_to "← Annuler", walk_path(@walk) %>
+<h1>✂️ Couper la fin</h1>
+<p>Fais glisser le curseur jusqu'au moment où la balade s'est vraiment terminée.
+   Tout ce qui a été enregistré après sera supprimé.</p>
+
+<div style="height: 300px"
+     data-controller="map"
+     data-action="trim:moved@window->map#showCut"
+     data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"
+     data-map-center-value="<%= @progress.first[:coordinates].to_json %>"
+     data-map-track-value="<%= @progress.map { |point| point[:coordinates] }.to_json %>">
+</div>
+
+<%= form_with url: walk_trim_path(@walk), method: :patch,
+              data: { controller: "trim", trim_progress_value: @progress.to_json,
+                      turbo_confirm: "Couper la balade ici ? Ce qui suit sera supprimé définitivement." } do %>
+  <input type="range" min="0" step="1" style="width: 100%"
+         data-trim-target="slider" data-action="input->trim#move">
+  <p><strong data-trim-target="summary"></strong></p>
+  <%= hidden_field_tag :ended_at, nil, data: { trim_target: "endedAt" } %>
+  <%= submit_tag "✂️ Couper ici" %>
+<% end %>
