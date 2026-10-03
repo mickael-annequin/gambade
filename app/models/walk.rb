@@ -1,5 +1,6 @@
 class Walk < ApplicationRecord
   belongs_to :dog
+  has_many :track_points, dependent: :delete_all
 
   validates :started_at, presence: true
   validates :duration_seconds, presence: true, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
