@@ -22,4 +22,16 @@ class WalkTest < ActiveSupport::TestCase
     walk.dogs_met_count = -1
     assert_not walk.valid?
   end
+
+  test "refuses a distance that is not a number" do
+    walk = walks(:evening)
+    walk.distance_km = "abc"
+    assert_not walk.valid?
+    assert_includes walk.errors[:distance_meters], "doit être un nombre"
+    assert_equal 2300, walk.distance_meters
+  end
+
+  test "an empty distance means 0 km" do
+    assert_equal 0, Walk.new(distance_km: "").distance_meters
+  end
 end

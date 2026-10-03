@@ -27,6 +27,7 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
       post walks_path, params: { walk: { started_at: "2026-10-02T18:05", duration_minutes: "" } }
     end
     assert_response :unprocessable_content
+    assert_select "li", "Durée doit être rempli(e)"
   end
 
   test "updates a walk" do

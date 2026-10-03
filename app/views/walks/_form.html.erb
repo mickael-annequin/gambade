@@ -9,12 +9,12 @@
 
   <div>
     <%= f.label :started_at, "Départ" %>
-    <%= f.datetime_local_field :started_at, required: true %>
+    <%= f.datetime_local_field :started_at %>
   </div>
 
   <div>
     <%= f.label :duration_minutes, "Durée (minutes)" %>
-    <%= f.number_field :duration_minutes, min: 1, required: true, inputmode: "numeric" %>
+    <%= f.number_field :duration_minutes, min: 1, inputmode: "numeric" %>
   </div>
 
   <div>
