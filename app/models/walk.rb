@@ -51,12 +51,25 @@ class Walk < ApplicationRecord
     track_points.in_order.pluck(:longitude, :latitude).map { |lng, lat| [ lng.to_f, lat.to_f ] }
   end
 
-  # Dogs met, numbered in time order (1, 2, 3…), for those with a known position.
+  ENCOUNTER_GROUP_METERS = 15
+
+  # Map markers for the dogs met, numbered in time order (1, 2, 3…). Encounters closer than
+  # a few meters share one marker (e.g. "1–3"), otherwise they would hide each other.
   def encounter_markers
-    encounters.in_order.each_with_index.filter_map do |encounter, index|
+    groups = []
+    encounters.in_order.each.with_index(1) do |encounter, number|
       next if encounter.latitude.nil?
 
-      { number: index + 1, coordinates: [ encounter.longitude.to_f, encounter.latitude.to_f ] }
+      point = { latitude: encounter.latitude, longitude: encounter.longitude }
+      group = groups.find { |g| self.class.distance_between(g[:point], point) < ENCOUNTER_GROUP_METERS }
+      group ||= (groups << { point: point, numbers: [], times: [] }).last
+      group[:numbers] << number
+      group[:times] << encounter.met_at.strftime("%Hh%M")
+    end
+
+    groups.map do |group|
+      { label: numbers_label(group[:numbers]), times: group[:times],
+        coordinates: [ group[:point][:longitude].to_f, group[:point][:latitude].to_f ] }
     end
   end
 
@@ -80,6 +93,14 @@ class Walk < ApplicationRecord
   end
 
   private
+
+  # [1] -> "1", [1, 2, 3] -> "1–3", [2, 5] -> "2, 5"
+  def numbers_label(numbers)
+    return numbers.first.to_s if numbers.one?
+    return "#{numbers.first}–#{numbers.last}" if numbers.each_cons(2).all? { |a, b| b == a + 1 }
+
+    numbers.join(", ")
+  end
 
   # Empty, "2" or "2.3" (the comma was already replaced by a dot).
   def distance_km_input_valid?

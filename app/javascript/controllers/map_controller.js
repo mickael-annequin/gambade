@@ -13,7 +13,7 @@ export default class extends Controller {
     center: Array,
     zoom: { type: Number, default: 13 },
     track: { type: Array, default: [] }, // [[longitude, latitude], ...]
-    encounters: { type: Array, default: [] } // [{ number: 1, coordinates: [longitude, latitude] }, ...]
+    encounters: { type: Array, default: [] } // [{ label: "1–3", times: ["18h12", …], coordinates: [lng, lat] }, ...]
   }
 
   connect() {
@@ -32,16 +32,20 @@ export default class extends Controller {
     this.map?.remove()
   }
 
-  // A numbered round marker (1, 2, 3…) where a dog was met.
-  #addEncounterMarker({ number, coordinates }) {
+  // A numbered marker ("1", or "1–3" for several dogs met at the same place).
+  // Tapping it shows the times of the encounters.
+  #addEncounterMarker({ label, times, coordinates }) {
     const element = document.createElement("div")
-    element.textContent = number
+    element.textContent = label
     Object.assign(element.style, {
-      width: "26px", height: "26px", borderRadius: "50%", border: "2px solid white",
+      minWidth: "26px", height: "26px", padding: "0 6px", boxSizing: "border-box",
+      borderRadius: "13px", border: "2px solid white", cursor: "pointer",
       background: ENCOUNTER_COLOR, color: END_COLOR, font: "bold 14px sans-serif",
       display: "flex", alignItems: "center", justifyContent: "center"
     })
-    new mapboxgl.Marker({ element }).setLngLat(coordinates).addTo(this.map)
+    const dogs = times.length > 1 ? `${times.length} chiens` : "1 chien"
+    const popup = new mapboxgl.Popup({ offset: 16 }).setText(`🐕 ${dogs} · ${times.join(", ")}`)
+    new mapboxgl.Marker({ element }).setLngLat(coordinates).setPopup(popup).addTo(this.map)
   }
 
   #showTrack() {

@@ -40,4 +40,14 @@ class WalkTest < ActiveSupport::TestCase
                { latitude: 48.4206, longitude: 1.5012 } ]
     assert_in_delta 2002, Walk.distance_along(points), 2
   end
+
+  test "groups dogs met at the same place into one map marker" do
+    walk = walks(:morning)
+    [ [ 48.42060, "08:31" ], [ 48.42061, "08:32" ], [ 48.42062, "08:33" ], [ 48.42240, "08:40" ] ].each do |lat, time|
+      walk.encounters.create!(latitude: lat, longitude: 1.5012, met_at: Time.zone.parse("2026-10-01 #{time}"))
+    end
+    labels = walk.encounter_markers.map { |marker| marker[:label] }
+    assert_equal [ "1–3", "4" ], labels
+    assert_equal [ "08h31", "08h32", "08h33" ], walk.encounter_markers.first[:times]
+  end
 end
