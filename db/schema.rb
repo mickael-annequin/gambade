@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_03_161756) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_03_162201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -109,6 +109,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_161756) do
     t.boolean "tracked", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "client_id"
+    t.index ["client_id"], name: "index_walks_on_client_id", unique: true
     t.index ["dog_id", "started_at"], name: "index_walks_on_dog_id_and_started_at"
     t.index ["dog_id"], name: "index_walks_on_dog_id"
   end

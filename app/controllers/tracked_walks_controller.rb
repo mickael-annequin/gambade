@@ -12,10 +12,17 @@ class TrackedWalksController < ApplicationController
     ended_at = parse_time(walk_params[:ended_at])
     return render_error if started_at.nil? || ended_at.nil?
 
+    # Already received (the phone did not get the answer and sent it again): don't save it twice.
+    existing_walk = find_already_saved_walk
+    return render json: { url: walk_path(existing_walk) } if existing_walk
+
     walk = Walk.create_from_track!(dog: current_dog, started_at: started_at, ended_at: ended_at,
                                    points: track_points_params, encounters: encounters_params,
-                                   activities: activities_params)
+                                   activities: activities_params, client_id: walk_params[:client_id].presence)
     render json: { url: walk_path(walk) }, status: :created
+  rescue ActiveRecord::RecordNotUnique
+    # Both sendings arrived at the same moment: the other one won.
+    render json: { url: walk_path(find_already_saved_walk) }
   rescue ActiveRecord::RecordInvalid
     render_error
   end
@@ -33,7 +40,12 @@ class TrackedWalksController < ApplicationController
   end
 
   def walk_params
-    params.require(:walk).permit(:started_at, :ended_at)
+    params.require(:walk).permit(:started_at, :ended_at, :client_id)
+  end
+
+  def find_already_saved_walk
+    client_id = walk_params[:client_id].presence
+    client_id && current_dog.walks.find_by(client_id: client_id)
   end
 
   # Each "+1 chien": when, and where if the GPS knew the position.

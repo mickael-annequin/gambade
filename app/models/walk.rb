@@ -15,9 +15,10 @@ class Walk < ApplicationRecord
   EARTH_RADIUS_METERS = 6_371_000
 
   # Saves a walk recorded live on the phone, with its GPS points, dogs met and play/swim phases, in one go.
-  def self.create_from_track!(dog:, started_at:, ended_at:, points:, encounters: [], activities: [])
+  def self.create_from_track!(dog:, started_at:, ended_at:, points:, encounters: [], activities: [], client_id: nil)
     transaction do
       walk = dog.walks.create!(
+        client_id: client_id,
         started_at: started_at,
         duration_seconds: [ (ended_at - started_at).round, 1 ].max,
         distance_meters: distance_along(points).round,

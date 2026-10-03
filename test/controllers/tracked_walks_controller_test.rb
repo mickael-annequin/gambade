@@ -78,4 +78,17 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
       } }
     end
   end
+
+  test "the same walk sent twice is saved only once" do
+    walk_params = { client_id: "6f1c2c4e-1111-4b8a-9a55-0d1e2f3a4b5c",
+                    started_at: "2026-10-03T16:00:00Z", ended_at: "2026-10-03T16:30:00Z",
+                    track_points: [ { latitude: 48.42, longitude: 1.5, recorded_at: "2026-10-03T16:00:00Z" } ] }
+    assert_difference "Walk.count", 1 do
+      post tracked_walks_path, as: :json, params: { walk: walk_params }
+      post tracked_walks_path, as: :json, params: { walk: walk_params }
+    end
+    assert_response :success
+    assert_equal walk_path(Walk.find_by(client_id: walk_params[:client_id])), response.parsed_body["url"]
+    assert_equal 1, Walk.find_by(client_id: walk_params[:client_id]).track_points.count
+  end
 end

@@ -139,6 +139,7 @@ export default class extends Controller {
       this.encounters = saved.encounters || []
       this.leftStart = saved.leftStart || false
       this.activities = saved.activities || []
+      this.clientId = saved.clientId || crypto.randomUUID()
     } else {
       this.startedAt = new Date()
       this.endedAt = null
@@ -147,6 +148,7 @@ export default class extends Controller {
       this.encounters = []
       this.leftStart = false
       this.activities = []
+      this.clientId = crypto.randomUUID() // lets the server recognize this walk if it is sent twice
       this.#persist()
     }
   }
@@ -159,7 +161,8 @@ export default class extends Controller {
       distanceMeters: this.distanceMeters,
       encounters: this.encounters,
       leftStart: this.leftStart,
-      activities: this.activities
+      activities: this.activities,
+      clientId: this.clientId
     })
   }
 
@@ -309,6 +312,7 @@ export default class extends Controller {
       },
       body: JSON.stringify({
         walk: {
+          client_id: this.clientId,
           started_at: this.startedAt.toISOString(),
           ended_at: this.endedAt.toISOString(),
           track_points: this.points,
