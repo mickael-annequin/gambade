@@ -43,6 +43,11 @@ class Walk < ApplicationRecord
     2 * EARTH_RADIUS_METERS * Math.asin(Math.sqrt(a))
   end
 
+  # [[longitude, latitude], ...] in time order, the format Mapbox expects.
+  def track_coordinates
+    track_points.in_order.pluck(:longitude, :latitude).map { |lng, lat| [ lng.to_f, lat.to_f ] }
+  end
+
   # The form works in minutes and km; the database stores seconds and meters.
   def duration_minutes
     duration_seconds && duration_seconds / 60

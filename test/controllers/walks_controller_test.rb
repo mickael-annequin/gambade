@@ -11,10 +11,16 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", "Octobre 2026"
   end
 
-  test "shows a walk with its map" do
+  test "shows a walk with its GPS track on the map" do
     get walk_path(walks(:evening))
     assert_response :success
-    assert_select "[data-controller='map'][data-map-center-value]"
+    assert_select "[data-controller='map'][data-map-track-value='[[1.5012,48.4206],[1.502,48.4211]]']"
+  end
+
+  test "shows a walk entered by hand without a map" do
+    get walk_path(walks(:morning))
+    assert_response :success
+    assert_select "[data-controller='map']", count: 0
   end
 
   test "creates a walk entered by hand" do

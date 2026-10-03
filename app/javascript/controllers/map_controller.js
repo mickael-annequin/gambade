@@ -1,9 +1,18 @@
 import { Controller } from "@hotwired/stimulus"
 import mapboxgl from "mapbox-gl"
 
-// Displays a Mapbox map centered on a point.
+const TRACK_COLOR = "#E08E45" // ocre (docs/conception/identite.md)
+const START_COLOR = "#2F5D50" // vert forêt
+const END_COLOR = "#3B3127" // brun écorce
+
+// Displays a Mapbox map, with the walk's GPS track when there is one.
 export default class extends Controller {
-  static values = { apiKey: String, center: Array, zoom: { type: Number, default: 13 } }
+  static values = {
+    apiKey: String,
+    center: Array,
+    zoom: { type: Number, default: 13 },
+    track: { type: Array, default: [] } // [[longitude, latitude], ...]
+  }
 
   connect() {
     mapboxgl.accessToken = this.apiKeyValue
@@ -13,10 +22,33 @@ export default class extends Controller {
       center: this.centerValue,
       zoom: this.zoomValue
     })
+    if (this.trackValue.length > 0) this.map.on("load", () => this.#showTrack())
   }
 
   // Free the map when Turbo leaves the page.
   disconnect() {
     this.map?.remove()
+  }
+
+  #showTrack() {
+    this.map.addSource("track", {
+      type: "geojson",
+      data: { type: "Feature", geometry: { type: "LineString", coordinates: this.trackValue } }
+    })
+    this.map.addLayer({
+      id: "track",
+      type: "line",
+      source: "track",
+      layout: { "line-join": "round", "line-cap": "round" },
+      paint: { "line-color": TRACK_COLOR, "line-width": 5 }
+    })
+
+    new mapboxgl.Marker({ color: START_COLOR }).setLngLat(this.trackValue[0]).addTo(this.map)
+    new mapboxgl.Marker({ color: END_COLOR }).setLngLat(this.trackValue.at(-1)).addTo(this.map)
+
+    // Zoom so that the whole walk fits in the map.
+    const bounds = new mapboxgl.LngLatBounds(this.trackValue[0], this.trackValue[0])
+    this.trackValue.forEach((point) => bounds.extend(point))
+    this.map.fitBounds(bounds, { padding: 40, maxZoom: 17, duration: 0 })
   }
 }

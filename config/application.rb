@@ -22,8 +22,6 @@ module Gambade
     # in config/environments, which are processed later.
     #
     config.time_zone = "Paris"
-    # Where maps are centered when there is no GPS track: Le Coudray (28630), [longitude, latitude].
-    config.x.default_map_center = [ 1.5012, 48.4206 ]
     config.i18n.default_locale = :fr
     # Texts not yet translated into French are shown in English instead of an error.
     config.i18n.fallbacks = [ :en ]
