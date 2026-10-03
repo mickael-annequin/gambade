@@ -31,7 +31,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] **Liste des balades**, chacune avec sa carte et ses stats. *Test :* une vraie balade complète avec mon chien. 🎉 **MVP terminé !**
 
 ## Phase 2 — V1 complète 🥈
-- [ ] PWA installable sur l'écran d'accueil
+- [x] PWA installable sur l'écran d'accueil
 - [ ] Détails d'une rencontre **pendant** la balade : après « +1 chien », un petit encart facultatif (nom, 😊 😐 😠) qui se referme tout seul si on l'ignore — pour ne pas oublier qui était qui quand on croise plusieurs chiens
 - [ ] Notes de balade (humeur, besoins, commentaire)
 - [ ] Carnet d'amis : table `friends`, lien rencontre → ami, classement des amis les plus croisés (dans « Mon chien »)
