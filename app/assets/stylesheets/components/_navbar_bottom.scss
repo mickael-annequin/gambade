@@ -44,5 +44,5 @@
 }
 
 // Room for the bar, so it never hides the end of a page: its height,
-// plus the gesture area of phones without a home button, plus a little margin.
-.with-navbar-bottom { padding-bottom: calc(7.5rem + env(safe-area-inset-bottom)); }
+// plus the gesture area of phones without a home button, plus a small gap.
+.with-navbar-bottom { padding-bottom: calc(5.75rem + env(safe-area-inset-bottom)); }
