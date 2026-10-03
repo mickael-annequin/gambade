@@ -32,7 +32,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 
 ## Phase 2 — V1 complète 🥈
 - [x] PWA installable sur l'écran d'accueil
-- [ ] Détails d'une rencontre **pendant** la balade : après « +1 chien », un petit encart facultatif (nom, 😊 😐 😠) qui se referme tout seul si on l'ignore — pour ne pas oublier qui était qui quand on croise plusieurs chiens
+- [x] Détails d'une rencontre **pendant** la balade : après « +1 chien », un petit encart facultatif (nom, 😊 😐 😠) qui se referme tout seul si on l'ignore — pour ne pas oublier qui était qui quand on croise plusieurs chiens
 - [ ] Notes de balade (humeur, besoins, commentaire)
 - [ ] Carnet d'amis : table `friends`, lien rencontre → ami, classement des amis les plus croisés (dans « Mon chien »)
 - [ ] Import de photos placées sur le trajet
