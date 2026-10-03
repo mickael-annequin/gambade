@@ -11,6 +11,12 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", "Octobre 2026"
   end
 
+  test "shows a walk with its map" do
+    get walk_path(walks(:evening))
+    assert_response :success
+    assert_select "[data-controller='map'][data-map-center-value]"
+  end
+
   test "creates a walk entered by hand" do
     assert_difference "Walk.count", 1 do
       post walks_path, params: { walk: { started_at: "2026-10-02T18:05", duration_minutes: "35",

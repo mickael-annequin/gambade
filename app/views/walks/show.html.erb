@@ -5,6 +5,12 @@
 
 <h1><%= l(@walk.started_at, format: "%A %-d %B · %Hh%M").capitalize %></h1>
 
+<div style="height: 300px"
+     data-controller="map"
+     data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"
+     data-map-center-value="<%= Rails.configuration.x.default_map_center.to_json %>">
+</div>
+
 <p>
   <%= walk_duration(@walk.duration_seconds) %> ·
   <%= walk_distance(@walk.distance_meters) %> ·
