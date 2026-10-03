@@ -20,4 +20,10 @@ class WalksHelperTest < ActionView::TestCase
     assert_equal "💦 1 baignade (8 min)", walk_swim_summary(walks(:evening))
     assert_nil walk_play_summary(walks(:morning))
   end
+
+  test "builds a small map picture of the track, only when there is one" do
+    url = walk_map_image_url(walks(:evening))
+    assert_match %r{\Ahttps://api\.mapbox\.com/styles/v1/mapbox/outdoors-v12/static/path-4\+E08E45\(}, url
+    assert_nil walk_map_image_url(walks(:morning))
+  end
 end

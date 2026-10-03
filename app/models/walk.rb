@@ -49,6 +49,16 @@ class Walk < ApplicationRecord
     2 * EARTH_RADIUS_METERS * Math.asin(Math.sqrt(a))
   end
 
+  # The track with at most max_points points (one in every n, plus the last one): same shape,
+  # short enough to fit in the address of a map image. Uses the points already loaded by `includes`.
+  def simplified_track(max_points: 80)
+    points = track_points.sort_by(&:recorded_at)
+    step = (points.size / max_points.to_f).ceil.clamp(1..)
+    kept = points.each_slice(step).map(&:first)
+    kept << points.last if points.any? && kept.last != points.last
+    kept.map { |point| [ point.longitude.to_f, point.latitude.to_f ] }
+  end
+
   # [[longitude, latitude], ...] in time order, the format Mapbox expects.
   def track_coordinates
     track_points.in_order.pluck(:longitude, :latitude).map { |lng, lat| [ lng.to_f, lat.to_f ] }

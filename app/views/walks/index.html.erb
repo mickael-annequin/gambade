@@ -11,6 +11,13 @@
   <% walks.each do |walk| %>
     <%= link_to walk_path(walk) do %>
       <div>
+        <% image_url = walk_map_image_url(walk) %>
+        <% if image_url %>
+          <%= image_tag image_url, width: 120, height: 120, loading: "lazy", alt: "Trajet de la balade" %>
+        <% else %>
+          <span role="img" aria-label="Balade sans trajet GPS">🐾</span>
+        <% end %>
+        <br>
         <strong><%= walk_day(walk.started_at) %></strong> · <%= l(walk.started_at, format: "%Hh%M") %><br>
         <%= walk_distance(walk.distance_meters) %> · <%= walk_duration(walk.duration_seconds) %><br>
         🐕 <%= walk.dogs_met_count %>

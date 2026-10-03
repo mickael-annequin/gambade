@@ -1,4 +1,15 @@
 module WalksHelper
+  # Small picture of the walk's track (Mapbox Static Images API), or nil without a GPS track.
+  # A picture is much lighter than an interactive map when the list shows many walks.
+  def walk_map_image_url(walk, size: 120)
+    track = walk.simplified_track
+    return if track.size < 2
+
+    path = "path-4+E08E45(#{ERB::Util.url_encode(Polyline.encode(track))})"
+    "https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/static/#{path}/auto/#{size}x#{size}@2x" \
+      "?padding=12&access_token=#{ENV['MAPBOX_API_KEY']}"
+  end
+
   # 2100 -> "35 min", 3900 -> "1 h 05"
   def walk_duration(seconds)
     minutes = seconds / 60

@@ -69,4 +69,13 @@ class WalkTest < ActiveSupport::TestCase
     assert_operator progress.last[:meters], :>, 50
     assert_equal "18h05", progress.first[:time]
   end
+
+  test "simplifies a long track but keeps its start and end" do
+    walk = Walk.new(started_at: Time.current)
+    1000.times { |i| walk.track_points.build(latitude: 48.42 + i * 0.0001, longitude: 1.5, recorded_at: Time.current + i * 5) }
+    track = walk.simplified_track(max_points: 80)
+    assert_operator track.size, :<=, 81
+    assert_equal [ 1.5, 48.42 ], track.first
+    assert_in_delta 48.42 + 999 * 0.0001, track.last.last, 1e-9
+  end
 end

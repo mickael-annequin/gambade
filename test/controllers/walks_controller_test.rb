@@ -5,10 +5,12 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     sign_in users(:mika)
   end
 
-  test "lists my walks" do
+  test "lists my walks, with a map picture for tracked ones" do
     get walks_path
     assert_response :success
     assert_select "h2", "Octobre 2026"
+    assert_select "img[src^='https://api.mapbox.com/'][loading='lazy']", 1
+    assert_select "span[aria-label='Balade sans trajet GPS']", 1
   end
 
   test "shows a walk with its GPS track on the map" do
