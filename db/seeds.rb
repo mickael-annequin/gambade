@@ -1,9 +1,14 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# Creates the single Gambade account (there is no public sign up).
+# In production, the email and password come from environment variables set in Render.
+# Running it again does nothing if the account already exists.
+email = ENV.fetch("ADMIN_EMAIL") { "dev@gambade.test" if Rails.env.development? }
+password = ENV.fetch("ADMIN_PASSWORD") { "password" if Rails.env.development? }
+
+if email.present? && password.present?
+  User.find_or_create_by!(email: email) do |user|
+    user.password = password
+  end
+  puts "Account ready: #{email}"
+else
+  puts "No account created: set ADMIN_EMAIL and ADMIN_PASSWORD."
+end

@@ -1,0 +1,3 @@
+mika:
+  email: mika@gambade.test
+  encrypted_password: <%= Devise::Encryptor.digest(User, "password") %>
