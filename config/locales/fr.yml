@@ -15,6 +15,11 @@ fr:
         duration_seconds: "Durée"
         distance_meters: "Distance"
         dogs_met_count: "Chiens rencontrés"
+      encounter:
+        dog_name: "Nom du chien"
+        breed: "Race"
+        mood: "Ambiance"
+        note: "Note"
     errors:
       models:
         dog:

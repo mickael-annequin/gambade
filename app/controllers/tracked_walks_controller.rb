@@ -14,15 +14,15 @@ class TrackedWalksController < ApplicationController
 
     # Already received (the phone did not get the answer and sent it again): don't save it twice.
     existing_walk = find_already_saved_walk
-    return render json: { url: walk_path(existing_walk) } if existing_walk
+    return render json: { url: walk_path(existing_walk, finished: true) } if existing_walk
 
     walk = Walk.create_from_track!(dog: current_dog, started_at: started_at, ended_at: ended_at,
                                    points: track_points_params, encounters: encounters_params,
                                    activities: activities_params, client_id: walk_params[:client_id].presence)
-    render json: { url: walk_path(walk) }, status: :created
+    render json: { url: walk_path(walk, finished: true) }, status: :created
   rescue ActiveRecord::RecordNotUnique
     # Both sendings arrived at the same moment: the other one won.
-    render json: { url: walk_path(find_already_saved_walk) }
+    render json: { url: walk_path(find_already_saved_walk, finished: true) }
   rescue ActiveRecord::RecordInvalid
     render_error
   end

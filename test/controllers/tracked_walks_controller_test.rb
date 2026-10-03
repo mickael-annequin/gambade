@@ -30,7 +30,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     assert walk.tracked
     assert_equal 2100, walk.duration_seconds
     assert_in_delta 1001, walk.distance_meters, 2
-    assert_equal walk_path(walk), response.parsed_body["url"]
+    assert_equal walk_path(walk, finished: true), response.parsed_body["url"]
   end
 
   test "ignores GPS points with invalid coordinates" do
@@ -88,7 +88,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
       post tracked_walks_path, as: :json, params: { walk: walk_params }
     end
     assert_response :success
-    assert_equal walk_path(Walk.find_by(client_id: walk_params[:client_id])), response.parsed_body["url"]
+    assert_equal walk_path(Walk.find_by(client_id: walk_params[:client_id]), finished: true), response.parsed_body["url"]
     assert_equal 1, Walk.find_by(client_id: walk_params[:client_id]).track_points.count
   end
 end

@@ -1,3 +1,8 @@
+<% if params[:finished] %>
+  <p><strong>Bravo ! Balade terminée 🎉</strong></p>
+  <p>Tu peux ajouter des détails sur les chiens rencontrés, si tu veux.</p>
+<% end %>
+
 <%= link_to "← Retour", walks_path %>
 <%= link_to "✏️ Modifier", edit_walk_path(@walk) %>
 <% if @walk.tracked? %>
@@ -27,4 +32,24 @@
 </p>
 <% [ walk_play_summary(@walk), walk_swim_summary(@walk) ].compact.each do |summary| %>
   <p><%= summary %></p>
+<% end %>
+
+<% encounters = @walk.encounters.in_order %>
+<% if encounters.any? %>
+  <h2>Rencontres<%= " (facultatif)" if params[:finished] %></h2>
+  <ul>
+    <% encounters.each.with_index(1) do |encounter, number| %>
+      <li>
+        <%= link_to edit_walk_encounter_path(@walk, encounter) do %>
+          <%= encounter_number(number) %> <%= l(encounter.met_at, format: "%Hh%M") %>
+          · <%= encounter_details(encounter) || "+ détails" %>
+          <%= "(position inconnue)" if encounter.latitude.nil? %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if params[:finished] %>
+  <%= link_to "✓ C'est tout bon", walks_path %>
 <% end %>

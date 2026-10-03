@@ -31,6 +31,18 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ { "icon" => "🎾", "times" => "18h10–18h22", "coordinates" => [ 1.5016, 48.4209 ] } ], markers
   end
 
+  test "lists the dogs met, with a link to add details" do
+    get walk_path(walks(:evening))
+    assert_select "li a[href='#{edit_walk_encounter_path(walks(:evening), encounters(:first))}']", /① 18h12 · \+ détails/
+    assert_select "li", /② 18h20 · \+ détails\s+\(position inconnue\)/
+  end
+
+  test "congratulates right after finishing a tracked walk" do
+    get walk_path(walks(:evening), finished: true)
+    assert_select "strong", "Bravo ! Balade terminée 🎉"
+    assert_select "h2", "Rencontres (facultatif)"
+  end
+
   test "shows a walk entered by hand without a map nor cut link" do
     get walk_path(walks(:morning))
     assert_response :success
