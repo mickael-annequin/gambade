@@ -23,7 +23,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] **Profil du chien** : modèle `Dog` et photo stockée sur Cloudinary. *Test :* créer et modifier la fiche de mon chien, avec sa photo.
 - [x] **Balades saisies à la main** : modèle `Walk` et pages pour créer, lire, modifier et supprimer une balade. *Test :* créer, modifier et supprimer une balade.
 - [x] **Carte Mapbox** sur la page d'une balade. *Test :* la carte s'affiche centrée sur ma ville.
-- [ ] **Suivi GPS en direct** (contrôleur Stimulus) : Démarrer et Terminer, chrono, km, indicateur GPS, points enregistrés en base (pas de carte pendant la balade). *Test :* un tour du pâté de maisons, puis retrouver le trajet sur la carte de la balade.
+- [x] **Suivi GPS en direct** (contrôleur Stimulus) : Démarrer et Terminer, chrono, km, indicateur GPS, points enregistrés en base (pas de carte pendant la balade). *Test :* un tour du pâté de maisons, puis retrouver le trajet sur la carte de la balade.
 - [ ] **Protection anti-perte** : écran maintenu allumé, points sauvegardés dans le téléphone, reprise d'une balade interrompue, points imprécis ignorés. *Test :* fermer l'app en pleine balade, la rouvrir et reprendre.
 - [ ] **Bouton « +1 chien »** avec le lieu de la rencontre. *Test :* les rencontres apparaissent sur la carte de la balade.
 - [ ] **Boutons « Jeu » et « Baignade »** (début/fin, utilisables en même temps). *Test :* faire une phase de chaque, dont une en même temps, et retrouver leurs durées et leurs lieux.
