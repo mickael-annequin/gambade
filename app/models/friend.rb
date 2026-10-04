@@ -3,6 +3,9 @@ class Friend < ApplicationRecord
   belongs_to :dog
   has_many :encounters, dependent: :nullify
 
+  # The phone keyboard often adds a space after a word: "Sid " is saved as "Sid".
+  normalizes :name, with: ->(name) { name.strip }
+
   validates :name, presence: true, length: { maximum: 50 }
   validates :breed, length: { maximum: 50 }
   validates :note, length: { maximum: 2000 }
@@ -20,6 +23,6 @@ class Friend < ApplicationRecord
   def self.named(name)
     return if name.blank?
 
-    find_by("LOWER(name) = ?", name.strip.downcase)
+    find_by("LOWER(TRIM(name)) = ?", name.strip.downcase) # TRIM: names saved before the normalization
   end
 end

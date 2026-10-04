@@ -15,6 +15,15 @@ class FriendTest < ActiveSupport::TestCase
     assert_nil dogs(:rex).friends.named("Rantanplan") # another dog's friend
   end
 
+  test "finds a friend saved with a space after its name (added by the phone keyboard)" do
+    friends(:sid).update_column(:name, "Sid ")
+    assert_equal friends(:sid), dogs(:rex).friends.named("Sid")
+  end
+
+  test "removes the spaces around a name when saving" do
+    assert_equal "Rocky", dogs(:rex).friends.create!(name: " Rocky ").name
+  end
+
   test "deleting a friend keeps the encounters" do
     encounter = encounters(:first)
     friends(:sid).destroy
