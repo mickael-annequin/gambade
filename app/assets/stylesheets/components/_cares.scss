@@ -15,3 +15,27 @@
   text-align: center;
   text-decoration: none;
 }
+
+// Home page: a care to do soon or late, above the week stats.
+.care-reminder {
+  display: block;
+  margin-top: 1.25rem;
+  padding: 0.85rem 1rem;
+  border-left: 5px solid $ochre;
+  border-radius: $border-radius-lg;
+  background: white;
+  color: $bark;
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba($bark, 0.12);
+
+  &:hover { color: $bark; }
+  div + div { margin-top: 0.25rem; }
+}
+
+.care-reminder-link {
+  display: block;
+  margin-top: 0.4rem;
+  color: $forest;
+  font-size: 0.9rem;
+  font-weight: 800;
+}

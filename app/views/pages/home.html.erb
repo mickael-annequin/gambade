@@ -17,6 +17,17 @@
               data: { ongoing_walk_target: "startButton" } %>
 </div>
 
+<% if @cares_due.any? %>
+  <%= link_to dog_path(anchor: "sante"), class: "care-reminder" do %>
+    <% @cares_due.each do |care| %>
+      <div class="<%= care_status_class(care) %>">
+        <strong><%= care.label %></strong> · <%= care_reminder(care) %>
+      </div>
+    <% end %>
+    <span class="care-reminder-link">Voir la santé ›</span>
+  <% end %>
+<% end %>
+
 <div class="section-header">
   <h2 class="section-title">Cette semaine</h2>
   <%= link_to "📊 Stats", stats_path, class: "small-action" %>

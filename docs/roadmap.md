@@ -59,7 +59,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] Météo automatique (Open-Meteo, gratuit sans clé, position arrondie à ~1 km) : ciel, température, vent et pluie au milieu de la balade, aussi pour les anciennes balades GPS
 
 ## Phase 3 — V1+ 🥉
-- [ ] Suivi santé dans « Mon chien » : vaccins (1 an), vermifuge et anti-puces (3 mois), visites véto ; date du prochain calculée, statut « dans X jours / en retard »
+- [x] Suivi santé dans « Mon chien » : vaccins (1 an), vermifuge et anti-puces (3 mois), visites véto ; date du prochain calculée, statut « dans X jours / en retard »
 - [ ] Rappel des soins sur l'accueil (soin à faire dans moins de 7 jours ou en retard)
 - [ ] Suivi du poids avec courbe
 - [ ] Objectifs et badges

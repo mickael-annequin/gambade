@@ -12,6 +12,15 @@ module CaresHelper
     "#{icon} Prochain le #{l(care.next_due_on, format: '%-d %b %Y')} (dans #{pluralize(days, 'jour')})"
   end
 
+  # Short version for the home page: "à faire dans 3 jours", "à faire aujourd'hui", "en retard de 5 jours".
+  def care_reminder(care)
+    days = care.days_left
+    return "en retard de #{pluralize(-days, 'jour')}" if days.negative?
+    return "à faire aujourd'hui" if days.zero?
+
+    "à faire dans #{pluralize(days, 'jour')}"
+  end
+
   # Soon or late: shown in ochre/red (and on the home page, see step 2).
   def care_status_class(care)
     days = care.days_left

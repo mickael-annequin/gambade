@@ -6,6 +6,7 @@ class CaresControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "the dog page shows the health follow-up" do
+    travel_to Date.new(2026, 10, 4)
     get dog_path
     assert_select "#sante"
     assert_select ".care-status", /Prochain le 1 nov\. 2026/
@@ -37,5 +38,23 @@ class CaresControllerTest < ActionDispatch::IntegrationTest
     end
     delete care_path(cares(:strangers_vaccine))
     assert_response :not_found
+  end
+
+  test "the home page reminds the cares to do soon or late, not the others" do
+    travel_to Date.new(2026, 10, 29) do # dewormer due on 1 Nov
+      dogs(:rex).cares.create!(kind: "flea", given_on: Date.new(2026, 7, 1)) # due 1 Oct: late
+      dogs(:rex).cares.create!(kind: "vaccine", given_on: Date.new(2026, 5, 1)) # next year: fine
+      get root_path
+      assert_select ".care-reminder div", 2
+      assert_select ".care-reminder div.care-status-late", /Anti-puces.*en retard de 28 jours/
+      assert_select ".care-reminder div.care-status-soon", /Vermifuge.*à faire dans 3 jours/
+    end
+  end
+
+  test "no reminder when nothing is due" do
+    travel_to Date.new(2026, 10, 4) do # dewormer due in 28 days
+      get root_path
+      assert_select ".care-reminder", 0
+    end
   end
 end
