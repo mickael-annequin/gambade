@@ -34,3 +34,14 @@
     opacity: 0.7;
   }
 }
+
+// Each thumbnail is a button: it opens the photo full screen.
+.walk-photo-button {
+  display: block;
+  padding: 0;
+  border: none;
+  background: none;
+  transition: transform 0.1s;
+
+  &:active { transform: scale(0.96); }
+}

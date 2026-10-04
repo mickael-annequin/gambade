@@ -48,10 +48,30 @@ class WalkPhotosControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "the walk page shows its photos and the button to add some" do
-    walks(:evening).photos.create!(image: fixture_file_upload("dog.png", "image/png"))
+  test "the walk page shows its photos, the button to add some and the full-screen viewer" do
+    photo = walks(:evening).photos.create!(image: fixture_file_upload("dog.png", "image/png"))
     get walk_path(walks(:evening))
-    assert_select ".walk-photo", 1
+    assert_select ".walk-photo-button[data-photo-viewer-id-param='#{photo.id}'] .walk-photo", 1
     assert_select "input[type=file][multiple][accept='image/*']"
+    assert_select "dialog.photo-viewer"
+    viewer = JSON.parse(css_select("[data-controller='photo-viewer']").first["data-photo-viewer-photos-value"])
+    assert_equal [ [ photo.id, "📷 Heure inconnue", walk_photo_path(walks(:evening), photo) ] ],
+                 viewer.map { |item| item.values_at("id", "time", "delete_url") }
+  end
+
+  test "deletes a photo" do
+    photo = walks(:evening).photos.create!(image: fixture_file_upload("dog.png", "image/png"))
+    assert_difference "WalkPhoto.count", -1 do
+      delete walk_photo_path(walks(:evening), photo)
+    end
+    assert_redirected_to walk_path(walks(:evening), anchor: "photos")
+  end
+
+  test "cannot delete a photo of another account's walk" do
+    photo = walks(:strangers_walk).photos.create!(image: fixture_file_upload("dog.png", "image/png"))
+    assert_no_difference "WalkPhoto.count" do
+      delete walk_photo_path(walks(:strangers_walk), photo)
+    end
+    assert_response :not_found
   end
 end

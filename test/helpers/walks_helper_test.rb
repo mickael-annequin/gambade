@@ -37,11 +37,10 @@ class WalksHelperTest < ActionView::TestCase
   test "map markers only for the photos placed on the track" do
     walk = walks(:evening)
     image = -> { { io: file_fixture("dog.png").open, filename: "dog.png" } }
-    walk.photos.create!(image: image.call, taken_at: Time.zone.parse("2026-10-01 18:30"), latitude: 48.4211, longitude: 1.502)
+    placed = walk.photos.create!(image: image.call, taken_at: Time.zone.parse("2026-10-01 18:30"), latitude: 48.4211, longitude: 1.502)
     walk.photos.create!(image: image.call) # no time: in the gallery only
     markers = walk_photo_markers(walk)
-    assert_equal 1, markers.size
-    assert_equal "18h30", markers.first[:time]
+    assert_equal [ placed.id ], markers.map { |marker| marker[:id] }
     assert_equal [ 1.502, 48.4211 ], markers.first[:coordinates]
     assert_includes markers.first[:thumbnail], "res.cloudinary.com/gambade-test"
   end

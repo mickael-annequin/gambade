@@ -5,6 +5,12 @@
   </div>
 <% end %>
 
+<% photos = @walk.photos.with_attached_image.order(:taken_at, :created_at) %>
+<%# The whole page is in the photo viewer: it opens from the gallery and from the map. %>
+<div data-controller="photo-viewer"
+     data-photo-viewer-photos-value="<%= walk_photo_viewer_items(@walk, photos).to_json %>"
+     data-action="map:photo->photo-viewer#openFromMap turbo:before-cache@document->photo-viewer#close">
+
 <div class="title-row">
   <%= back_button walks_path %>
   <h1 class="walk-title"><%= l(@walk.started_at, format: "%A %-d %B · %Hh%M").capitalize %></h1>
@@ -88,12 +94,14 @@
 <% end %>
 
 <h2 class="section-title" id="photos">Photos</h2>
-<% photos = @walk.photos.with_attached_image.order(:taken_at, :created_at) %>
 <% if photos.any? %>
   <div class="walk-photos">
     <% photos.each do |photo| %>
-      <%= cl_image_tag photo.image.key, width: 300, height: 300, crop: :fill, gravity: :auto,
-                       class: "walk-photo", alt: "Photo de la balade", loading: "lazy" %>
+      <button type="button" class="walk-photo-button" aria-label="Voir la photo en grand"
+              data-action="photo-viewer#open" data-photo-viewer-id-param="<%= photo.id %>">
+        <%= cl_image_tag photo.image.key, width: 300, height: 300, crop: :fill, gravity: :auto,
+                         class: "walk-photo", alt: "Photo de la balade", loading: "lazy" %>
+      </button>
     <% end %>
   </div>
 <% end %>
@@ -156,3 +164,22 @@
 <% if params[:finished] %>
   <%= link_to "✓ C'est tout bon", walks_path, class: "btn btn-primary btn-lg w-100 mt-4" %>
 <% end %>
+
+<%# Full-screen photo viewer (<dialog>: closed with ✕ or the phone "back" gesture). %>
+<dialog class="photo-viewer" data-photo-viewer-target="dialog"
+        data-action="touchstart->photo-viewer#touchStart touchend->photo-viewer#touchEnd click->photo-viewer#closeOnBackground">
+  <img class="photo-viewer-image" alt="Photo de la balade" data-photo-viewer-target="image">
+  <button type="button" class="photo-viewer-close" aria-label="Fermer" data-action="photo-viewer#close">✕</button>
+  <div class="photo-viewer-bar">
+    <button type="button" class="photo-viewer-arrow" aria-label="Photo précédente"
+            data-photo-viewer-target="previous" data-action="photo-viewer#previous">‹</button>
+    <span class="photo-viewer-caption" data-photo-viewer-target="caption"></span>
+    <button type="button" class="photo-viewer-arrow" aria-label="Photo suivante"
+            data-photo-viewer-target="next" data-action="photo-viewer#next">›</button>
+    <%# The address is set to the photo shown (photo_viewer_controller.js). Not "#": it would mean this page,
+        and a DELETE on it would delete the whole walk. %>
+    <%= button_to "🗑️", walk_photos_path(@walk), method: :delete, class: "photo-viewer-delete", title: "Supprimer cette photo",
+                  form: { data: { photo_viewer_target: "deleteForm", turbo_confirm: "Supprimer cette photo ?" } } %>
+  </div>
+</dialog>
+</div>

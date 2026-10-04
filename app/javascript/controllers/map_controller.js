@@ -15,7 +15,7 @@ export default class extends Controller {
     track: { type: Array, default: [] }, // [[longitude, latitude], ...]
     encounters: { type: Array, default: [] }, // [{ label: "1–3", times: ["18h12", …], coordinates: [lng, lat] }, ...]
     activities: { type: Array, default: [] }, // [{ icon: "🎾", times: "18h10–18h22", coordinates: [lng, lat] }, ...]
-    photos: { type: Array, default: [] } // [{ thumbnail: url, image: url, time: "18h30", coordinates: [lng, lat] }, ...]
+    photos: { type: Array, default: [] } // [{ id: 12, thumbnail: url, coordinates: [lng, lat] }, ...]
   }
 
   connect() {
@@ -70,8 +70,8 @@ export default class extends Controller {
     new mapboxgl.Marker({ element }).setLngLat(coordinates).setPopup(popup).addTo(this.map)
   }
 
-  // A round thumbnail of the photo where it was taken; tapping it shows the photo bigger, with its time.
-  #addPhotoMarker({ thumbnail, image, time, coordinates }) {
+  // A round thumbnail of the photo where it was taken; tapping it opens the photo viewer ("map:photo" event).
+  #addPhotoMarker({ id, thumbnail, coordinates }) {
     const element = document.createElement("img")
     element.src = thumbnail
     element.alt = "Photo"
@@ -79,19 +79,8 @@ export default class extends Controller {
       width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover",
       border: "2px solid white", boxShadow: "0 1px 4px rgba(0, 0, 0, 0.35)", cursor: "pointer"
     })
-
-    const content = document.createElement("div")
-    const photo = document.createElement("img")
-    photo.src = image
-    photo.alt = `Photo de ${time}`
-    Object.assign(photo.style, { display: "block", width: "220px", borderRadius: "6px" })
-    const caption = document.createElement("div")
-    caption.textContent = `📷 ${time}`
-    caption.style.marginTop = "4px"
-    content.append(photo, caption)
-
-    const popup = new mapboxgl.Popup({ offset: 24, maxWidth: "none" }).setDOMContent(content)
-    new mapboxgl.Marker({ element }).setLngLat(coordinates).setPopup(popup).addTo(this.map)
+    element.addEventListener("click", () => this.dispatch("photo", { detail: { id } }))
+    new mapboxgl.Marker({ element }).setLngLat(coordinates).addTo(this.map)
   }
 
   #showTrack() {

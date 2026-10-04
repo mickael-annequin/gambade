@@ -26,6 +26,13 @@ class WalkPhotosController < ApplicationController
     end
   end
 
+  # The image is also deleted from Cloudinary (in the background, see has_one_attached).
+  def destroy
+    walk = current_dog.walks.find(params[:walk_id])
+    walk.photos.find(params[:id]).destroy
+    redirect_to walk_path(walk, anchor: "photos"), notice: "Photo supprimée.", status: :see_other
+  end
+
   private
 
   def parse_time(value)

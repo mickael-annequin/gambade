@@ -10,13 +10,22 @@ module WalksHelper
       "?padding=12&access_token=#{ENV['MAPBOX_API_KEY']}"
   end
 
-  # Map markers for the photos placed on the track: a small round thumbnail, and a bigger photo when tapped.
+  # Map markers for the photos placed on the track: a small round thumbnail; tapping it opens the photo viewer.
   def walk_photo_markers(walk)
     walk.photos.with_attached_image.where.not(latitude: nil).order(:taken_at).map do |photo|
-      { thumbnail: cl_image_path(photo.image.key, width: 96, height: 96, crop: :fill, gravity: :auto),
-        image: cl_image_path(photo.image.key, width: 600, crop: :limit),
-        time: photo.taken_at.strftime("%Hh%M"),
+      { id: photo.id,
+        thumbnail: cl_image_path(photo.image.key, width: 96, height: 96, crop: :fill, gravity: :auto),
         coordinates: [ photo.longitude.to_f, photo.latitude.to_f ] }
+    end
+  end
+
+  # The photos for the full-screen viewer (photo_viewer_controller.js), in the gallery order.
+  def walk_photo_viewer_items(walk, photos)
+    photos.map do |photo|
+      { id: photo.id,
+        image: cl_image_path(photo.image.key, width: 1600, height: 1600, crop: :limit, quality: :auto, fetch_format: :auto),
+        time: photo.taken_at ? "📷 #{photo.taken_at.strftime('%Hh%M')}" : "📷 Heure inconnue",
+        delete_url: walk_photo_path(walk, photo) }
     end
   end
 
