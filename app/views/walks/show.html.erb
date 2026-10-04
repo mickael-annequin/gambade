@@ -99,7 +99,7 @@
 <%= form_with url: walk_photos_path(@walk), multipart: true, class: "photo-upload",
               data: { controller: "photo-upload" } do %>
   <label class="photo-upload-button" data-photo-upload-target="button">
-    📸 Ajouter des photos
+    <span data-photo-upload-target="label">📸 Ajouter des photos</span>
     <%= file_field_tag "walk_photos[images][]", multiple: true, accept: "image/*", hidden: true,
                        data: { photo_upload_target: "input", action: "change->photo-upload#send" } %>
   </label>
