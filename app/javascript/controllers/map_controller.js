@@ -83,6 +83,39 @@ export default class extends Controller {
     new mapboxgl.Marker({ element }).setLngLat(coordinates).addTo(this.map)
   }
 
+  // Small white arrows repeated along the track, pointing the way we walked (which way round the loop).
+  // Mapbox turns each one in the direction of the line; the arrow is drawn pointing right.
+  #showDirectionArrows() {
+    const size = 40 // drawn at double size, shown at 20 px (sharp on phone screens)
+    const canvas = document.createElement("canvas")
+    canvas.width = canvas.height = size
+    const context = canvas.getContext("2d")
+    context.lineCap = context.lineJoin = "round"
+    context.beginPath()
+    context.moveTo(14, 10)
+    context.lineTo(26, 20)
+    context.lineTo(14, 30)
+    context.strokeStyle = END_COLOR // brown outline, so the arrow is visible on light map backgrounds
+    context.lineWidth = 9
+    context.stroke()
+    context.strokeStyle = "#ffffff"
+    context.lineWidth = 5
+    context.stroke()
+    this.map.addImage("direction-arrow", context.getImageData(0, 0, size, size), { pixelRatio: 2 })
+
+    this.map.addLayer({
+      id: "track-arrows",
+      type: "symbol",
+      source: "track",
+      layout: {
+        "symbol-placement": "line",
+        "symbol-spacing": 90, // pixels between two arrows, whatever the zoom
+        "icon-image": "direction-arrow",
+        "icon-allow-overlap": true
+      }
+    })
+  }
+
   #showTrack() {
     this.map.addSource("track", {
       type: "geojson",
@@ -95,6 +128,8 @@ export default class extends Controller {
       layout: { "line-join": "round", "line-cap": "round" },
       paint: { "line-color": TRACK_COLOR, "line-width": 5 }
     })
+
+    this.#showDirectionArrows()
 
     new mapboxgl.Marker({ color: START_COLOR }).setLngLat(this.trackValue[0]).addTo(this.map)
     new mapboxgl.Marker({ color: END_COLOR }).setLngLat(this.trackValue.at(-1)).addTo(this.map)
