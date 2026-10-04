@@ -7,6 +7,7 @@ fr:
       friend: "Ami"
       walk_photo: "Photo"
       care: "Soin"
+      weighing: "Pesée"
     attributes:
       dog:
         name: "Nom"
@@ -26,6 +27,9 @@ fr:
         note: "Note"
       walk_photo:
         image: "La photo"
+      weighing:
+        measured_on: "La date"
+        weight_kg: "Le poids"
       care:
         kind: "Le type de soin"
         given_on: "La date"

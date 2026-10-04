@@ -1,0 +1,9 @@
+<div class="title-row">
+  <%= back_button weighings_path %>
+  <h1 class="walk-title">Modifier la pesée</h1>
+</div>
+
+<%= render "form", weighing: @weighing %>
+
+<%= button_to "🗑️ Supprimer cette pesée", weighing_path(@weighing), method: :delete, class: "danger-button mt-4",
+              form: { data: { turbo_confirm: "Supprimer cette pesée ?" } } %>

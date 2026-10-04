@@ -1,0 +1,14 @@
+summer:
+  dog: rex
+  measured_on: 2026-07-01
+  weight_kg: 22.8
+
+autumn:
+  dog: rex
+  measured_on: 2026-10-01
+  weight_kg: 24.3
+
+strangers:
+  dog: milou
+  measured_on: 2026-10-01
+  weight_kg: 8.0

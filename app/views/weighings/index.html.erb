@@ -1,0 +1,31 @@
+<div class="title-row">
+  <%= back_button dog_path(anchor: "poids") %>
+  <h1 class="walk-title">Poids de <%= current_dog.name %></h1>
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+  <%= link_to "+ Nouvelle pesée", new_weighing_path, class: "small-action" %>
+</div>
+
+<% if @weighings.empty? %>
+  <p>Aucune pesée pour l'instant.</p>
+<% end %>
+
+<ul class="encounter-list">
+  <%# Newest first; each one compared with the one before it in time. %>
+  <% @weighings.each_with_index do |weighing, index| %>
+    <li>
+      <%= link_to edit_weighing_path(weighing), class: "encounter-card" do %>
+        <span class="item-card-icon">⚖️</span>
+        <span class="encounter-text">
+          <strong><%= weight(weighing.weight_kg) %></strong>
+          <span class="encounter-no-position">
+            <%= l(weighing.measured_on, format: "%-d %B %Y") %>
+            <% if (change = weight_change(weighing, @weighings[index + 1])) %> · <%= change %><% end %>
+          </span>
+        </span>
+        <span class="encounter-chevron" aria-hidden="true">›</span>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

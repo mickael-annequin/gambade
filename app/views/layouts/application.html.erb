@@ -42,7 +42,7 @@
       <nav class="navbar-bottom">
         <% [ [ "🏠", "Accueil", root_path, %w[pages stats] ],
              [ "📋", "Balades", walks_path, %w[walks walk_trims encounters] ],
-             [ "🐶", "Mon chien", dog_path, %w[dogs friends cares] ] ].each do |icon, label, path, controllers| %>
+             [ "🐶", "Mon chien", dog_path, %w[dogs friends cares weighings] ] ].each do |icon, label, path, controllers| %>
           <%= link_to path, class: ("active" if controllers.include?(controller_name)),
                             aria: { current: ("page" if controllers.include?(controller_name)) } do %>
             <span class="navbar-bottom-icon"><%= icon %></span>

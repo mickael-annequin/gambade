@@ -56,6 +56,38 @@
 </ul>
 <%= link_to "+ Ajouter un soin ou une visite véto", new_care_path, class: "care-add-link" %>
 
+<div class="section-header" id="poids">
+  <h2 class="section-title">Poids</h2>
+  <%= link_to "+ Pesée", new_weighing_path, class: "small-action" %>
+</div>
+<% if @weighings.any? %>
+  <% last, previous = @weighings.last, @weighings[-2] %>
+  <%= link_to weighings_path, class: "weight-summary" do %>
+    <strong><%= weight(last.weight_kg) %></strong>
+    <span>
+      le <%= l(last.measured_on, format: "%-d %b %Y") %>
+      <% if (change = weight_change(last, previous)) %> · <%= change %> depuis le <%= l(previous.measured_on, format: "%-d %b") %><% end %>
+    </span>
+    <span class="encounter-chevron" aria-hidden="true">›</span>
+  <% end %>
+  <% if @weighings.size >= 2 %>
+    <div class="stats-chart"
+         data-controller="weight-chart"
+         data-weight-chart-points-value="<%= @weighings.map { |w| { x: w.measured_on.iso8601, y: w.weight_kg.to_f } }.to_json %>">
+      <canvas data-weight-chart-target="canvas" role="img" aria-label="Courbe du poids de <%= @dog.name %>"></canvas>
+    </div>
+  <% end %>
+<% else %>
+  <%= link_to new_weighing_path, class: "encounter-card" do %>
+    <span class="item-card-icon">⚖️</span>
+    <span class="encounter-text">
+      <strong>Combien pèse <%= @dog.name %> ?</strong>
+      <span class="encounter-details encounter-details-empty">+ Noter une pesée</span>
+    </span>
+    <span class="encounter-chevron" aria-hidden="true">›</span>
+  <% end %>
+<% end %>
+
 <div class="section-header">
   <h2 class="section-title">Ses amis</h2>
   <%= link_to "Voir le carnet", friends_path, class: "small-action" %>
