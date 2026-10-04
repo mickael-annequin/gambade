@@ -45,7 +45,9 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
   *Test :* verrouiller, toucher partout sans effet, appui court sans effet, appui long qui déverrouille.
 - [x] **Habillage aux couleurs de Gambade** 🎨 : Bootstrap personnalisé (palette, police Nunito, logo), écran de balade lisible en plein soleil avec gros boutons sous le pouce, accueil avec stats de la semaine, barre d'onglets, tuiles d'actions, bouton retour rond, cartes de rencontres numérotées comme sur la carte. *Test :* toutes les pages sur le téléphone.
 
-## Phase 2 — V1 complète 🥈
+## Phase 2 — V1 complète 🥈 ✅
+> Mode sombre retiré : l'app sert surtout dehors en plein jour, elle est pensée pour être lisible au soleil.
+
 - [x] PWA installable sur l'écran d'accueil
 - [x] Détails d'une rencontre **pendant** la balade : après « +1 chien », un petit encart facultatif (nom, 😊 😐 😠) qui se referme tout seul si on l'ignore — pour ne pas oublier qui était qui quand on croise plusieurs chiens
 - [x] Notes de balade : humeur à choix multiples (⚡ Plein d'énergie, 😊 Joyeux, 😌 Calme, 😴 Fatigué, 👍 Obéissant, 😤 Chiant) et commentaire libre
@@ -55,7 +57,6 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] Carte globale de tous les trajets (colorés selon le nombre de passages : vert 1 → brun 11+, avec légende), trajet cliquable vers sa balade ; flèches de sens sur la carte d'une balade
 - [ ] Carte de chaleur (*heatmap*) sur la carte globale, pour voir les chemins les plus fréquentés — à faire vers **20–30 balades GPS** (avant, trop peu de données pour qu'elle soit parlante)
 - [x] Météo automatique (Open-Meteo, gratuit sans clé, position arrondie à ~1 km) : ciel, température, vent et pluie au milieu de la balade, aussi pour les anciennes balades GPS
-- [ ] Mode sombre
 
 ## Phase 3 — V1+ 🥉
 - [ ] Objectifs et badges

@@ -30,7 +30,6 @@ Décisions prises le 01/10/2026. Les idées sont classées par priorité. On pou
 - Statistiques par semaine et par mois (km, temps, rencontres), avec graphiques.
 - Carte globale avec tous les trajets superposés.
 - Météo enregistrée automatiquement.
-- Mode sombre.
 - App installable sur l'écran d'accueil (PWA).
 
 ## 🥉 V1+ — améliorations
@@ -45,6 +44,7 @@ Décisions prises le 01/10/2026. Les idées sont classées par priorité. On pou
 - Emballer l'app avec Capacitor pour avoir le GPS en arrière-plan (téléphone en poche, écran éteint).
 
 ## ❌ Écarté pour l'instant
+- Mode sombre : l'app sert surtout dehors en plein jour (écran pensé pour être lisible au soleil).
 - Partage des balades (lien public, image résumé) : les balades restent privées.
 - Rappels et notifications.
 - Prise de photo depuis l'app pendant la balade : on garde seulement l'import après coup.
