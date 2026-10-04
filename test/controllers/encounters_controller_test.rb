@@ -12,6 +12,7 @@ class EncountersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "input[type='radio'][value='joyful'].btn-check"
     assert_select "label.mood-button", 3
+    assert_select "button.danger-button", /Supprimer cette rencontre/
   end
 
   test "saves the details of a dog met" do

@@ -6,15 +6,11 @@
     <span>avec <%= current_dog.name %> 🐶</span>
   </div>
 
-  <%# Opens after "+1 chien": optional name and mood, or cancel a press made by mistake. %>
+  <%# Opens after "+1 chien": the dog is counted only with "✓ OK" (optional name and mood), or cancelled. %>
   <div class="dog-panel" data-tracking-target="dogPanel" hidden>
-    <div class="dog-panel-header">
-      <strong data-tracking-target="dogPanelTitle"></strong>
-      <button type="button" class="btn-close" aria-label="Fermer" data-action="tracking#closeDogPanel"></button>
-    </div>
+    <strong class="dog-panel-title" data-tracking-target="dogPanelTitle"></strong>
     <input type="text" class="form-control form-control-lg" placeholder="Son nom ? (facultatif)" maxlength="50"
-           autocomplete="off" data-tracking-target="dogName"
-           data-action="focus->tracking#keepDogPanelOpen input->tracking#keepDogPanelOpen">
+           autocomplete="off" data-tracking-target="dogName">
     <div class="mood-buttons">
       <% EncountersHelper::MOODS.each do |mood, label| %>
         <button type="button" class="btn btn-outline-primary mood-button" aria-pressed="false"
@@ -25,8 +21,8 @@
       <% end %>
     </div>
     <div class="tracking-row">
-      <button type="button" class="btn btn-link text-danger" data-action="tracking#cancelDog">Annuler ce chien</button>
-      <button type="button" class="btn btn-primary btn-lg" data-action="tracking#closeDogPanel">✓ OK</button>
+      <button type="button" class="btn btn-outline-secondary btn-lg" data-action="tracking#cancelDog">Annuler</button>
+      <button type="button" class="btn btn-primary btn-lg" data-action="tracking#confirmDog">✓ OK</button>
     </div>
   </div>
 

@@ -10,8 +10,10 @@ module WalksHelper
       "?padding=12&access_token=#{ENV['MAPBOX_API_KEY']}"
   end
 
-  # 2100 -> "35 min", 3900 -> "1 h 05"
+  # 2100 -> "35 min", 3900 -> "1 h 05", 20 -> "< 1 min"
   def walk_duration(seconds)
+    return "< 1 min" if seconds.between?(1, 59)
+
     minutes = seconds / 60
     return "#{minutes} min" if minutes < 60
 

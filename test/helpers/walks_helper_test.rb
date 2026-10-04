@@ -4,6 +4,8 @@ class WalksHelperTest < ActionView::TestCase
   test "formats durations" do
     assert_equal "35 min", walk_duration(2100)
     assert_equal "1 h 05", walk_duration(3900)
+    assert_equal "< 1 min", walk_duration(20)
+    assert_equal "0 min", walk_duration(0)
   end
 
   test "formats distances in km with a comma" do

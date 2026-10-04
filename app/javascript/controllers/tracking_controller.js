@@ -14,7 +14,6 @@ const CAR_SECONDS = 60 // fast for this long: "in the car?" question
 const LEFT_START_METERS = 300 // farther than this from the start: the walk has really left
 const BACK_TO_START_METERS = 50 // closer than this after having left: "back to start?" question
 const MIN_WALK_METERS_BEFORE_BACK = 1000
-const DOG_PANEL_SECONDS = 10 // the "+1 chien" panel closes by itself if not touched
 const EARTH_RADIUS_METERS = 6371000
 
 const ACTIVITIES = {
@@ -60,44 +59,40 @@ export default class extends Controller {
     this.#stopTracking()
   }
 
-  // "+1 chien": remembers when, and where. Without a recent position yet,
-  // the dog will be placed at the next position received (see #locateWaitingEncounters).
-  // A small panel then opens to add the dog's name and mood, or to cancel a press made by mistake.
+  // "+1 chien" opens a panel; the dog is counted only with "✓ OK" (2 presses), so a press made
+  // by the phone in a pocket does not count a dog. When and where are taken at the first press.
+  // Without a recent position yet, the dog will be placed at the next position (#locateWaitingEncounters).
   addDog() {
-    if (this.endedAt) return
+    if (this.endedAt || this.pendingEncounter) return // panel already open: ignore (pocket presses)
 
-    this.#saveDogDetails() // two dogs in a row: keep what was typed for the first one
-    this.encounters.push({ met_at: new Date().toISOString(), ...this.#recentPosition() })
-    this.#persist()
-    this.#showDogsCount()
+    this.pendingEncounter = { met_at: new Date().toISOString(), ...this.#recentPosition() }
     navigator.vibrate?.(60)
-    this.#openDogPanel(this.encounters.length - 1)
-  }
-
-  // As soon as the panel is used (typing, mood), it stays open.
-  keepDogPanelOpen() {
-    clearTimeout(this.dogPanelTimer)
+    this.#openDogPanel()
   }
 
   // 😊 😐 😠 (data-tracking-mood-param); pressing the chosen one again unselects it.
   chooseMood({ params: { mood } }) {
-    this.keepDogPanelOpen()
     this.dogMood = this.dogMood === mood ? null : mood
     this.#showMoods()
   }
 
-  closeDogPanel() {
-    this.#saveDogDetails()
+  // "✓ OK": the dog is counted, with its name and mood if they were given.
+  confirmDog() {
+    if (!this.pendingEncounter) return
+
+    this.encounters.push({
+      ...this.pendingEncounter,
+      dog_name: this.dogNameTarget.value.trim() || undefined,
+      mood: this.dogMood || undefined
+    })
+    this.#persist()
+    this.#showDogsCount()
+    navigator.vibrate?.(60)
     this.#hideDogPanel()
   }
 
-  // "Annuler ce chien": the press on "+1 chien" was a mistake.
+  // "Annuler": the press on "+1 chien" was a mistake, nothing is counted.
   cancelDog() {
-    if (this.dogPanelIndex == null) return
-
-    this.encounters.splice(this.dogPanelIndex, 1)
-    this.#persist()
-    this.#showDogsCount()
     this.#hideDogPanel()
   }
 
@@ -146,7 +141,7 @@ export default class extends Controller {
   // Running phases stop with the walk. In the car, the walk really ended when the car started:
   // what came after is dropped.
   #end() {
-    this.closeDogPanel()
+    this.cancelDog() // a dog not confirmed with "✓ OK" is not counted
     this.endedAt = this.suggestedEndAt || new Date()
     const endedAt = this.endedAt.toISOString()
     this.points = this.points.filter((point) => new Date(point.recorded_at) <= this.endedAt)
@@ -304,7 +299,7 @@ export default class extends Controller {
     const isWaiting = (item, time) =>
       item.latitude === undefined && (at - new Date(time)) / 1000 < MAX_POSITION_AGE_SECONDS
     const waiting = [
-      ...this.encounters.filter((encounter) => isWaiting(encounter, encounter.met_at)),
+      ...[ this.pendingEncounter, ...this.encounters ].filter((encounter) => encounter && isWaiting(encounter, encounter.met_at)),
       ...this.activities.filter((activity) => isWaiting(activity, activity.started_at))
     ]
     if (waiting.length === 0) return
@@ -395,31 +390,18 @@ export default class extends Controller {
     }
   }
 
-  #openDogPanel(index) {
-    this.dogPanelIndex = index
+  #openDogPanel() {
     this.dogMood = null
     this.dogNameTarget.value = ""
-    this.dogPanelTitleTarget.textContent = `🐕 Chien n°${index + 1} compté !`
+    this.dogPanelTitleTarget.textContent = `🐕 Chien n°${this.encounters.length + 1} ?`
     this.#showMoods()
     this.dogPanelTarget.hidden = false
-    clearTimeout(this.dogPanelTimer)
-    this.dogPanelTimer = setTimeout(() => this.closeDogPanel(), DOG_PANEL_SECONDS * 1000)
   }
 
   #hideDogPanel() {
-    clearTimeout(this.dogPanelTimer)
-    this.dogPanelIndex = null
+    this.pendingEncounter = null
     this.dogPanelTarget.hidden = true
     this.dogNameTarget.blur() // closes the phone keyboard
-  }
-
-  #saveDogDetails() {
-    const encounter = this.encounters[this.dogPanelIndex]
-    if (!encounter) return
-
-    encounter.dog_name = this.dogNameTarget.value.trim() || undefined
-    encounter.mood = this.dogMood || undefined
-    this.#persist()
   }
 
   #showMoods() {

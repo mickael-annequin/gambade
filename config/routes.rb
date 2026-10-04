@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :walks do
     resource :trim, only: %i[edit update], controller: "walk_trims"
     resources :encounters, only: %i[edit update destroy]
+    resources :activities, only: :destroy
   end
   resources :tracked_walks, only: %i[new create]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

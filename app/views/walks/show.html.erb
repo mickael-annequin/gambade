@@ -56,6 +56,28 @@
   <p class="activity-summary"><%= summary %></p>
 <% end %>
 
+<% activities = @walk.activities.in_order %>
+<% if activities.any? %>
+  <h2 class="section-title">Jeu et baignade</h2>
+  <ul class="item-list">
+    <% activities.each do |activity| %>
+      <li class="item-card">
+        <span class="item-card-icon"><%= activity.play? ? "🎾" : "💦" %></span>
+        <span class="item-card-text">
+          <strong><%= activity.play? ? "Jeu" : "Baignade" %></strong>
+          <span><%= l(activity.started_at, format: "%Hh%M") %> → <%= l(activity.ended_at, format: "%Hh%M") %>
+            · <%= walk_duration(activity.duration_seconds) %></span>
+        </span>
+        <%= button_to walk_activity_path(@walk, activity), method: :delete, class: "item-card-delete",
+                      title: "Supprimer", aria: { label: "Supprimer cette phase" },
+                      form: { data: { turbo_confirm: "Supprimer cette phase de #{activity.play? ? 'jeu' : 'baignade'} ?" } } do %>
+          🗑️
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
 <% encounters = @walk.encounters.in_order %>
 <% if encounters.any? %>
   <h2 class="section-title">Rencontres<%= " (facultatif)" if params[:finished] %></h2>

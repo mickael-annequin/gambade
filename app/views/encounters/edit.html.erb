@@ -44,6 +44,7 @@
   <%= f.submit "✓ Enregistrer", class: "btn btn-primary btn-lg w-100" %>
 <% end %>
 
-<%= button_to "🗑️ Supprimer cette rencontre", walk_encounter_path(@walk, @encounter), method: :delete,
-              class: "btn btn-link text-danger w-100 mt-3",
-              form: { data: { turbo_confirm: "Supprimer cette rencontre ? (appui en trop sur « +1 chien »)" } } %>
+<%= button_to walk_encounter_path(@walk, @encounter), method: :delete, class: "danger-button mt-3",
+              form: { data: { turbo_confirm: "Supprimer cette rencontre ? (appui en trop sur « +1 chien »)" } } do %>
+  🗑️ Supprimer cette rencontre
+<% end %>

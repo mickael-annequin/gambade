@@ -51,6 +51,13 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", "Rencontres (facultatif)"
   end
 
+  test "lists the play and swim phases, each with a delete button" do
+    get walk_path(walks(:evening))
+    assert_select ".item-card", 2
+    assert_select ".item-card", /Baignade\s+18h20 → 18h28\s+· 8 min/
+    assert_select "form[action='#{walk_activity_path(walks(:evening), activities(:swim))}'] button.item-card-delete"
+  end
+
   test "shows a walk entered by hand without a map nor cut link" do
     get walk_path(walks(:morning))
     assert_response :success
