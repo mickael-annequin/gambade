@@ -15,5 +15,12 @@
        data-walks-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"
        data-walks-map-walks-value="<%= items.to_json %>">
   </div>
+  <%# Same colors as walks_map_controller.js %>
+  <ul class="walks-map-legend" aria-label="Nombre de passages">
+    <% [ [ "#5BA55B", "1" ], [ "#E8C547", "2–3" ], [ "#E08E45", "4–6" ], [ "#C8442F", "7–10" ], [ "#3B3127", "11+" ] ].each do |color, passes| %>
+      <li><span class="walks-map-legend-line" style="background: <%= color %>"></span><%= passes %></li>
+    <% end %>
+    <li class="walks-map-legend-unit">passages</li>
+  </ul>
   <p class="walks-map-hint">Touche un trajet pour voir sa balade.</p>
 <% end %>

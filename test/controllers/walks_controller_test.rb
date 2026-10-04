@@ -127,7 +127,7 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     walks = JSON.parse(css_select(".walks-map").first["data-walks-map-walks-value"])
     assert_equal [ walk_path(walks(:evening)) ], walks.map { |walk| walk["url"] } # not the other account's walk
-    assert_equal [ [ 1.5012, 48.4206 ], [ 1.502, 48.4211 ] ], walks.first["track"]
+    assert_equal [ { "passes" => 1, "track" => [ [ 1.5012, 48.4206 ], [ 1.502, 48.4211 ] ] } ], walks.first["pieces"]
     assert_select ".walks-map-summary", /1 balade · 2,3 km au total/
   end
 

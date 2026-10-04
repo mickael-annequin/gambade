@@ -52,7 +52,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] Carnet d'amis : table `friends`, lien rencontre → ami, classement des amis les plus croisés (dans « Mon chien »)
 - [x] Photos de balade : import depuis la galerie (plusieurs à la fois), placées sur le trajet grâce à l'heure de prise de vue (EXIF, lue avec exifr), miniatures rondes sur la carte, visionneuse plein écran (flèches, glissé, suppression)
 - [ ] Statistiques par semaine/mois avec graphiques
-- [x] Carte globale de tous les trajets (semi-transparents : les chemins habituels ressortent), trajet cliquable vers sa balade ; flèches de sens sur la carte d'une balade
+- [x] Carte globale de tous les trajets (colorés selon le nombre de passages : vert 1 → brun 11+, avec légende), trajet cliquable vers sa balade ; flèches de sens sur la carte d'une balade
 - [ ] Carte de chaleur (*heatmap*) sur la carte globale, pour voir les chemins les plus fréquentés — à faire vers **20–30 balades GPS** (avant, trop peu de données pour qu'elle soit parlante)
 - [ ] Météo automatique
 - [ ] Mode sombre

@@ -29,13 +29,16 @@ module WalksHelper
     end
   end
 
-  # The tracks for the global map (walks_map_controller.js), each with a label and a link to its walk.
+  # The tracks for the global map (walks_map_controller.js), each with a label, a link to its walk, and cut
+  # into pieces colored by how many walks went there: [{ passes: 3, track: [[lng, lat], ...] }, ...]
   def walks_map_items(walks)
+    frequency = PathFrequency.new(walks)
     walks.filter_map do |walk|
       track = walk.simplified_track(max_points: 150)
       next if track.size < 2
 
-      { url: walk_path(walk), label: "#{walk_day(walk.started_at)} · #{walk_distance(walk.distance_meters)}", track: track }
+      { url: walk_path(walk), label: "#{walk_day(walk.started_at)} · #{walk_distance(walk.distance_meters)}",
+        pieces: frequency.pieces(track) }
     end
   end
 

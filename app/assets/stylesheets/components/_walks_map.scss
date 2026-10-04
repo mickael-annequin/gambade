@@ -18,3 +18,30 @@
   color: rgba($bark, 0.7);
   text-align: center;
 }
+
+// Under the map: what each color means.
+.walks-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 0.9rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+}
+
+.walks-map-legend-line {
+  width: 1.2rem;
+  height: 0.3rem;
+  border-radius: 0.15rem;
+}
+
+.walks-map-legend-unit { font-weight: 400; }

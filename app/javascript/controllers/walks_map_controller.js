@@ -1,15 +1,22 @@
 import { Controller } from "@hotwired/stimulus"
 import mapboxgl from "mapbox-gl"
 
-const TRACK_COLOR = "#E08E45" // ocre, like the track of one walk (map_controller.js)
-const SELECTED_COLOR = "#2F5D50" // vert forêt
+// Color of a track piece from the number of walks that went there (same as the legend under the map).
+const PASSES_COLOR = [
+  "step", [ "get", "passes" ],
+  "#5BA55B", // 1: green
+  2, "#E8C547", // 2–3: yellow
+  4, "#E08E45", // 4–6: ochre
+  7, "#C8442F", // 7–10: red
+  11, "#3B3127" // 11+: bark brown
+]
 
-// All the walks on one map. The tracks are see-through: where they overlap
-// (the usual paths), the color gets stronger. Tapping a track shows its walk.
+// All the walks on one map. Each piece of track is colored by how many walks went there
+// (computed by PathFrequency), so the usual paths stand out. Tapping a track shows its walk.
 export default class extends Controller {
   static values = {
     apiKey: String,
-    walks: Array // [{ url: "/walks/3", label: "Hier · 2,3 km", track: [[lng, lat], ...] }, ...]
+    walks: Array // [{ url: "/walks/3", label: "Hier · 2,3 km", pieces: [{ passes: 2, track: [[lng, lat], ...] }] }, ...]
   }
 
   connect() {
@@ -17,7 +24,7 @@ export default class extends Controller {
     this.map = new mapboxgl.Map({
       container: this.element,
       style: "mapbox://styles/mapbox/outdoors-v12",
-      center: this.walksValue[0].track[0],
+      center: this.walksValue[0].pieces[0].track[0],
       zoom: 13
     })
     this.map.on("load", () => this.#showWalks())
@@ -29,27 +36,37 @@ export default class extends Controller {
   }
 
   #showWalks() {
-    this.map.addSource("walks", {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features: this.walksValue.map(({ url, label, track }, index) => ({
-          type: "Feature", id: index, properties: { url, label },
-          geometry: { type: "LineString", coordinates: track }
-        }))
-      }
-    })
+    const features = this.walksValue.flatMap(({ url, label, pieces }, walk) =>
+      pieces.map(({ passes, track }) => ({
+        type: "Feature", properties: { walk, url, label, passes },
+        geometry: { type: "LineString", coordinates: track }
+      }))
+    )
+    this.map.addSource("walks", { type: "geojson", data: { type: "FeatureCollection", features } })
+
     this.map.addLayer({
       id: "walks",
       type: "line",
       source: "walks",
+      layout: { "line-join": "round", "line-cap": "round", "line-sort-key": [ "get", "passes" ] }, // busiest on top
+      paint: { "line-color": PASSES_COLOR, "line-width": 4 }
+    })
+    // The tapped walk: drawn again on top, thicker, with a white outline (nothing selected at first).
+    this.map.addLayer({
+      id: "selected-outline",
+      type: "line",
+      source: "walks",
+      filter: [ "==", [ "get", "walk" ], -1 ],
       layout: { "line-join": "round", "line-cap": "round" },
-      paint: {
-        "line-color": [ "case", [ "boolean", [ "feature-state", "selected" ], false ], SELECTED_COLOR, TRACK_COLOR ],
-        "line-width": 4,
-        // Low, so overlaps keep getting darker: 1 walk 30 %, 2 → 51 %, 3 → 66 %, 5 → 83 %, 8 → 94 %
-        "line-opacity": 0.3
-      }
+      paint: { "line-color": "#ffffff", "line-width": 10 }
+    })
+    this.map.addLayer({
+      id: "selected",
+      type: "line",
+      source: "walks",
+      filter: [ "==", [ "get", "walk" ], -1 ],
+      layout: { "line-join": "round", "line-cap": "round" },
+      paint: { "line-color": PASSES_COLOR, "line-width": 6 }
     })
     // An invisible wide line on top, so a track is easy to tap with a finger.
     this.map.addLayer({
@@ -62,16 +79,17 @@ export default class extends Controller {
     this.map.on("mouseenter", "walks-touch", () => { this.map.getCanvas().style.cursor = "pointer" })
     this.map.on("mouseleave", "walks-touch", () => { this.map.getCanvas().style.cursor = "" })
 
-    const bounds = new mapboxgl.LngLatBounds(this.walksValue[0].track[0], this.walksValue[0].track[0])
-    this.walksValue.forEach(({ track }) => track.forEach((point) => bounds.extend(point)))
+    const first = this.walksValue[0].pieces[0].track[0]
+    const bounds = new mapboxgl.LngLatBounds(first, first)
+    features.forEach(({ geometry }) => geometry.coordinates.forEach((point) => bounds.extend(point)))
     this.map.fitBounds(bounds, { padding: 30, maxZoom: 16, duration: 0 })
   }
 
-  // The tapped track turns green, with a bubble: its day, its distance and a link to the walk.
+  // The tapped walk stands out, with a bubble: its day, its distance and a link to the walk.
   #select(feature, lngLat) {
-    if (this.selectedId !== undefined) this.map.setFeatureState({ source: "walks", id: this.selectedId }, { selected: false })
-    this.selectedId = feature.id
-    this.map.setFeatureState({ source: "walks", id: feature.id }, { selected: true })
+    const walkFilter = [ "==", [ "get", "walk" ], feature.properties.walk ]
+    this.map.setFilter("selected-outline", walkFilter)
+    this.map.setFilter("selected", walkFilter)
 
     const content = document.createElement("div")
     const label = document.createElement("strong")
