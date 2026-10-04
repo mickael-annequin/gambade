@@ -12,12 +12,25 @@ class WalkPhotosController < ApplicationController
       return redirect_to walk_path(walk), alert: "#{MAX_PHOTOS_PER_SENDING} photos maximum à la fois."
     end
 
-    photos = images.map { |image| walk.photos.new(image: image) }
+    # Time each photo was taken (read on the phone, same order as the photos) → its place on the track.
+    taken_ats = Array(params.dig(:walk_photos, :taken_ats))
+    photos = images.each_with_index.map do |image, index|
+      taken_at = parse_time(taken_ats[index])
+      walk.photos.new(image: image, taken_at: taken_at, **walk.position_at(taken_at).to_h)
+    end
     if photos.all?(&:valid?)
       photos.each(&:save!)
       redirect_to walk_path(walk, anchor: "photos"), notice: photos.size > 1 ? "#{photos.size} photos ajoutées." : "Photo ajoutée."
     else
       redirect_to walk_path(walk), alert: photos.flat_map { |photo| photo.errors.full_messages }.uniq.to_sentence
     end
+  end
+
+  private
+
+  def parse_time(value)
+    Time.zone.parse(value.to_s)
+  rescue ArgumentError
+    nil
   end
 end

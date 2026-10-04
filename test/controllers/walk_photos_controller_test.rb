@@ -14,6 +14,17 @@ class WalkPhotosControllerTest < ActionDispatch::IntegrationTest
     assert walks(:evening).photos.first.image.attached?
   end
 
+  test "places each photo on the track from the time it was taken" do
+    images = [ fixture_file_upload("dog.png", "image/png"), fixture_file_upload("dog.png", "image/png") ]
+    # 18h30 in Paris, during the walk; the second photo doesn't say when it was taken (e.g. a screenshot)
+    post walk_photos_path(walks(:evening)),
+         params: { walk_photos: { images: images, taken_ats: [ "2026-10-01T16:30:00.000Z", "" ] } }
+    placed, unknown = walks(:evening).photos.order(:id)
+    assert_equal Time.zone.parse("2026-10-01 18:30"), placed.taken_at
+    assert_equal [ 48.4211, 1.502 ], [ placed.latitude, placed.longitude ]
+    assert_equal [ nil, nil, nil ], [ unknown.taken_at, unknown.latitude, unknown.longitude ]
+  end
+
   test "refuses a file that is not an image" do
     assert_no_difference "WalkPhoto.count" do
       post walk_photos_path(walks(:evening)),

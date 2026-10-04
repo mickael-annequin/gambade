@@ -70,6 +70,16 @@ class WalkTest < ActiveSupport::TestCase
     assert_equal "18h05", progress.first[:time]
   end
 
+  test "finds where we were at a given time, to place a photo" do
+    walk = walks(:evening) # 18h05 → 18h40, points at 18h05 and 18h25
+    at = ->(time) { walk.position_at(Time.zone.parse("2026-10-01 #{time}"))&.fetch(:latitude) }
+    assert_equal 48.4206, at.call("18:10")  # last point before: the start
+    assert_equal 48.4211, at.call("18:30")  # standing still since 18h25: no new point, still there
+    assert_equal 48.4206, at.call("18:04:30") # just before the first point: the start
+    assert_nil at.call("19:30") # after the walk
+    assert_nil walk.position_at(nil) # photo without a time
+  end
+
   test "simplifies a long track but keeps its start and end" do
     walk = Walk.new(started_at: Time.current)
     1000.times { |i| walk.track_points.build(latitude: 48.42 + i * 0.0001, longitude: 1.5, recorded_at: Time.current + i * 5) }

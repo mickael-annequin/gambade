@@ -74,6 +74,15 @@ class Walk < ApplicationRecord
   end
 
   # [[longitude, latitude], ...] in time order, the format Mapbox expects.
+  # Where we were at this time (to place a photo): the last point recorded before it, because no point
+  # is recorded while standing still (e.g. while taking photos). nil outside the walk or without a track.
+  def position_at(time)
+    return if time.nil? || time < started_at - 1.minute || time > started_at + duration_seconds + 1.minute
+
+    point = track_points.where(recorded_at: ..time).order(:recorded_at).last || track_points.order(:recorded_at).first
+    { latitude: point.latitude, longitude: point.longitude } if point
+  end
+
   def track_coordinates
     track_points.in_order.pluck(:longitude, :latitude).map { |lng, lat| [ lng.to_f, lat.to_f ] }
   end
