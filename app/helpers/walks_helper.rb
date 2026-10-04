@@ -29,6 +29,16 @@ module WalksHelper
     end
   end
 
+  # The tracks for the global map (walks_map_controller.js), each with a label and a link to its walk.
+  def walks_map_items(walks)
+    walks.filter_map do |walk|
+      track = walk.simplified_track(max_points: 150)
+      next if track.size < 2
+
+      { url: walk_path(walk), label: "#{walk_day(walk.started_at)} · #{walk_distance(walk.distance_meters)}", track: track }
+    end
+  end
+
   # 2100 -> "35 min", 3900 -> "1 h 05", 20 -> "< 1 min"
   def walk_duration(seconds)
     return "< 1 min" if seconds.between?(1, 59)

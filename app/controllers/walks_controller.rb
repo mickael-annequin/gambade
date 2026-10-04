@@ -9,6 +9,11 @@ class WalksController < ApplicationController
   def show
   end
 
+  # All the tracks on one map.
+  def map
+    @walks = current_dog.walks.where(tracked: true).most_recent_first.includes(:track_points)
+  end
+
   def new
     @walk = current_dog.walks.new(started_at: Time.current.change(sec: 0))
   end

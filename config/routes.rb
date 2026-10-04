@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   root to: "pages#home"
   resource :dog, only: %i[show new create edit update]
   resources :walks do
+    get :map, on: :collection # /walks/map: all the tracks on one map
     resource :trim, only: %i[edit update], controller: "walk_trims"
     resource :notes, only: %i[edit update], controller: "walk_notes"
     resources :encounters, only: %i[edit update destroy]

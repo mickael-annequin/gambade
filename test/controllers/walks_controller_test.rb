@@ -121,4 +121,20 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     get walk_path(walks(:strangers_walk))
     assert_response :not_found
   end
+
+  test "the global map shows all my GPS tracks, with a link to each walk" do
+    get map_walks_path
+    assert_response :success
+    walks = JSON.parse(css_select(".walks-map").first["data-walks-map-walks-value"])
+    assert_equal [ walk_path(walks(:evening)) ], walks.map { |walk| walk["url"] } # not the other account's walk
+    assert_equal [ [ 1.5012, 48.4206 ], [ 1.502, 48.4211 ] ], walks.first["track"]
+    assert_select ".walks-map-summary", /1 balade · 2,3 km au total/
+  end
+
+  test "the global map says when there is no GPS track yet" do
+    TrackPoint.delete_all
+    get map_walks_path
+    assert_select ".walks-map", 0
+    assert_select "p", /Aucun trajet GPS/
+  end
 end

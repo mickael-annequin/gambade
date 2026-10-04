@@ -1,6 +1,9 @@
 <div class="page-header">
   <h1>Mes balades</h1>
-  <%= link_to "+ Ajouter", new_walk_path, class: "small-action" %>
+  <div class="page-header-actions">
+    <%= link_to "🗺️ Carte", map_walks_path, class: "small-action" %>
+    <%= link_to "+ Ajouter", new_walk_path, class: "small-action" %>
+  </div>
 </div>
 
 <% if @walks.empty? %>

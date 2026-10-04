@@ -1,0 +1,19 @@
+<% items = walks_map_items(@walks) %>
+<div class="title-row">
+  <%= back_button walks_path, label: "Retour aux balades" %>
+  <h1 class="walk-title">Tous les trajets</h1>
+</div>
+
+<% if items.empty? %>
+  <p>Aucun trajet GPS pour l'instant : démarre une balade avec le suivi pour la voir ici.</p>
+<% else %>
+  <p class="walks-map-summary">
+    <%= pluralize(items.size, "balade") %> · <%= walk_distance(@walks.sum(&:distance_meters)) %> au total
+  </p>
+  <div class="walks-map"
+       data-controller="walks-map"
+       data-walks-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"
+       data-walks-map-walks-value="<%= items.to_json %>">
+  </div>
+  <p class="walks-map-hint">Touche un trajet pour voir sa balade.</p>
+<% end %>

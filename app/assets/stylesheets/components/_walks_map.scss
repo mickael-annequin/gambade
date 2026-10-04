@@ -1,0 +1,20 @@
+// Global map of all the walks (/walks/map): almost the whole screen, above the tab bar.
+.walks-map {
+  height: calc(100svh - 15rem);
+  min-height: 300px;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba($bark, 0.15);
+}
+
+.walks-map-summary {
+  margin: 0.5rem 0 0.75rem;
+  font-weight: 700;
+}
+
+.walks-map-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: rgba($bark, 0.7);
+  text-align: center;
+}
