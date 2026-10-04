@@ -5,6 +5,7 @@ fr:
       dog: "Chien"
       walk: "Balade"
       friend: "Ami"
+      walk_photo: "Photo"
     attributes:
       dog:
         name: "Nom"
@@ -22,6 +23,8 @@ fr:
         name: "Nom"
         breed: "Race"
         note: "Note"
+      walk_photo:
+        image: "La photo"
       encounter:
         friend: "Ami du carnet"
         dog_name: "Nom du chien"
@@ -37,6 +40,11 @@ fr:
             photo:
               not_an_image: "doit être une image"
               too_big: "est trop lourde (10 Mo maximum)"
+        walk_photo:
+          attributes:
+            image:
+              not_an_image: "doit être une image"
+              too_big: "est trop lourde (20 Mo maximum)"
         activity:
           attributes:
             ended_at:

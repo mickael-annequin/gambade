@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resource :notes, only: %i[edit update], controller: "walk_notes"
     resources :encounters, only: %i[edit update destroy]
     resources :activities, only: :destroy
+    resources :photos, only: :create, controller: "walk_photos"
   end
   resources :tracked_walks, only: %i[new create]
   resources :friends

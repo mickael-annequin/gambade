@@ -86,6 +86,25 @@
   <% end %>
 <% end %>
 
+<h2 class="section-title" id="photos">Photos</h2>
+<% photos = @walk.photos.with_attached_image.order(:created_at) %>
+<% if photos.any? %>
+  <div class="walk-photos">
+    <% photos.each do |photo| %>
+      <%= cl_image_tag photo.image.key, width: 300, height: 300, crop: :fill, gravity: :auto,
+                       class: "walk-photo", alt: "Photo de la balade", loading: "lazy" %>
+    <% end %>
+  </div>
+<% end %>
+<%= form_with url: walk_photos_path(@walk), multipart: true, class: "photo-upload",
+              data: { controller: "photo-upload" } do %>
+  <label class="photo-upload-button" data-photo-upload-target="button">
+    📸 Ajouter des photos
+    <%= file_field_tag "walk_photos[images][]", multiple: true, accept: "image/*", hidden: true,
+                       data: { photo_upload_target: "input", action: "change->photo-upload#send" } %>
+  </label>
+<% end %>
+
 <% activities = @walk.activities.in_order %>
 <% if activities.any? %>
   <h2 class="section-title">Jeu et baignade</h2>

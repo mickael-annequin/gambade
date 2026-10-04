@@ -1,0 +1,36 @@
+// Photos of a walk: square thumbnails, 3 per row, and the dashed "📸 Ajouter des photos" button.
+.walk-photos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.walk-photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: $border-radius;
+  box-shadow: 0 1px 4px rgba($bark, 0.15);
+}
+
+.photo-upload-button {
+  display: block;
+  padding: 0.9rem;
+  border: 2px dashed rgba($forest, 0.4);
+  border-radius: $border-radius-lg;
+  color: $forest;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.1s;
+
+  &:active { transform: scale(0.97); }
+
+  // While the photos are being sent: no second sending.
+  &.is-sending {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+}

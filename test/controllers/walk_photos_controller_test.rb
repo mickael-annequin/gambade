@@ -1,0 +1,46 @@
+require "test_helper"
+
+class WalkPhotosControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    sign_in users(:mika)
+  end
+
+  test "adds several photos at once to a walk" do
+    images = [ fixture_file_upload("dog.png", "image/png"), fixture_file_upload("dog.png", "image/png") ]
+    assert_difference "walks(:evening).photos.count", 2 do
+      post walk_photos_path(walks(:evening)), params: { walk_photos: { images: images } }
+    end
+    assert_redirected_to walk_path(walks(:evening), anchor: "photos")
+    assert walks(:evening).photos.first.image.attached?
+  end
+
+  test "refuses a file that is not an image" do
+    assert_no_difference "WalkPhoto.count" do
+      post walk_photos_path(walks(:evening)),
+           params: { walk_photos: { images: [ fixture_file_upload("notes.txt", "text/plain") ] } }
+    end
+    assert_equal "La photo doit être une image", flash[:alert]
+  end
+
+  test "asks to choose a photo when none is sent" do
+    assert_no_difference "WalkPhoto.count" do
+      post walk_photos_path(walks(:evening)), params: {}
+    end
+    assert_equal "Choisis au moins une photo.", flash[:alert]
+  end
+
+  test "cannot add photos to another account's walk" do
+    assert_no_difference "WalkPhoto.count" do
+      post walk_photos_path(walks(:strangers_walk)),
+           params: { walk_photos: { images: [ fixture_file_upload("dog.png", "image/png") ] } }
+    end
+    assert_response :not_found
+  end
+
+  test "the walk page shows its photos and the button to add some" do
+    walks(:evening).photos.create!(image: fixture_file_upload("dog.png", "image/png"))
+    get walk_path(walks(:evening))
+    assert_select ".walk-photo", 1
+    assert_select "input[type=file][multiple][accept='image/*']"
+  end
+end

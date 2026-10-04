@@ -3,6 +3,7 @@ class Walk < ApplicationRecord
   has_many :track_points, dependent: :delete_all
   has_many :encounters, dependent: :destroy
   has_many :activities, dependent: :delete_all
+  has_many :photos, class_name: "WalkPhoto", dependent: :destroy # destroy: also deletes the images on Cloudinary
 
   validates :started_at, presence: true
   validates :duration_seconds, presence: true, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
