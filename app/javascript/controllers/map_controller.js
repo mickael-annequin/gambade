@@ -83,7 +83,7 @@ export default class extends Controller {
     new mapboxgl.Marker({ element }).setLngLat(coordinates).addTo(this.map)
   }
 
-  // Small white arrows repeated along the track, pointing the way we walked (which way round the loop).
+  // Small ochre arrows repeated along the track, pointing the way we walked (which way round the loop).
   // Mapbox turns each one in the direction of the line; the arrow is drawn pointing right.
   #showDirectionArrows() {
     const size = 40 // drawn at double size, shown at 20 px (sharp on phone screens)
@@ -95,11 +95,8 @@ export default class extends Controller {
     context.moveTo(14, 10)
     context.lineTo(26, 20)
     context.lineTo(14, 30)
-    context.strokeStyle = END_COLOR // brown outline, so the arrow is visible on light map backgrounds
-    context.lineWidth = 9
-    context.stroke()
-    context.strokeStyle = "#ffffff"
-    context.lineWidth = 5
+    context.strokeStyle = TRACK_COLOR // same color as the track: the arrow sticks out of the line on both sides
+    context.lineWidth = 6
     context.stroke()
     this.map.addImage("direction-arrow", context.getImageData(0, 0, size, size), { pixelRatio: 2 })
 
