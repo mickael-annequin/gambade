@@ -20,8 +20,11 @@ class StatsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 12, labels.size
   end
 
-  test "the home page links to the stats" do
+  test "the home page and the walks list link to the stats" do
     get root_path
     assert_select "a[href='#{stats_path}']"
+    get walks_path
+    assert_select ".walk-actions a[href='#{stats_path}']"
+    assert_select ".walk-actions a[href='#{map_walks_path}']"
   end
 end
