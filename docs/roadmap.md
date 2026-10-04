@@ -60,7 +60,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 
 ## Phase 3 — V1+ 🥉
 - [x] Suivi santé dans « Mon chien » : vaccins (1 an), vermifuge et anti-puces (3 mois), visites véto ; date du prochain calculée, statut « dans X jours / en retard »
-- [ ] Rappel des soins sur l'accueil (soin à faire dans moins de 7 jours ou en retard)
+- [x] Rappel des soins sur l'accueil (soin à faire dans moins de 7 jours ou en retard)
 - [ ] Suivi du poids avec courbe
 - [ ] Objectifs et badges
 - [ ] Lieux favoris

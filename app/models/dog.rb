@@ -15,14 +15,19 @@ class Dog < ApplicationRecord
   validate :birth_date_not_in_future
   validate :photo_is_an_image
 
-  # Age in full years, computed from the birth date so it stays up to date.
-  def age
+  # Age in full months (20 for 1 year and 8 months), computed from the birth date so it stays up to date.
+  def age_in_months
     return if birth_date.nil?
 
     today = Date.current
-    years = today.year - birth_date.year
-    years -= 1 if today < birth_date + years.years
-    years
+    months = (today.year * 12 + today.month) - (birth_date.year * 12 + birth_date.month)
+    months -= 1 if today < birth_date + months.months
+    months
+  end
+
+  # Age in full years.
+  def age
+    age_in_months && age_in_months / 12
   end
 
   private
