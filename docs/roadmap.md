@@ -50,7 +50,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] Détails d'une rencontre **pendant** la balade : après « +1 chien », un petit encart facultatif (nom, 😊 😐 😠) qui se referme tout seul si on l'ignore — pour ne pas oublier qui était qui quand on croise plusieurs chiens
 - [x] Notes de balade : humeur à choix multiples (⚡ Plein d'énergie, 😊 Joyeux, 😌 Calme, 😴 Fatigué, 👍 Obéissant, 😤 Chiant) et commentaire libre
 - [x] Carnet d'amis : table `friends`, lien rencontre → ami, classement des amis les plus croisés (dans « Mon chien »)
-- [ ] Import de photos placées sur le trajet
+- [x] Photos de balade : import depuis la galerie (plusieurs à la fois), placées sur le trajet grâce à l'heure de prise de vue (EXIF, lue avec exifr), miniatures rondes sur la carte, visionneuse plein écran (flèches, glissé, suppression)
 - [ ] Statistiques par semaine/mois avec graphiques
 - [ ] Carte globale de tous les trajets
 - [ ] Météo automatique
