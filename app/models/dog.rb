@@ -3,6 +3,12 @@ class Dog < ApplicationRecord
   has_one_attached :photo
   has_many :walks, dependent: :destroy
   has_many :friends, dependent: :destroy
+  has_many :cares, dependent: :delete_all
+
+  # The last care of each kind that has a next one (vaccine, dewormer, flea): what to watch.
+  def latest_cares
+    Care::KINDS.filter_map { |kind, info| cares.where(kind: kind).latest_first.first if info[:every] }
+  end
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :breed, length: { maximum: 50 }

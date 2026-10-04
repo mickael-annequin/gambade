@@ -1,0 +1,15 @@
+<%# One care: kind, date and product; with `next: true`, when the next one is due (dog page). %>
+<%= link_to edit_care_path(care), class: "encounter-card" do %>
+  <span class="item-card-icon"><%= care.label.split.first %></span>
+  <span class="encounter-text">
+    <strong><%= care.label.split(" ", 2).last %> · <%= l(care.given_on, format: "%-d %b %Y") %></strong>
+    <% if local_assigns[:next] && (status = care_status(care)) %>
+      <span class="care-status <%= care_status_class(care) %>"><%= status %></span>
+    <% end %>
+    <% details = [ care.product, care.note ].compact_blank.join(" · ") %>
+    <% if details.present? %>
+      <span class="encounter-no-position"><%= details %></span>
+    <% end %>
+  </span>
+  <span class="encounter-chevron" aria-hidden="true">›</span>
+<% end %>

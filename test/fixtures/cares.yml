@@ -1,0 +1,18 @@
+dewormer:
+  dog: rex
+  kind: dewormer
+  given_on: 2026-08-01
+  next_due_on: 2026-11-01
+  product: Milbemax
+
+old_dewormer:
+  dog: rex
+  kind: dewormer
+  given_on: 2026-05-01
+  next_due_on: 2026-08-01
+
+strangers_vaccine:
+  dog: milou
+  kind: vaccine
+  given_on: 2026-01-10
+  next_due_on: 2027-01-10

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_04_094518) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_04_102122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_094518) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["walk_id"], name: "index_activities_on_walk_id"
+  end
+
+  create_table "cares", force: :cascade do |t|
+    t.bigint "dog_id", null: false
+    t.string "kind", null: false
+    t.date "given_on", null: false
+    t.date "next_due_on"
+    t.string "product"
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dog_id", "kind", "given_on"], name: "index_cares_on_dog_id_and_kind_and_given_on"
+    t.index ["dog_id"], name: "index_cares_on_dog_id"
   end
 
   create_table "dogs", force: :cascade do |t|
@@ -146,6 +159,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_094518) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "activities", "walks"
+  add_foreign_key "cares", "dogs"
   add_foreign_key "dogs", "users"
   add_foreign_key "encounters", "friends", on_delete: :nullify
   add_foreign_key "encounters", "walks"

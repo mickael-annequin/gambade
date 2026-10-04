@@ -1,0 +1,21 @@
+<div class="title-row">
+  <%= back_button dog_path(anchor: "sante") %>
+  <h1 class="walk-title">Santé de <%= current_dog.name %></h1>
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+  <%= link_to "+ Ajouter un soin", new_care_path, class: "small-action" %>
+</div>
+
+<% if @cares.empty? %>
+  <p>Aucun soin enregistré pour l'instant.</p>
+<% end %>
+
+<% @cares.group_by { |care| care.given_on.year }.each do |year, cares| %>
+  <h2 class="section-title"><%= year %></h2>
+  <ul class="encounter-list">
+    <% cares.each do |care| %>
+      <li><%= render "cares/care_card", care: care %></li>
+    <% end %>
+  </ul>
+<% end %>

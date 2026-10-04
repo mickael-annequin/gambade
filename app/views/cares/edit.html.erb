@@ -1,0 +1,9 @@
+<div class="title-row">
+  <%= back_button cares_path %>
+  <h1 class="walk-title">Modifier le soin</h1>
+</div>
+
+<%= render "form", care: @care %>
+
+<%= button_to "🗑️ Supprimer ce soin", care_path(@care), method: :delete, class: "danger-button mt-4",
+              form: { data: { turbo_confirm: "Supprimer ce soin ?" } } %>

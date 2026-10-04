@@ -6,6 +6,7 @@ fr:
       walk: "Balade"
       friend: "Ami"
       walk_photo: "Photo"
+      care: "Soin"
     attributes:
       dog:
         name: "Nom"
@@ -25,6 +26,12 @@ fr:
         note: "Note"
       walk_photo:
         image: "La photo"
+      care:
+        kind: "Le type de soin"
+        given_on: "La date"
+        next_due_on: "La date du prochain"
+        product: "Le produit"
+        note: "La note"
       encounter:
         friend: "Ami du carnet"
         dog_name: "Nom du chien"
@@ -40,6 +47,10 @@ fr:
             photo:
               not_an_image: "doit être une image"
               too_big: "est trop lourde (10 Mo maximum)"
+        care:
+          attributes:
+            next_due_on:
+              before_given: "doit être après la date du soin"
         walk_photo:
           attributes:
             image:

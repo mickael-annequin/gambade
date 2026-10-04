@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   end
   resources :tracked_walks, only: %i[new create]
   resources :friends
+  resources :cares, except: :show
   resource :stats, only: :show
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

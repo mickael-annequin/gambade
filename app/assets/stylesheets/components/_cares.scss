@@ -1,0 +1,17 @@
+// Health follow-up (vaccines, dewormers…): when the next one is due, in ochre when soon, red when late.
+.care-status {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.care-status-soon { color: #A85F1E; } // darker ochre: readable on white
+.care-status-late { color: $danger; }
+
+.care-add-link {
+  display: block;
+  margin-top: 0.25rem;
+  color: $forest;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}

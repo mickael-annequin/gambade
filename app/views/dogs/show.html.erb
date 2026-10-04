@@ -30,6 +30,32 @@
   </div>
 </div>
 
+<div class="section-header" id="sante">
+  <h2 class="section-title">Santé</h2>
+  <%= link_to "Historique", cares_path, class: "small-action" %>
+</div>
+<ul class="encounter-list">
+  <% latest = @dog.latest_cares.index_by(&:kind) %>
+  <% Care::KINDS.each do |kind, info| %>
+    <% next unless info[:every] %>
+    <li>
+      <% if latest[kind] %>
+        <%= render "cares/care_card", care: latest[kind], next: true %>
+      <% else %>
+        <%= link_to new_care_path(kind: kind), class: "encounter-card" do %>
+          <span class="item-card-icon"><%= info[:label].split.first %></span>
+          <span class="encounter-text">
+            <strong><%= info[:label].split(" ", 2).last %></strong>
+            <span class="encounter-details encounter-details-empty">+ Noter le dernier</span>
+          </span>
+          <span class="encounter-chevron" aria-hidden="true">›</span>
+        <% end %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+<%= link_to "+ Ajouter un soin ou une visite véto", new_care_path, class: "care-add-link" %>
+
 <div class="section-header">
   <h2 class="section-title">Ses amis</h2>
   <%= link_to "Voir le carnet", friends_path, class: "small-action" %>
