@@ -38,6 +38,11 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] **Retour au point de départ** 🔁 : à la fin d'une boucle (≥ 1 km, après s'être éloigné de plus de 300 m), proposition de terminer ; la question revient à chaque nouveau passage (balades en 8). *Test :* finir une boucle près du départ.
 - [x] **Anti-doublon** : une balade envoyée deux fois (réponse du serveur perdue, puis « Réessayer ») n'est enregistrée qu'une fois, grâce à un identifiant unique donné par le téléphone (idempotence). *Test :* le même envoi deux fois ne crée qu'une balade.
 - [x] **Rencontres mieux placées sur la carte** : rencontres proches regroupées (« 1–3 »), carte cadrée sur toutes les rencontres, chien compté avant le GPS placé à la position suivante.
+- [x] **Protection contre les appuis « dans la poche »** 🔒 (le téléphone reste déverrouillé pendant la balade à cause de l'écran maintenu allumé) :
+  - un **mode verrouillé** : un voile bloque tous les appuis, chrono et km restent visibles, déverrouillage par appui long de 1,5 s ;
+  - « +1 chien » en **2 appuis** : le chien n'est compté qu'avec « ✓ OK », les appuis répétés sont ignorés ;
+  - **suppression d'une phase de jeu ou de baignade** créée par erreur, depuis la page de la balade.
+  *Test :* verrouiller, toucher partout sans effet, appui court sans effet, appui long qui déverrouille.
 - [x] **Habillage aux couleurs de Gambade** 🎨 : Bootstrap personnalisé (palette, police Nunito, logo), écran de balade lisible en plein soleil avec gros boutons sous le pouce, accueil avec stats de la semaine, barre d'onglets, tuiles d'actions, bouton retour rond, cartes de rencontres numérotées comme sur la carte. *Test :* toutes les pages sur le téléphone.
 
 ## Phase 2 — V1 complète 🥈
