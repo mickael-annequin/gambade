@@ -30,6 +30,16 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] **Résumé de fin de balade** avec ajout facultatif de détails sur chaque rencontre (nom, race, ressenti, note). *Test :* compléter une rencontre et retrouver ses détails.
 - [x] **Liste des balades**, chacune avec sa carte et ses stats. *Test :* une vraie balade complète avec mon chien. 🎉 **MVP terminé !**
 
+## Phase 1.5 — Améliorations nées des balades réelles 🛠️
+> Pas prévues au départ : elles viennent de problèmes rencontrés en testant l'app avec mon chien.
+
+- [x] **Couper la fin d'une balade** ✂️ : un curseur sur la carte pour supprimer ce qui a été enregistré après la vraie fin (oubli de « Terminer » avant de reprendre la voiture). Durée, distance et rencontres recalculées. *Test :* couper une balade qui contenait un trajet en voiture.
+- [x] **Détection de la voiture** 🚗 : plus de 30 km/h pendant une minute → « Terminer la balade ? », et la balade s'arrête au moment où la voiture a démarré. *Test :* démarrer une balade en tant que passager.
+- [x] **Retour au point de départ** 🔁 : à la fin d'une boucle (≥ 1 km, après s'être éloigné de plus de 300 m), proposition de terminer ; la question revient à chaque nouveau passage (balades en 8). *Test :* finir une boucle près du départ.
+- [x] **Anti-doublon** : une balade envoyée deux fois (réponse du serveur perdue, puis « Réessayer ») n'est enregistrée qu'une fois, grâce à un identifiant unique donné par le téléphone (idempotence). *Test :* le même envoi deux fois ne crée qu'une balade.
+- [x] **Rencontres mieux placées sur la carte** : rencontres proches regroupées (« 1–3 »), carte cadrée sur toutes les rencontres, chien compté avant le GPS placé à la position suivante.
+- [x] **Habillage aux couleurs de Gambade** 🎨 : Bootstrap personnalisé (palette, police Nunito, logo), écran de balade lisible en plein soleil avec gros boutons sous le pouce, accueil avec stats de la semaine, barre d'onglets, tuiles d'actions, bouton retour rond, cartes de rencontres numérotées comme sur la carte. *Test :* toutes les pages sur le téléphone.
+
 ## Phase 2 — V1 complète 🥈
 - [x] PWA installable sur l'écran d'accueil
 - [x] Détails d'une rencontre **pendant** la balade : après « +1 chien », un petit encart facultatif (nom, 😊 😐 😠) qui se referme tout seul si on l'ignore — pour ne pas oublier qui était qui quand on croise plusieurs chiens
