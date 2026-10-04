@@ -1,0 +1,14 @@
+// Messages at the top of the page: they fade out and fold up (flash_controller.js).
+.flash {
+  overflow: hidden;
+  max-height: 10rem;
+  transition: opacity 0.5s, max-height 0.5s, margin 0.5s, padding 0.5s;
+
+  &.is-hiding {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}

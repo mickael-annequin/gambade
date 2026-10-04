@@ -16,6 +16,9 @@ class WalkNotesControllerTest < ActionDispatch::IntegrationTest
     patch walk_notes_path(@walk), params: { walk: { moods: [ "", "energetic", "annoying" ], comment: "A tiré en laisse" } }
     assert_redirected_to walk_path(@walk)
     assert_equal [ %w[energetic annoying], "A tiré en laisse" ], @walk.reload.values_at(:moods, :comment)
+    follow_redirect!
+    assert_select ".alert-success.flash[data-controller='flash']", "Notes enregistrées."
+    assert_select ".section-header a.small-action[href='#{edit_walk_notes_path(@walk)}']", "✏️ Modifier"
   end
 
   test "unchecking every mood empties the list" do

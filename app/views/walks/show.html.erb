@@ -59,7 +59,7 @@
 <div class="section-header">
   <h2 class="section-title">Notes</h2>
   <% if @walk.moods.any? || @walk.comment.present? %>
-    <%= link_to "✏️ Modifier", edit_walk_notes_path(@walk), class: "btn btn-sm btn-outline-primary" %>
+    <%= link_to "✏️ Modifier", edit_walk_notes_path(@walk), class: "small-action" %>
   <% end %>
 </div>
 <% if @walk.moods.any? || @walk.comment.present? %>

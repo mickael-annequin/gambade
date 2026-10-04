@@ -33,8 +33,8 @@
     <%# Bottom padding: room for the tab bar (with-navbar-bottom), or a small margin (pb-3).
         Not "py-3": its !important would override the room needed by the tab bar. %>
     <main class="container pt-3 <%= show_navbar ? "with-navbar-bottom" : "pb-3" %>">
-      <% if notice %><div class="alert alert-success"><%= notice %></div><% end %>
-      <% if alert %><div class="alert alert-warning"><%= alert %></div><% end %>
+      <% if notice %><div class="alert alert-success flash" data-controller="flash"><%= notice %></div><% end %>
+      <% if alert %><div class="alert alert-warning flash" data-controller="flash" data-flash-seconds-value="6"><%= alert %></div><% end %>
       <%= yield %>
     </main>
 
