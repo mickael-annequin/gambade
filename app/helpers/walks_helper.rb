@@ -61,6 +61,11 @@ module WalksHelper
     "#{walk.weather_label.split.first} #{number_with_precision(walk.temperature_celsius, precision: 0)}°"
   end
 
+  # Short label of a week or a month on the stats charts: "29 sept." (week of the 29th), "oct." (month).
+  def stats_label(start, period)
+    period == "week" ? l(start, format: "%-d %b") : l(start, format: "%b")
+  end
+
   # 2100 -> "35 min", 3900 -> "1 h 05", 20 -> "< 1 min"
   def walk_duration(seconds)
     return "< 1 min" if seconds.between?(1, 59)

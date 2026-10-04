@@ -40,7 +40,7 @@
 
     <% if show_navbar %>
       <nav class="navbar-bottom">
-        <% [ [ "🏠", "Accueil", root_path, %w[pages] ],
+        <% [ [ "🏠", "Accueil", root_path, %w[pages stats] ],
              [ "📋", "Balades", walks_path, %w[walks walk_trims encounters] ],
              [ "🐶", "Mon chien", dog_path, %w[dogs friends] ] ].each do |icon, label, path, controllers| %>
           <%= link_to path, class: ("active" if controllers.include?(controller_name)),

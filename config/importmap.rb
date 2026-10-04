@@ -8,3 +8,5 @@ pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin "mapbox-gl" # @3.32.0
 pin "exifr" # @7.1.3
+pin "chart.js" # @4.5.1
+pin "@kurkle/color", to: "@kurkle--color.js" # @0.3.4

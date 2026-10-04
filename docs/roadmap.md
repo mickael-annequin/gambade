@@ -51,7 +51,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [x] Notes de balade : humeur à choix multiples (⚡ Plein d'énergie, 😊 Joyeux, 😌 Calme, 😴 Fatigué, 👍 Obéissant, 😤 Chiant) et commentaire libre
 - [x] Carnet d'amis : table `friends`, lien rencontre → ami, classement des amis les plus croisés (dans « Mon chien »)
 - [x] Photos de balade : import depuis la galerie (plusieurs à la fois), placées sur le trajet grâce à l'heure de prise de vue (EXIF, lue avec exifr), miniatures rondes sur la carte, visionneuse plein écran (flèches, glissé, suppression)
-- [ ] Statistiques par semaine/mois avec graphiques
+- [x] Statistiques par semaine/mois avec graphiques (Chart.js) : km, temps et chiens sur les 12 dernières semaines ou les 12 derniers mois, tableau des chiffres
 - [x] Carte globale de tous les trajets (colorés selon le nombre de passages : vert 1 → brun 11+, avec légende), trajet cliquable vers sa balade ; flèches de sens sur la carte d'une balade
 - [ ] Carte de chaleur (*heatmap*) sur la carte globale, pour voir les chemins les plus fréquentés — à faire vers **20–30 balades GPS** (avant, trop peu de données pour qu'elle soit parlante)
 - [x] Météo automatique (Open-Meteo, gratuit sans clé, position arrondie à ~1 km) : ciel, température, vent et pluie au milieu de la balade, aussi pour les anciennes balades GPS

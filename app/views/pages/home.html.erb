@@ -17,7 +17,10 @@
               data: { ongoing_walk_target: "startButton" } %>
 </div>
 
-<h2 class="section-title">Cette semaine</h2>
+<div class="section-header">
+  <h2 class="section-title">Cette semaine</h2>
+  <%= link_to "📊 Stats", stats_path, class: "small-action" %>
+</div>
 <div class="stat-cards">
   <div class="stat-card">
     <div class="stat-card-number"><%= walk_km(@week_walks.sum(:distance_meters)) %></div>
