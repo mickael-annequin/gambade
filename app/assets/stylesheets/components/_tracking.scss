@@ -1,7 +1,9 @@
 // "Balade en cours" screen: used outdoors, in full sun, with one hand holding the leash.
 // Big numbers, big buttons at the bottom, under the thumb.
 .tracking {
-  min-height: calc(100dvh - 2rem);
+  // svh = screen height with the phone's bars shown: it never changes, so the screen never
+  // becomes a few pixels too tall when a bar appears (dvh did, e.g. after the lock's long press).
+  min-height: calc(100svh - 2rem);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
