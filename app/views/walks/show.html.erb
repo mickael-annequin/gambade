@@ -33,7 +33,8 @@
        data-map-center-value="<%= track.first.to_json %>"
        data-map-track-value="<%= track.to_json %>"
        data-map-encounters-value="<%= @walk.encounter_markers.to_json %>"
-       data-map-activities-value="<%= @walk.activity_markers.to_json %>">
+       data-map-activities-value="<%= @walk.activity_markers.to_json %>"
+       data-map-photos-value="<%= walk_photo_markers(@walk).to_json %>">
   </div>
 <% end %>
 
@@ -87,7 +88,7 @@
 <% end %>
 
 <h2 class="section-title" id="photos">Photos</h2>
-<% photos = @walk.photos.with_attached_image.order(:created_at) %>
+<% photos = @walk.photos.with_attached_image.order(:taken_at, :created_at) %>
 <% if photos.any? %>
   <div class="walk-photos">
     <% photos.each do |photo| %>

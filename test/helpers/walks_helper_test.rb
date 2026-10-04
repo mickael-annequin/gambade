@@ -1,6 +1,7 @@
 require "test_helper"
 
 class WalksHelperTest < ActionView::TestCase
+  include CloudinaryHelper # cl_image_path, available in the real pages
   test "formats durations" do
     assert_equal "35 min", walk_duration(2100)
     assert_equal "1 h 05", walk_duration(3900)
@@ -31,5 +32,17 @@ class WalksHelperTest < ActionView::TestCase
 
   test "shows the mood emojis of a walk" do
     assert_equal "⚡😴", walk_mood_emojis(Walk.new(moods: %w[energetic tired]))
+  end
+
+  test "map markers only for the photos placed on the track" do
+    walk = walks(:evening)
+    image = -> { { io: file_fixture("dog.png").open, filename: "dog.png" } }
+    walk.photos.create!(image: image.call, taken_at: Time.zone.parse("2026-10-01 18:30"), latitude: 48.4211, longitude: 1.502)
+    walk.photos.create!(image: image.call) # no time: in the gallery only
+    markers = walk_photo_markers(walk)
+    assert_equal 1, markers.size
+    assert_equal "18h30", markers.first[:time]
+    assert_equal [ 1.502, 48.4211 ], markers.first[:coordinates]
+    assert_includes markers.first[:thumbnail], "res.cloudinary.com/gambade-test"
   end
 end
