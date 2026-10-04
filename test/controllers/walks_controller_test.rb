@@ -82,7 +82,7 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     get walk_path(walks(:evening))
     assert_select "a.walk-action[href='#{edit_walk_trim_path(walks(:evening))}']", /Couper la fin/
     assert_select ".walk-action", 3
-    assert_select ".title-row a.back-button[href='#{walks_path}'][aria-label='Retour']", "←"
+    assert_select ".title-row a.back-button[href='#{walks_path}'][aria-label='Retour'] svg"
   end
 
   test "creates a walk entered by hand" do
