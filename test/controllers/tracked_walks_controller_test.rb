@@ -15,6 +15,9 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     assert_select "[data-screen-lock-target='holdButton'][data-action*='contextmenu->screen-lock#preventMenu']"
     assert_select "nav", count: 0
     assert_select "[data-tracking-target='dogPanel'][hidden] [data-tracking-mood-param='joyful']"
+    # The dog's name suggests the friends of the address book
+    assert_select "input[data-tracking-target='dogName'][list='friend-names']"
+    assert_equal %w[Filou Sid], css_select("datalist#friend-names option").map { |option| option["value"] }
     assert_select "[data-tracking-target='suggestion'][hidden] button[data-tracking-confirm-param='false']", "■ Terminer"
   end
 

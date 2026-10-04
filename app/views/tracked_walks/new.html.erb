@@ -10,7 +10,13 @@
   <div class="dog-panel" data-tracking-target="dogPanel" hidden>
     <strong class="dog-panel-title" data-tracking-target="dogPanelTitle"></strong>
     <input type="text" class="form-control form-control-lg" placeholder="Son nom ? (facultatif)" maxlength="50"
-           autocomplete="off" data-tracking-target="dogName">
+           autocomplete="off" list="friend-names" data-tracking-target="dogName">
+    <%# Suggestions while typing: the friends of the address book (loaded now, so they work offline). %>
+    <datalist id="friend-names">
+      <% current_dog.friends.order(Arel.sql("LOWER(name)")).each do |friend| %>
+        <option value="<%= friend.name %>"><%= friend.breed %></option>
+      <% end %>
+    </datalist>
     <div class="mood-buttons">
       <% EncountersHelper::MOODS.each do |mood, label| %>
         <button type="button" class="btn btn-outline-primary mood-button" aria-pressed="false"
