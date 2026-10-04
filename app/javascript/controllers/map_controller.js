@@ -108,6 +108,7 @@ export default class extends Controller {
         "symbol-placement": "line",
         "symbol-spacing": 90, // pixels between two arrows, whatever the zoom
         "icon-image": "direction-arrow",
+        "icon-size": 1.2, // 20 px → 24 px
         "icon-allow-overlap": true
       }
     })
