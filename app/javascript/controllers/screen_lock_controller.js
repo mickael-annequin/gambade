@@ -19,6 +19,11 @@ export default class extends Controller {
     this.holdTimer = setTimeout(() => this.#unlock(), this.holdMillisecondsValue)
   }
 
+  // Android fires "contextmenu" after ~0.5 s of long press: block the menu but KEEP holding.
+  preventMenu(event) {
+    event.preventDefault()
+  }
+
   // Finger lifted (or slid away) too early: nothing happens.
   cancelHold() {
     clearTimeout(this.holdTimer)

@@ -11,6 +11,8 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     assert_select "[data-controller~='tracking'][data-controller~='screen-lock']"
     assert_select "button[data-action='screen-lock#lock']", "🔒 Verrouiller"
     assert_select "[data-screen-lock-target='overlay'][hidden] [data-screen-lock-target='holdButton']"
+    # A long press fires "contextmenu" on Android: it must not cancel the unlock.
+    assert_select "[data-screen-lock-target='holdButton'][data-action*='contextmenu->screen-lock#preventMenu']"
     assert_select "nav", count: 0
     assert_select "[data-tracking-target='dogPanel'][hidden] [data-tracking-mood-param='joyful']"
     assert_select "[data-tracking-target='suggestion'][hidden] button[data-tracking-confirm-param='false']", "■ Terminer"
