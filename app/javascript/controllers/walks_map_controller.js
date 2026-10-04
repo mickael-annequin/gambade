@@ -47,7 +47,8 @@ export default class extends Controller {
       paint: {
         "line-color": [ "case", [ "boolean", [ "feature-state", "selected" ], false ], SELECTED_COLOR, TRACK_COLOR ],
         "line-width": 4,
-        "line-opacity": 0.55
+        // Low, so overlaps keep getting darker: 1 walk 30 %, 2 → 51 %, 3 → 66 %, 5 → 83 %, 8 → 94 %
+        "line-opacity": 0.3
       }
     })
     // An invisible wide line on top, so a track is easy to tap with a finger.
