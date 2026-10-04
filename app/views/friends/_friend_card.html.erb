@@ -1,0 +1,9 @@
+<%# One friend in the ranking: name, breed, how many times and when last met. %>
+<%= link_to friend_path(friend), class: "encounter-card" do %>
+  <span class="encounter-number"><%= rank %></span>
+  <span class="encounter-text">
+    <strong><%= [ friend.name, friend.breed ].compact_blank.join(" · ") %></strong>
+    <span class="encounter-no-position"><%= friend_meetings(friend.encounters_count, friend.last_met_at) %></span>
+  </span>
+  <span class="encounter-chevron" aria-hidden="true">›</span>
+<% end %>

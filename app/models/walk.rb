@@ -41,7 +41,8 @@ class Walk < ApplicationRecord
         now = Time.current
         walk.track_points.insert_all!(points.map { |point| point.merge(created_at: now, updated_at: now) })
       end
-      encounters.each { |encounter| walk.encounters.create!(encounter) }
+      # A name typed during the walk that matches a friend ("Sid") links the encounter to that friend.
+      encounters.each { |encounter| walk.encounters.create!(encounter.merge(friend: dog.friends.named(encounter[:dog_name]))) }
       activities.each { |activity| walk.activities.create!(activity) }
       walk
     end

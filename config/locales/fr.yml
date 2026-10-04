@@ -4,6 +4,7 @@ fr:
     models:
       dog: "Chien"
       walk: "Balade"
+      friend: "Ami"
     attributes:
       dog:
         name: "Nom"
@@ -17,7 +18,12 @@ fr:
         dogs_met_count: "Chiens rencontrés"
         moods: "Humeur"
         comment: "Commentaire"
+      friend:
+        name: "Nom"
+        breed: "Race"
+        note: "Note"
       encounter:
+        friend: "Ami du carnet"
         dog_name: "Nom du chien"
         breed: "Race"
         mood: "Ambiance"

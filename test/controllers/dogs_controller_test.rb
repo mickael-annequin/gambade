@@ -7,6 +7,8 @@ class DogsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h2", "Rex"
     assert_equal [ "3,4", "2", "5" ], css_select(".stat-card-number").map { |node| node.text.strip }
+    assert_select ".encounter-list .encounter-card", 2 # best friends
+    assert_select "a.small-action[href='#{friends_path}']", "Voir le carnet"
   end
 
   test "creates the dog profile on first visit" do

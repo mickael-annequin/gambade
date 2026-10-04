@@ -40,4 +40,34 @@ class EncountersControllerTest < ActionDispatch::IntegrationTest
     get edit_walk_encounter_path(walks(:strangers_walk), other)
     assert_response :not_found
   end
+
+  test "links a dog met to a friend of the address book" do
+    encounter = encounters(:without_position)
+    patch walk_encounter_path(@walk, encounter), params: { encounter: { friend_id: friends(:filou).id } }
+    assert_equal friends(:filou), encounter.reload.friend
+  end
+
+  test "adds the dog met to the address book" do
+    encounter = encounters(:without_position)
+    assert_difference "Friend.count", 1 do
+      patch walk_encounter_path(@walk, encounter),
+            params: { encounter: { dog_name: "Rocky", breed: "Boxer", add_to_friends: "1" } }
+    end
+    assert_equal [ "Rocky", "Boxer" ], [ encounter.reload.friend.name, encounter.friend.breed ]
+  end
+
+  test "adding a name already in the address book links to that friend" do
+    encounter = encounters(:without_position)
+    assert_no_difference "Friend.count" do
+      patch walk_encounter_path(@walk, encounter), params: { encounter: { dog_name: "filou", add_to_friends: "1" } }
+    end
+    assert_equal friends(:filou), encounter.reload.friend
+  end
+
+  test "cannot link a friend of another account" do
+    encounter = encounters(:without_position)
+    patch walk_encounter_path(@walk, encounter), params: { encounter: { friend_id: friends(:strangers_friend).id } }
+    assert_response :unprocessable_content
+    assert_nil encounter.reload.friend
+  end
 end

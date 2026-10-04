@@ -1,0 +1,18 @@
+<div class="title-row">
+  <%= back_button dog_path %>
+  <h1 class="walk-title">Les amis de <%= current_dog.name %></h1>
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+  <%= link_to "+ Ajouter un ami", new_friend_path, class: "small-action" %>
+</div>
+
+<% if @friends.empty? %>
+  <p>Le carnet est vide pour l'instant. Ajoute un chien depuis une rencontre (« ➕ Ajouter au carnet »), ou avec le bouton ci-dessus.</p>
+<% end %>
+
+<ul class="encounter-list">
+  <% @friends.each.with_index(1) do |friend, rank| %>
+    <li><%= render "friends/friend_card", friend: friend, rank: rank %></li>
+  <% end %>
+</ul>

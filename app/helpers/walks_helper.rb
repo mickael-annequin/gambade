@@ -65,6 +65,13 @@ module WalksHelper
     walk_mood_labels(walk).map { |label| label.split.first }.join
   end
 
+  # "croisé 12 fois · dernière fois hier"
+  def friend_meetings(count, last_met_at)
+    return "pas encore croisé" if count.zero?
+
+    "croisé #{count} fois · dernière fois #{walk_day(last_met_at).downcase_first}"
+  end
+
   # "Octobre 2026"
   def walk_month(date)
     l(date, format: "%B %Y").capitalize

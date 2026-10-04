@@ -1,0 +1,41 @@
+<div class="title-row">
+  <%= back_button friends_path %>
+  <h1 class="walk-title"><%= @friend.name %></h1>
+</div>
+
+<div class="walk-actions">
+  <%= link_to edit_friend_path(@friend), class: "walk-action" do %>
+    <span class="walk-action-icon">✏️</span> <span class="walk-action-label">Modifier</span>
+  <% end %>
+  <%= button_to friend_path(@friend), method: :delete, class: "walk-action walk-action-danger",
+                form: { data: { turbo_confirm: "Retirer #{@friend.name} du carnet ? Les rencontres restent dans les balades." } } do %>
+    <span class="walk-action-icon">🗑️</span> <span class="walk-action-label">Retirer</span>
+  <% end %>
+</div>
+
+<div class="walk-notes">
+  <% if @friend.breed.present? %><p class="mb-1"><strong>Race :</strong> <%= @friend.breed %></p><% end %>
+  <p class="mb-0"><strong>Croisé :</strong> <%= pluralize(@encounters.size, "fois", plural: "fois") %></p>
+  <% if @friend.note.present? %><p class="walk-comment"><%= @friend.note %></p><% end %>
+</div>
+
+<% if @encounters.any? %>
+  <h2 class="section-title">Vos rencontres</h2>
+  <ul class="encounter-list">
+    <% @encounters.each do |encounter| %>
+      <li>
+        <%= link_to walk_path(encounter.walk), class: "encounter-card" do %>
+          <span class="item-card-icon">🐕</span>
+          <span class="encounter-text">
+            <strong><%= l(encounter.met_at, format: "%A %-d %B · %Hh%M").capitalize %></strong>
+            <% if encounter.mood %>
+              <span><%= EncountersHelper::MOODS[encounter.mood] %></span>
+            <% end %>
+            <% if encounter.note.present? %><span class="encounter-no-position"><%= encounter.note %></span><% end %>
+          </span>
+          <span class="encounter-chevron" aria-hidden="true">›</span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

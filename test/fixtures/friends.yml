@@ -1,0 +1,14 @@
+sid:
+  dog: rex
+  name: Sid
+  breed: Malinois
+  note: Habite près du parc
+
+filou:
+  dog: rex
+  name: Filou
+  breed: Beagle
+
+strangers_friend:
+  dog: milou
+  name: Rantanplan

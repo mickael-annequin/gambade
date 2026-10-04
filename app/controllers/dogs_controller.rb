@@ -4,6 +4,7 @@ class DogsController < ApplicationController
 
   def show
     @walks = @dog.walks
+    @best_friends = @dog.friends.ranked.limit(3)
   end
 
   def new

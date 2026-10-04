@@ -30,5 +30,19 @@
   </div>
 </div>
 
+<div class="section-header">
+  <h2 class="section-title">Ses amis</h2>
+  <%= link_to "Voir le carnet", friends_path, class: "small-action" %>
+</div>
+<% if @best_friends.any? %>
+  <ul class="encounter-list">
+    <% @best_friends.each.with_index(1) do |friend, rank| %>
+      <li><%= render "friends/friend_card", friend: friend, rank: rank %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="encounter-no-position">Pas encore d'amis : ajoute un chien au carnet depuis une rencontre.</p>
+<% end %>
+
 <%= button_to "Se déconnecter", destroy_user_session_path, method: :delete,
               class: "btn btn-outline-secondary w-100 mt-5" %>

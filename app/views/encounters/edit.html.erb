@@ -13,6 +13,15 @@
     </ul>
   <% end %>
 
+  <% friends = current_dog.friends.order(Arel.sql("LOWER(name)")) %>
+  <% if friends.any? %>
+    <div class="mb-3">
+      <%= f.label :friend_id, "Un ami du carnet ?", class: "form-label" %>
+      <%= f.collection_select :friend_id, friends, :id, :name, { include_blank: "— Pas dans le carnet —" },
+                              class: "form-select form-select-lg" %>
+    </div>
+  <% end %>
+
   <div class="mb-3">
     <%= f.label :dog_name, "Nom du chien", class: "form-label" %>
     <%= f.text_field :dog_name, placeholder: "Filou", class: "form-control form-control-lg" %>
@@ -22,6 +31,14 @@
     <%= f.label :breed, "Race", class: "form-label" %>
     <%= f.text_field :breed, placeholder: "Beagle", class: "form-control form-control-lg" %>
   </div>
+
+  <% unless @encounter.friend %>
+    <div class="form-check mb-3">
+      <%= check_box_tag "encounter[add_to_friends]", "1", false, class: "form-check-input", id: "add_to_friends" %>
+      <%= label_tag "add_to_friends", "➕ Ajouter ce chien au carnet d'amis (avec le nom et la race ci-dessus)",
+                    class: "form-check-label" %>
+    </div>
+  <% end %>
 
   <fieldset class="mb-3">
     <legend class="form-label fs-6">Comment ça s'est passé ?</legend>

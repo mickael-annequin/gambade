@@ -70,6 +70,8 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     end
     assert_equal 2, Walk.last.dogs_met_count
     assert_equal [ [ "Filou", "joyful" ], [ nil, nil ] ], Walk.last.encounters.in_order.pluck(:dog_name, :mood)
+    # "Filou" typed during the walk is a friend: the encounter is linked to the address book.
+    assert_equal [ friends(:filou), nil ], Walk.last.encounters.in_order.map(&:friend)
   end
 
   test "saves the play and swim phases, even at the same time" do

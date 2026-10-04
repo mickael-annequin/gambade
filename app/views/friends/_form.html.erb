@@ -1,0 +1,26 @@
+<%= form_with model: friend do |f| %>
+  <% if friend.errors.any? %>
+    <ul class="alert alert-danger">
+      <% friend.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :name, "Nom", class: "form-label" %>
+    <%= f.text_field :name, class: "form-control form-control-lg", placeholder: "Sid" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :breed, "Race", class: "form-label" %>
+    <%= f.text_field :breed, class: "form-control form-control-lg", placeholder: "Malinois" %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :note, "Note", class: "form-label" %>
+    <%= f.text_area :note, rows: 3, class: "form-control", placeholder: "Habite près du parc, adore la balle…" %>
+  </div>
+
+  <%= f.submit "✓ Enregistrer", class: "btn btn-primary btn-lg w-100" %>
+<% end %>

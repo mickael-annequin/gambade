@@ -7,7 +7,9 @@ class EncountersController < ApplicationController
   end
 
   def update
-    if @encounter.update(encounter_params)
+    @encounter.assign_attributes(encounter_params)
+    link_to_new_friend if params.dig(:encounter, :add_to_friends) == "1"
+    if @encounter.save
       redirect_to walk_path(@walk), notice: "Rencontre mise à jour."
     else
       render :edit, status: :unprocessable_content
@@ -29,6 +31,14 @@ class EncountersController < ApplicationController
   end
 
   def encounter_params
-    params.require(:encounter).permit(:dog_name, :breed, :mood, :note)
+    params.require(:encounter).permit(:dog_name, :breed, :mood, :note, :friend_id)
+  end
+
+  # "➕ Ajouter au carnet": the dog becomes a friend (or is linked to the friend with that name).
+  def link_to_new_friend
+    return if @encounter.friend || @encounter.dog_name.blank?
+
+    @encounter.friend = current_dog.friends.named(@encounter.dog_name) ||
+                        current_dog.friends.build(name: @encounter.dog_name.strip, breed: @encounter.breed)
   end
 end

@@ -39,7 +39,7 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
   test "lists the dogs met, with a link to add details" do
     get walk_path(walks(:evening))
     first = css_select("a.encounter-card[href='#{edit_walk_encounter_path(walks(:evening), encounters(:first))}']").first
-    assert_equal [ "1", "18h12", "+ Ajouter des détails" ],
+    assert_equal [ "1", "18h12", "Sid, Malinois" ],
                  [ ".encounter-number", "strong", ".encounter-details" ].map { |selector| first.at_css(selector).text.strip }
     assert_select ".encounter-list .encounter-card", 2
     assert_select ".encounter-card .encounter-no-position", "Position inconnue"

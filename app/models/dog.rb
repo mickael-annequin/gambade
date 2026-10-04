@@ -2,6 +2,7 @@ class Dog < ApplicationRecord
   belongs_to :user
   has_one_attached :photo
   has_many :walks, dependent: :destroy
+  has_many :friends, dependent: :destroy
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :breed, length: { maximum: 50 }
