@@ -1,0 +1,32 @@
+<div class="title-row">
+  <%= back_button walk_path(@walk), label: "Annuler" %>
+  <h1 class="walk-title">Notes de la balade</h1>
+</div>
+
+<%= form_with model: @walk, url: walk_notes_path(@walk), method: :patch do |f| %>
+  <% if @walk.errors.any? %>
+    <ul class="alert alert-danger">
+      <% @walk.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <fieldset class="mb-3">
+    <legend class="form-label fs-6">Comment était <%= current_dog.name %> ? (plusieurs choix possibles)</legend>
+    <div class="walk-moods">
+      <%= f.collection_check_boxes :moods, Walk::MOODS.to_a, :first, :last do |box| %>
+        <%= box.check_box class: "btn-check" %>
+        <%= box.label class: "btn btn-outline-primary walk-mood-button" %>
+      <% end %>
+    </div>
+  </fieldset>
+
+  <div class="mb-4">
+    <%= f.label :comment, "Commentaire", class: "form-label" %>
+    <%= f.text_area :comment, rows: 4, class: "form-control",
+                              placeholder: "A tiré en laisse au début, puis très sage près de la rivière…" %>
+  </div>
+
+  <%= f.submit "✓ Enregistrer", class: "btn btn-primary btn-lg w-100" %>
+<% end %>

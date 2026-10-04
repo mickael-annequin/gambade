@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resource :dog, only: %i[show new create edit update]
   resources :walks do
     resource :trim, only: %i[edit update], controller: "walk_trims"
+    resource :notes, only: %i[edit update], controller: "walk_notes"
     resources :encounters, only: %i[edit update destroy]
     resources :activities, only: :destroy
   end

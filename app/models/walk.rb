@@ -9,6 +9,18 @@ class Walk < ApplicationRecord
   validates :distance_meters, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :dogs_met_count, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :distance_km_is_a_number
+  validate :moods_are_known
+  validates :comment, length: { maximum: 2000 }
+
+  # How the dog was during the walk: several can be chosen.
+  MOODS = {
+    "energetic" => "⚡ Plein d'énergie",
+    "happy" => "😊 Joyeux",
+    "calm" => "😌 Calme",
+    "tired" => "😴 Fatigué",
+    "obedient" => "👍 Obéissant",
+    "annoying" => "😤 Chiant"
+  }.freeze
 
   scope :most_recent_first, -> { order(started_at: :desc) }
 
@@ -158,6 +170,10 @@ class Walk < ApplicationRecord
   # Empty, "2" or "2.3" (the comma was already replaced by a dot).
   def distance_km_input_valid?
     @distance_km_input.nil? || @distance_km_input.match?(/\A(\d+(\.\d+)?)?\z/)
+  end
+
+  def moods_are_known
+    errors.add(:moods, :inclusion) unless (moods - MOODS.keys).empty?
   end
 
   def distance_km_is_a_number

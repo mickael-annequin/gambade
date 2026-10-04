@@ -41,7 +41,7 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     first = css_select("a.encounter-card[href='#{edit_walk_encounter_path(walks(:evening), encounters(:first))}']").first
     assert_equal [ "1", "18h12", "+ Ajouter des détails" ],
                  [ ".encounter-number", "strong", ".encounter-details" ].map { |selector| first.at_css(selector).text.strip }
-    assert_select ".encounter-card", 2
+    assert_select ".encounter-list .encounter-card", 2
     assert_select ".encounter-card .encounter-no-position", "Position inconnue"
   end
 
@@ -56,6 +56,18 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_select ".item-card", 2
     assert_select ".item-card", /Baignade\s+18h20 → 18h28\s+· 8 min/
     assert_select "form[action='#{walk_activity_path(walks(:evening), activities(:swim))}'] button.item-card-delete"
+  end
+
+  test "invites to add notes when there are none" do
+    get walk_path(walks(:evening))
+    assert_select "a[href='#{edit_walk_notes_path(walks(:evening))}']", /Ajouter des notes/
+  end
+
+  test "shows the moods and the comment of a walk" do
+    walks(:evening).update!(moods: %w[happy annoying], comment: "Très joueur")
+    get walk_path(walks(:evening))
+    assert_equal [ "😊 Joyeux", "😤 Chiant" ], css_select(".walk-mood-tag").map { |tag| tag.text.strip }
+    assert_select ".walk-comment", "Très joueur"
   end
 
   test "shows a walk entered by hand without a map nor cut link" do

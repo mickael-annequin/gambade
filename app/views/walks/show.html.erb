@@ -56,6 +56,36 @@
   <p class="activity-summary"><%= summary %></p>
 <% end %>
 
+<div class="section-header">
+  <h2 class="section-title">Notes</h2>
+  <% if @walk.moods.any? || @walk.comment.present? %>
+    <%= link_to "✏️ Modifier", edit_walk_notes_path(@walk), class: "btn btn-sm btn-outline-primary" %>
+  <% end %>
+</div>
+<% if @walk.moods.any? || @walk.comment.present? %>
+  <div class="walk-notes">
+    <% if @walk.moods.any? %>
+      <div class="walk-moods">
+        <% walk_mood_labels(@walk).each do |label| %>
+          <span class="walk-mood-tag"><%= label %></span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if @walk.comment.present? %>
+      <p class="walk-comment"><%= @walk.comment %></p>
+    <% end %>
+  </div>
+<% else %>
+  <%= link_to edit_walk_notes_path(@walk), class: "encounter-card" do %>
+    <span class="item-card-icon">📝</span>
+    <span class="encounter-text">
+      <strong>Comment était <%= current_dog.name %> ?</strong>
+      <span class="encounter-details encounter-details-empty">+ Ajouter des notes</span>
+    </span>
+    <span class="encounter-chevron" aria-hidden="true">›</span>
+  <% end %>
+<% end %>
+
 <% activities = @walk.activities.in_order %>
 <% if activities.any? %>
   <h2 class="section-title">Jeu et baignade</h2>

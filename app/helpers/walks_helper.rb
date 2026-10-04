@@ -55,6 +55,16 @@ module WalksHelper
     "💦 #{pluralize(swims.size, 'baignade', plural: 'baignades')} (#{walk_duration(swims.sum(&:duration_seconds))})"
   end
 
+  # ["⚡ Plein d'énergie", "😤 Chiant"]
+  def walk_mood_labels(walk)
+    walk.moods.filter_map { |mood| Walk::MOODS[mood] }
+  end
+
+  # "⚡😤" (just the emojis, for the walk cards)
+  def walk_mood_emojis(walk)
+    walk_mood_labels(walk).map { |label| label.split.first }.join
+  end
+
   # "Octobre 2026"
   def walk_month(date)
     l(date, format: "%B %Y").capitalize

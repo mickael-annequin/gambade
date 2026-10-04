@@ -28,4 +28,8 @@ class WalksHelperTest < ActionView::TestCase
     assert_match %r{\Ahttps://api\.mapbox\.com/styles/v1/mapbox/outdoors-v12/static/path-4\+E08E45\(}, url
     assert_nil walk_map_image_url(walks(:morning))
   end
+
+  test "shows the mood emojis of a walk" do
+    assert_equal "⚡😴", walk_mood_emojis(Walk.new(moods: %w[energetic tired]))
+  end
 end

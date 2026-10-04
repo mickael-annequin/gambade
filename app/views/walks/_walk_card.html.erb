@@ -13,6 +13,7 @@
       🐕 <%= walk.dogs_met_count %>
       <%= "🎾" if walk.activities.any?(&:play?) %>
       <%= "💦" if walk.activities.any?(&:swim?) %>
+      <%= walk_mood_emojis(walk) %>
     </div>
   </div>
 <% end %>

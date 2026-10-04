@@ -177,3 +177,39 @@
   &:active { transform: scale(0.92); }
 }
 
+// Notes: section title with a "Modifier" button, mood tags and comment.
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .section-title { margin-bottom: 0.75rem; }
+}
+
+.walk-notes {
+  padding: 0.9rem;
+  border-radius: $border-radius-lg;
+  background: white;
+  box-shadow: 0 1px 4px rgba($bark, 0.12);
+}
+
+.walk-moods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.walk-mood-tag {
+  padding: 0.3rem 0.75rem;
+  border-radius: 1rem;
+  background: rgba($sage, 0.45);
+  font-weight: 600;
+}
+
+.walk-comment {
+  margin: 0.75rem 0 0;
+  white-space: pre-line; // keeps the line breaks typed in the comment
+
+  &:first-child { margin-top: 0; }
+}
+

@@ -55,3 +55,9 @@
   &:active { transform: scale(0.98); }
 }
 
+// Walk moods (several choices): big toggle buttons, two per row.
+.walk-mood-button {
+  flex: 1 1 calc(50% - 0.5rem);
+  padding: 0.65rem 0.25rem;
+}
+
