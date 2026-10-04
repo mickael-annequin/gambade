@@ -23,6 +23,20 @@ class Walk < ApplicationRecord
     "annoying" => "😤 Chiant"
   }.freeze
 
+  # WMO weather codes (used by Open-Meteo) → what we show.
+  WEATHERS = {
+    [ 0 ] => "☀️ Ensoleillé",
+    [ 1 ] => "🌤️ Plutôt ensoleillé",
+    [ 2 ] => "⛅ Quelques nuages",
+    [ 3 ] => "☁️ Couvert",
+    [ 45, 48 ] => "🌫️ Brouillard",
+    [ 51, 53, 55, 56, 57 ] => "🌦️ Bruine",
+    [ 61, 63, 65, 66, 67 ] => "🌧️ Pluie",
+    [ 80, 81, 82 ] => "🌧️ Averses",
+    [ 71, 73, 75, 77, 85, 86 ] => "🌨️ Neige",
+    [ 95, 96, 99 ] => "⛈️ Orage"
+  }.freeze
+
   scope :most_recent_first, -> { order(started_at: :desc) }
 
   EARTH_RADIUS_METERS = 6_371_000
@@ -81,6 +95,21 @@ class Walk < ApplicationRecord
 
     point = track_points.where(recorded_at: ..time).order(:recorded_at).last || track_points.order(:recorded_at).first
     { latitude: point.latitude, longitude: point.longitude } if point
+  end
+
+  # "☀️ Ensoleillé", or nil when the weather is not known.
+  def weather_label
+    WEATHERS.find { |codes, _label| codes.include?(weather_code) }&.last
+  end
+
+  # Needs a GPS track (to know where). In the middle of the walk.
+  def fetch_weather!
+    start = track_points.order(:recorded_at).first
+    return if start.nil?
+
+    report = WeatherReport.for(latitude: start.latitude, longitude: start.longitude,
+                               time: started_at + (duration_seconds / 2).seconds)
+    update!(report) if report
   end
 
   def track_coordinates

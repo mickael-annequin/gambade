@@ -59,7 +59,7 @@
   </div>
 </div>
 
-<% [ walk_play_summary(@walk), walk_swim_summary(@walk) ].compact.each do |summary| %>
+<% [ walk_weather(@walk), walk_play_summary(@walk), walk_swim_summary(@walk) ].compact.each do |summary| %>
   <p class="activity-summary"><%= summary %></p>
 <% end %>
 

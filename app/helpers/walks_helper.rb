@@ -42,6 +42,25 @@ module WalksHelper
     end
   end
 
+  # "☀️ Ensoleillé · 18 °C · vent 12 km/h · 0,4 mm de pluie", or nil when the weather is not known.
+  def walk_weather(walk)
+    return if walk.weather_label.nil?
+
+    parts = [ walk.weather_label, "#{number_with_precision(walk.temperature_celsius, precision: 0)} °C",
+              "vent #{walk.wind_kmh} km/h" ]
+    if walk.precipitation_mm.to_f.positive?
+      parts << "#{number_with_precision(walk.precipitation_mm, precision: 1, separator: ',')} mm de pluie"
+    end
+    parts.join(" · ")
+  end
+
+  # "☀️ 18°" for the walk cards, or nil.
+  def walk_weather_short(walk)
+    return if walk.weather_label.nil?
+
+    "#{walk.weather_label.split.first} #{number_with_precision(walk.temperature_celsius, precision: 0)}°"
+  end
+
   # 2100 -> "35 min", 3900 -> "1 h 05", 20 -> "< 1 min"
   def walk_duration(seconds)
     return "< 1 min" if seconds.between?(1, 59)

@@ -72,6 +72,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
       } }
     end
     assert_equal 2, Walk.last.dogs_met_count
+    assert_enqueued_with(job: WalkWeatherJob, args: [ Walk.last ])
     assert_equal [ [ "Filou", "joyful" ], [ nil, nil ] ], Walk.last.encounters.in_order.pluck(:dog_name, :mood)
     # "Filou" typed during the walk is a friend: the encounter is linked to the address book.
     assert_equal [ friends(:filou), nil ], Walk.last.encounters.in_order.map(&:friend)

@@ -7,6 +7,8 @@ class WalksController < ApplicationController
   end
 
   def show
+    # Walks recorded before the weather feature (or when Open-Meteo didn't answer): try again.
+    WalkWeatherJob.perform_later(@walk) if @walk.tracked? && @walk.weather_code.nil?
   end
 
   # All the tracks on one map.

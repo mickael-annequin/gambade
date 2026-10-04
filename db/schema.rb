@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_04_085242) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_04_094518) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -134,6 +134,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_085242) do
     t.string "client_id"
     t.string "moods", default: [], null: false, array: true
     t.text "comment"
+    t.integer "weather_code"
+    t.decimal "temperature_celsius", precision: 4, scale: 1
+    t.decimal "precipitation_mm", precision: 5, scale: 1
+    t.integer "wind_kmh"
     t.index ["client_id"], name: "index_walks_on_client_id", unique: true
     t.index ["dog_id", "started_at"], name: "index_walks_on_dog_id_and_started_at"
     t.index ["dog_id"], name: "index_walks_on_dog_id"

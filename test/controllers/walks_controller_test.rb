@@ -137,4 +137,13 @@ class WalksControllerTest < ActionDispatch::IntegrationTest
     assert_select ".walks-map", 0
     assert_select "p", /Aucun trajet GPS/
   end
+
+  test "a GPS walk without weather fetches it in the background" do
+    assert_enqueued_with(job: WalkWeatherJob, args: [ walks(:evening) ]) do
+      get walk_path(walks(:evening))
+    end
+    walks(:evening).update!(weather_code: 0, temperature_celsius: 20, precipitation_mm: 0, wind_kmh: 5)
+    assert_no_enqueued_jobs(only: WalkWeatherJob) { get walk_path(walks(:evening)) }
+    assert_select ".activity-summary", /☀️ Ensoleillé · 20 °C/
+  end
 end

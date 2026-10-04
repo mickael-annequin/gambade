@@ -19,6 +19,7 @@ class TrackedWalksController < ApplicationController
     walk = Walk.create_from_track!(dog: current_dog, started_at: started_at, ended_at: ended_at,
                                    points: track_points_params, encounters: encounters_params,
                                    activities: activities_params, client_id: walk_params[:client_id].presence)
+    WalkWeatherJob.perform_later(walk)
     render json: { url: walk_path(walk, finished: true) }, status: :created
   rescue ActiveRecord::RecordNotUnique
     # Both sendings arrived at the same moment: the other one won.

@@ -44,4 +44,13 @@ class WalksHelperTest < ActionView::TestCase
     assert_equal [ 1.502, 48.4211 ], markers.first[:coordinates]
     assert_includes markers.first[:thumbnail], "res.cloudinary.com/gambade-test"
   end
+
+  test "describes the weather of a walk" do
+    walk = Walk.new(weather_code: 61, temperature_celsius: 15.4, precipitation_mm: 0.4, wind_kmh: 12)
+    assert_equal "🌧️ Pluie · 15 °C · vent 12 km/h · 0,4 mm de pluie", walk_weather(walk)
+    assert_equal "🌧️ 15°", walk_weather_short(walk)
+    assert_equal "☀️ Ensoleillé · 21 °C · vent 5 km/h",
+                 walk_weather(Walk.new(weather_code: 0, temperature_celsius: 21, precipitation_mm: 0, wind_kmh: 5))
+    assert_nil walk_weather(Walk.new)
+  end
 end
