@@ -54,7 +54,7 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [ ] Statistiques par semaine/mois avec graphiques
 - [x] Carte globale de tous les trajets (colorés selon le nombre de passages : vert 1 → brun 11+, avec légende), trajet cliquable vers sa balade ; flèches de sens sur la carte d'une balade
 - [ ] Carte de chaleur (*heatmap*) sur la carte globale, pour voir les chemins les plus fréquentés — à faire vers **20–30 balades GPS** (avant, trop peu de données pour qu'elle soit parlante)
-- [ ] Météo automatique
+- [x] Météo automatique (Open-Meteo, gratuit sans clé, position arrondie à ~1 km) : ciel, température, vent et pluie au milieu de la balade, aussi pour les anciennes balades GPS
 - [ ] Mode sombre
 
 ## Phase 3 — V1+ 🥉
