@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Gambade</string>
+    <string name="title_activity_main">Gambade</string>
+    <string name="package_name">com.mickaelannequin.gambade</string>
+    <string name="custom_url_scheme">com.mickaelannequin.gambade</string>
+</resources>

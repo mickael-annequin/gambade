@@ -1,0 +1,8 @@
+{
+  "appId": "com.mickaelannequin.gambade",
+  "appName": "Gambade",
+  "webDir": "www",
+  "server": {
+    "url": "https://gambade.onrender.com"
+  }
+}
