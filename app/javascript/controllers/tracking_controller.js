@@ -1,8 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 import { loadWalk, saveWalk, clearWalk } from "walk_storage"
 
-// Live walk tracking. ALL the GPS logic lives in this controller, so the position source
-// (the browser today) can be replaced by a Capacitor plugin in V2 without touching the rest.
+// Live walk tracking. ALL the GPS logic lives in this controller. The position source is the browser,
+// or a Capacitor plugin in the Android app (V2) to keep tracking in the background.
 // The walk is saved in the phone after each point and sent to the server only at the end.
 
 const SECONDS_BETWEEN_POINTS = 5
@@ -27,7 +27,7 @@ const STATUSES = {
   weak: "🟠 GPS faible",
   bad: "🔴 GPS imprécis (position ignorée)",
   lost: "🔴 GPS perdu",
-  denied: "🔴 Localisation refusée : autorise-la dans le navigateur",
+  denied: "🔴 Localisation refusée : autorise-la dans les réglages",
   unavailable: "🔴 GPS indisponible sur cet appareil",
   finished: "⏹ Balade terminée, pas encore enregistrée"
 }
@@ -194,6 +194,7 @@ export default class extends Controller {
   }
 
   #watchPosition() {
+    if (backgroundGeolocation()) return this.#watchPositionInApp()
     if (!("geolocation" in navigator)) return this.#showStatus("unavailable")
 
     this.#showStatus("searching")
@@ -201,6 +202,28 @@ export default class extends Controller {
       (position) => this.#addPosition(position),
       (error) => this.#showStatus(error.code === error.PERMISSION_DENIED ? "denied" : "lost"),
       { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 }
+    )
+  }
+
+  // Android app (V2): positions keep coming with the screen off or in another app (camera…),
+  // while Android shows a notification. They are given the shape of a browser position,
+  // so the rest of the controller works the same.
+  #watchPositionInApp() {
+    this.#showStatus("searching")
+    this.appWatcher = backgroundGeolocation().addWatcher(
+      {
+        backgroundTitle: "Gambade 🐶",
+        backgroundMessage: "Balade en cours : ton trajet est enregistré.",
+        requestPermissions: true,
+        stale: false, // only fresh positions
+        distanceFilter: 0 // every position: #addPosition does the filtering
+      },
+      (location, error) => {
+        if (error) return this.#showStatus(error.code === "NOT_AUTHORIZED" ? "denied" : "lost")
+
+        const { latitude, longitude, accuracy, speed, time } = location
+        this.#addPosition({ coords: { latitude, longitude, accuracy, speed }, timestamp: time })
+      }
     )
   }
 
@@ -353,6 +376,9 @@ export default class extends Controller {
   #stopTracking() {
     clearInterval(this.timer)
     if (this.watchId !== undefined) navigator.geolocation.clearWatch(this.watchId)
+    // addWatcher gives the id later (a Promise): the watcher is removed as soon as it is known.
+    this.appWatcher?.then((id) => backgroundGeolocation().removeWatcher({ id }))
+    this.appWatcher = null
     if (this.onVisibilityChange) document.removeEventListener("visibilitychange", this.onVisibilityChange)
     this.onVisibilityChange = null
     this.wakeLock?.release().catch(() => {})
@@ -419,6 +445,14 @@ export default class extends Controller {
   #showStatus(status) {
     this.statusTarget.textContent = STATUSES[status]
   }
+}
+
+// The Capacitor plugin, only inside the Android app (the app injects window.Capacitor into the page).
+function backgroundGeolocation() {
+  const capacitor = window.Capacitor
+  if (!capacitor?.isPluginAvailable?.("BackgroundGeolocation")) return null
+
+  return capacitor.Plugins.BackgroundGeolocation
 }
 
 // Distance "as the crow flies" between two GPS points, in meters (haversine formula).
