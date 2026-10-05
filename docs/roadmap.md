@@ -66,7 +66,12 @@ Le détail des fonctionnalités est dans [brainstorming.md](brainstorming.md).
 - [ ] Lieux favoris
 
 ## Phase 4 — V2 📱
-- [ ] App Android avec Capacitor et GPS en arrière-plan
+> But : que le suivi GPS continue quand je passe sur une autre appli (appareil photo, messages…) ou que l'écran est éteint. L'app Android est une « coquille » qui affiche le site en ligne : je continue à ne modifier que l'app Rails, et seul le contrôleur Stimulus du suivi GPS change.
+
+- [ ] **Installer Android Studio** sur Windows. *Test :* Android Studio s'ouvre et le téléphone est reconnu en mode développeur.
+- [ ] **Créer la coquille Capacitor** dans `mobile/`, qui charge https://gambade.onrender.com. *Test :* l'APK s'installe sur le téléphone et Gambade s'ouvre comme une vraie app.
+- [ ] **GPS en arrière-plan** : plugin Capacitor, et le contrôleur Stimulus choisit la source de position (app Android → plugin, sinon → navigateur). *Test :* démarrer une balade, éteindre l'écran quelques minutes, retrouver le trajet complet.
+- [ ] **Vraie balade avec l'app Android** 🎉 *Test :* prendre des photos en pleine balade, sans trou dans le tracé.
 
 ## Plus tard 🔮
 - Photo des chiens rencontrés
