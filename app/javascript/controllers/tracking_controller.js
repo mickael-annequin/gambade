@@ -208,9 +208,21 @@ export default class extends Controller {
   // Android app (V2): positions keep coming with the screen off or in another app (camera…),
   // while Android shows a notification. They are given the shape of a browser position,
   // so the rest of the controller works the same.
+  // Location is asked first: if the plugin has to ask it itself, it doesn't show its notification
+  // and Android stops the tracking in the background (first walk after installing the app).
   #watchPositionInApp() {
     this.#showStatus("searching")
-    this.appWatcher = backgroundGeolocation().addWatcher(
+    this.appWatcher = backgroundGeolocation().requestPermissions().then(({ location }) => {
+      if (location !== "granted") return this.#showStatus("denied")
+      if (!this.appWatcher) return // the walk was stopped while the question was asked
+
+      return this.#addAppWatcher()
+    })
+  }
+
+  // Resolves to the watcher id, needed to stop it.
+  #addAppWatcher() {
+    return backgroundGeolocation().addWatcher(
       {
         backgroundTitle: "Gambade 🐶",
         backgroundMessage: "Balade en cours : ton trajet est enregistré.",
@@ -376,8 +388,8 @@ export default class extends Controller {
   #stopTracking() {
     clearInterval(this.timer)
     if (this.watchId !== undefined) navigator.geolocation.clearWatch(this.watchId)
-    // addWatcher gives the id later (a Promise): the watcher is removed as soon as it is known.
-    this.appWatcher?.then((id) => backgroundGeolocation().removeWatcher({ id }))
+    // The watcher id comes later (a Promise): the watcher is removed as soon as it is known.
+    this.appWatcher?.then((id) => id && backgroundGeolocation().removeWatcher({ id }))
     this.appWatcher = null
     if (this.onVisibilityChange) document.removeEventListener("visibilitychange", this.onVisibilityChange)
     this.onVisibilityChange = null
