@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { loadWalk, clearWalk } from "walk_storage"
+import { confirmDialog } from "confirm_dialog"
 
 // On the home page: offers to resume a walk still saved in the phone.
 // The display is always rebuilt from the phone's storage, because Turbo may show
@@ -12,8 +13,8 @@ export default class extends Controller {
     this.#render()
   }
 
-  abandon() {
-    if (!confirm("Abandonner cette balade ? Elle sera perdue.")) return
+  async abandon() {
+    if (!(await confirmDialog("Abandonner cette balade ? Elle sera perdue."))) return
 
     clearWalk()
     this.#render()

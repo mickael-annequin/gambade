@@ -11,6 +11,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     assert_select "[data-controller='tracking']"
     assert_select "button[data-action='tracking#finish']", "■ Terminer"
     assert_select "nav", count: 0
+    assert_select "dialog#confirm-dialog button[value='ok']", "Oui" # our confirmation window, from the layout
     assert_select "button[hidden][data-action='tracking#cancelActivity'][data-tracking-kind-param='swim']", "✕ Annuler"
     assert_select "[data-tracking-target='dogPanel'][hidden] [data-tracking-mood-param='playful']"
     # The dog's name suggests the friends of the address book

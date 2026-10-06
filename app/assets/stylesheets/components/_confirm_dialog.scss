@@ -1,0 +1,27 @@
+// "Oui / Non" window (a <dialog>), in the style of the "+1 chien" panel: white card, ochre border.
+.confirm-dialog {
+  width: calc(100% - 2rem);
+  max-width: 24rem;
+  padding: 1.25rem;
+  border: 3px solid $ochre;
+  border-radius: $border-radius-lg;
+  background: white;
+  color: $bark;
+  box-shadow: 0 8px 24px rgba($bark, 0.25);
+
+  &::backdrop { background: rgba($bark, 0.45); }
+}
+
+.confirm-dialog-message {
+  margin-bottom: 1.25rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.confirm-dialog-buttons {
+  display: flex;
+  gap: 0.75rem;
+
+  > * { flex: 1; }
+}

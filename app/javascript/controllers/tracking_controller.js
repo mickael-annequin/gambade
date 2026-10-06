@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { loadWalk, saveWalk, clearWalk } from "walk_storage"
+import { confirmDialog, alertDialog } from "confirm_dialog"
 
 // Live walk tracking. ALL the GPS logic lives in this controller. The position source is the browser,
 // or a Capacitor plugin in the Android app (V2) to keep tracking in the background.
@@ -111,9 +112,9 @@ export default class extends Controller {
 
   // "✕ Annuler" under a running phase: it was started by mistake, it is deleted (after a confirmation,
   // so that a press made by the phone in a pocket deletes nothing).
-  cancelActivity({ params: { kind } }) {
+  async cancelActivity({ params: { kind } }) {
     const running = this.#runningActivity(kind)
-    if (this.endedAt || !running || !confirm(`Annuler cette phase de ${ACTIVITIES[kind].name} ?`)) return
+    if (this.endedAt || !running || !(await confirmDialog(`Annuler cette phase de ${ACTIVITIES[kind].name} ?`))) return
 
     this.activities = this.activities.filter((activity) => activity !== running)
     this.#persist()
@@ -124,7 +125,7 @@ export default class extends Controller {
   // From the banner, the question was already asked: no confirmation (data-tracking-confirm-param="false").
   async finish({ params } = {}) {
     if (!this.endedAt) {
-      if (params?.confirm !== false && !confirm("Terminer la balade ?")) return
+      if (params?.confirm !== false && !(await confirmDialog("Terminer la balade ?"))) return
 
       this.#end()
     }
@@ -139,7 +140,7 @@ export default class extends Controller {
       clearWalk()
       window.location.assign(url)
     } catch {
-      alert("La balade n'a pas pu être enregistrée (pas de réseau ?). Elle est gardée dans le téléphone : réessaie dans un instant.")
+      alertDialog("La balade n'a pas pu être enregistrée (pas de réseau ?). Elle est gardée dans le téléphone : réessaie dans un instant.")
       this.#showRetry()
     }
   }

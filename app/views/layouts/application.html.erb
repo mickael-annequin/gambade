@@ -38,6 +38,18 @@
       <%= yield %>
     </main>
 
+    <%# "Oui / Non" window for every confirmation (app/javascript/confirm_dialog.js).
+        method="dialog": a button closes it, and its value says which one was pressed. %>
+    <dialog id="confirm-dialog" class="confirm-dialog">
+      <form method="dialog">
+        <p class="confirm-dialog-message" data-confirm-dialog-message></p>
+        <div class="confirm-dialog-buttons">
+          <button value="cancel" class="btn btn-outline-secondary btn-lg" data-confirm-dialog-cancel>Non</button>
+          <button value="ok" class="btn btn-primary btn-lg" data-confirm-dialog-ok>Oui</button>
+        </div>
+      </form>
+    </dialog>
+
     <% if show_navbar %>
       <nav class="navbar-bottom">
         <% [ [ "🏠", "Accueil", root_path, %w[pages stats] ],
