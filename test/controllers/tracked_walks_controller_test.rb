@@ -14,7 +14,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     # A long press fires "contextmenu" on Android: it must not cancel the unlock.
     assert_select "[data-screen-lock-target='holdButton'][data-action*='contextmenu->screen-lock#preventMenu']"
     assert_select "nav", count: 0
-    assert_select "[data-tracking-target='dogPanel'][hidden] [data-tracking-mood-param='joyful']"
+    assert_select "[data-tracking-target='dogPanel'][hidden] [data-tracking-mood-param='playful']"
     # The dog's name suggests the friends of the address book
     assert_select "input[data-tracking-target='dogName'][list='friend-names']"
     assert_equal %w[Filou Sid], css_select("datalist#friend-names option").map { |option| option["value"] }
@@ -62,7 +62,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
 
   test "saves the dogs met during the walk" do
     encounters = [
-      { latitude: 48.4210, longitude: 1.5015, met_at: "2026-10-03T16:05:00Z", dog_name: "Filou", mood: "joyful" },
+      { latitude: 48.4210, longitude: 1.5015, met_at: "2026-10-03T16:05:00Z", dog_name: "Filou", mood: "playful" },
       { met_at: "2026-10-03T16:07:00Z" },
       { latitude: 999, longitude: 1.5, met_at: "2026-10-03T16:09:00Z" }
     ]
@@ -73,7 +73,7 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
     end
     assert_equal 2, Walk.last.dogs_met_count
     assert_enqueued_with(job: WalkWeatherJob, args: [ Walk.last ])
-    assert_equal [ [ "Filou", "joyful" ], [ nil, nil ] ], Walk.last.encounters.in_order.pluck(:dog_name, :mood)
+    assert_equal [ [ "Filou", "playful" ], [ nil, nil ] ], Walk.last.encounters.in_order.pluck(:dog_name, :mood)
     # "Filou" typed during the walk is a friend: the encounter is linked to the address book.
     assert_equal [ friends(:filou), nil ], Walk.last.encounters.in_order.map(&:friend)
   end

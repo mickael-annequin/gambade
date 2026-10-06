@@ -10,16 +10,16 @@ class EncountersControllerTest < ActionDispatch::IntegrationTest
   test "shows the optional details form" do
     get edit_walk_encounter_path(@walk, @encounter)
     assert_response :success
-    assert_select "input[type='radio'][value='joyful'].btn-check"
-    assert_select "label.mood-button", 3
+    assert_select "input[type='radio'][value='playful'].btn-check"
+    assert_select "label.mood-button", 4
     assert_select "button.danger-button", /Supprimer cette rencontre/
   end
 
   test "saves the details of a dog met" do
     patch walk_encounter_path(@walk, @encounter),
-          params: { encounter: { dog_name: "Filou", breed: "Beagle", mood: "joyful", note: "Très joueur" } }
+          params: { encounter: { dog_name: "Filou", breed: "Beagle", mood: "playful", note: "Très joueur" } }
     assert_redirected_to walk_path(@walk)
-    assert_equal [ "Filou", "Beagle", "joyful" ], @encounter.reload.values_at(:dog_name, :breed, :mood)
+    assert_equal [ "Filou", "Beagle", "playful" ], @encounter.reload.values_at(:dog_name, :breed, :mood)
   end
 
   test "refuses an unknown mood" do

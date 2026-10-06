@@ -1,5 +1,5 @@
 module EncountersHelper
-  MOODS = { "joyful" => "😊 joueurs", "neutral" => "😐 neutre", "tense" => "😠 tendu" }.freeze
+  MOODS = { "playful" => "😄 joueur", "friendly" => "🙂 cordial", "neutral" => "😐 neutre", "tense" => "😠 tendu" }.freeze
 
   # "Filou, Beagle 😊", or nil when no detail was filled in
   def encounter_details(encounter)

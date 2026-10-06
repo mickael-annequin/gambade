@@ -12,7 +12,7 @@ class EncounterTest < ActiveSupport::TestCase
 
   test "only accepts the planned moods" do
     encounter = encounters(:first)
-    encounter.mood = "joyful"
+    encounter.mood = "playful"
     assert encounter.valid?
     encounter.mood = "grumpy"
     assert_not encounter.valid?

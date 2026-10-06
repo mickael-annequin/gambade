@@ -70,7 +70,7 @@ export default class extends Controller {
     this.#openDogPanel()
   }
 
-  // 😊 😐 😠 (data-tracking-mood-param); pressing the chosen one again unselects it.
+  // 😄 🙂 😐 😠 (data-tracking-mood-param); pressing the chosen one again unselects it.
   chooseMood({ params: { mood } }) {
     this.dogMood = this.dogMood === mood ? null : mood
     this.#showMoods()
