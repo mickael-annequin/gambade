@@ -5,6 +5,7 @@ class WalkTrimsController < ApplicationController
 
   def edit
     @progress = @walk.track_progress
+    @arrival_zone = @walk.arrival_zone
     redirect_to @walk, alert: "Cette balade n'a pas de trajet GPS à couper." if @progress.size < 2
   end
 

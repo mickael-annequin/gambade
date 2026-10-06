@@ -40,6 +40,12 @@ export default class extends Controller {
     this.cutMarker.setLngLat(coordinates)
   }
 
+  // Zooms on a part of the track ("trim:focused" event), e.g. the return near the start.
+  focus({ detail: { coordinates } }) {
+    this.focusCoordinates = coordinates
+    if (this.trackShown) this.#fit(coordinates)
+  }
+
   // Free the map when Turbo leaves the page.
   disconnect() {
     this.map?.remove()
@@ -135,12 +141,18 @@ export default class extends Controller {
     this.activitiesValue.forEach((activity) => this.#addActivityMarker(activity))
     this.photosValue.forEach((photo) => this.#addPhotoMarker(photo))
 
-    // Zoom so that the whole walk, every dog met, every play/swim phase and every photo fit in the map.
-    const bounds = new mapboxgl.LngLatBounds(this.trackValue[0], this.trackValue[0])
-    this.trackValue.forEach((point) => bounds.extend(point))
-    this.encountersValue.forEach(({ coordinates }) => bounds.extend(coordinates))
-    this.activitiesValue.forEach(({ coordinates }) => bounds.extend(coordinates))
-    this.photosValue.forEach(({ coordinates }) => bounds.extend(coordinates))
+    // Zoom so that the whole walk, every dog met, every play/swim phase and every photo fit in the map
+    // (or only the part asked by focus(), if it was asked before the map was ready).
+    this.trackShown = true
+    this.#fit(this.focusCoordinates || [
+      ...this.trackValue,
+      ...[ ...this.encountersValue, ...this.activitiesValue, ...this.photosValue ].map(({ coordinates }) => coordinates)
+    ])
+  }
+
+  #fit(coordinates) {
+    const bounds = new mapboxgl.LngLatBounds(coordinates[0], coordinates[0])
+    coordinates.forEach((point) => bounds.extend(point))
     this.map.fitBounds(bounds, { padding: 40, maxZoom: 17, duration: 0 })
   }
 }

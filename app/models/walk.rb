@@ -128,6 +128,31 @@ class Walk < ApplicationRecord
     end
   end
 
+  # Walks are usually loops: the real end is probably where the track came back near the start.
+  LEFT_START_METERS = 300 # farther than this, the walk had really left
+  ARRIVAL_ZONE_METERS = 200
+  BACK_TO_START_METERS = 50
+
+  # For the "cut the end" slider: the indexes (in track_progress) of the last return near the start,
+  # from the point entering the zone to the last one before leaving it again, and the probable end:
+  # the first point really back at the start. nil when the walk never came back.
+  def arrival_zone
+    points = track_points.in_order.to_a
+    from_start = points.map { |point| self.class.distance_between(points.first, point) }
+    left_at = from_start.index { |meters| meters > LEFT_START_METERS }
+    return if left_at.nil?
+
+    entered_at = (left_at...points.size).select { |i| from_start[i] < ARRIVAL_ZONE_METERS }
+                                       .select { |i| from_start[i - 1] >= ARRIVAL_ZONE_METERS }.last
+    return if entered_at.nil?
+
+    left_again_at = (entered_at...points.size).find { |i| from_start[i] >= ARRIVAL_ZONE_METERS }
+    last = left_again_at ? left_again_at - 1 : points.size - 1
+    suggested = (entered_at..last).find { |i| from_start[i] < BACK_TO_START_METERS } ||
+                (entered_at..last).min_by { |i| from_start[i] }
+    { from: entered_at, to: last, suggested: suggested }
+  end
+
   # Removes everything recorded after ended_at (e.g. the drive home when "Terminer" was forgotten),
   # then recomputes the duration, the distance and the number of dogs met.
   def trim_end!(ended_at)

@@ -10,6 +10,9 @@ class WalkTrimsControllerTest < ActionDispatch::IntegrationTest
     get edit_walk_trim_path(@walk)
     assert_response :success
     assert_select "input[type='range'][data-trim-target='slider']"
+    assert_select "button[data-action='trim#step'][data-trim-by-param='-1']", "◀"
+    assert_select "button[data-action='trim#step'][data-trim-by-param='1']", "▶"
+    assert_select "[data-trim-target='toggle']", 0 # this walk never left the start: no arrival zone
   end
 
   test "cuts everything recorded after the chosen time and recomputes the walk" do

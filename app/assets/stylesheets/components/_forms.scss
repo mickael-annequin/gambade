@@ -36,8 +36,36 @@
   line-height: 1.2;
 }
 
+// "🔁 Le curseur ne parcourt que le retour près du départ. Voir toute la balade"
+.trim-zone {
+  margin-bottom: 0.25rem;
+
+  .btn-link { vertical-align: baseline; }
+}
+
 .trim-slider {
   height: 2.5rem; // easier to grab with the thumb
+}
+
+// ◀  "Fin de la balade à 18h15 · 2,35 km"  ▶
+.trim-steps {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.trim-step-button {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+}
+
+.trim-summary {
+  flex: 1;
+  text-align: center;
+  font-size: 1.1rem;
 }
 
 // A delete action, styled like the "Supprimer" tile of a walk: white, red text, soft shadow.

@@ -7,18 +7,31 @@
 
 <div class="walk-map"
      data-controller="map"
-     data-action="trim:moved@window->map#showCut"
+     data-action="trim:moved@window->map#showCut trim:focused@window->map#focus"
      data-map-api-key-value="<%= ENV["MAPBOX_API_KEY"] %>"
      data-map-center-value="<%= @progress.first[:coordinates].to_json %>"
      data-map-track-value="<%= @progress.map { |point| point[:coordinates] }.to_json %>">
 </div>
 
 <%= form_with url: walk_trim_path(@walk), method: :patch,
-              data: { controller: "trim", trim_progress_value: @progress.to_json,
+              data: { controller: "trim", trim_progress_value: @progress.to_json, trim_zone_value: (@arrival_zone || {}).to_json,
                       turbo_confirm: "Couper la balade ici ? Ce qui suit sera supprimé définitivement." } do %>
+  <% if @arrival_zone %>
+    <p class="trim-zone">
+      <span data-trim-target="zoneHint">🔁 Le curseur ne parcourt que le retour près du départ.</span>
+      <button type="button" class="btn btn-link p-0" data-trim-target="toggle" data-action="trim#toggleZone"></button>
+    </p>
+  <% end %>
   <input type="range" min="0" step="1" class="form-range trim-slider"
          data-trim-target="slider" data-action="input->trim#move">
-  <p class="text-center fs-5"><strong data-trim-target="summary"></strong></p>
+  <%# ◀ ▶ move one GPS point at a time: the slider alone is too coarse under a finger. %>
+  <div class="trim-steps">
+    <button type="button" class="btn btn-outline-primary trim-step-button" aria-label="Un point plus tôt"
+            data-action="trim#step" data-trim-by-param="-1">◀</button>
+    <strong class="trim-summary" data-trim-target="summary"></strong>
+    <button type="button" class="btn btn-outline-primary trim-step-button" aria-label="Un point plus tard"
+            data-action="trim#step" data-trim-by-param="1">▶</button>
+  </div>
   <%= hidden_field_tag :ended_at, nil, data: { trim_target: "endedAt" } %>
   <%= submit_tag "✂️ Couper ici", class: "btn btn-danger btn-lg w-100" %>
 <% end %>

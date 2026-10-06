@@ -70,6 +70,31 @@ class WalkTest < ActiveSupport::TestCase
     assert_equal "18h05", progress.first[:time]
   end
 
+  # A walk going north of the start: 0.001° of latitude ≈ 111 m.
+  def walk_with_track(*thousandths_north)
+    walk = dogs(:rex).walks.create!(started_at: Time.zone.parse("2026-10-01 18:00"), duration_seconds: 3600, tracked: true)
+    thousandths_north.each_with_index do |north, index|
+      walk.track_points.create!(latitude: 48.42 + north / 1000.0, longitude: 1.5, recorded_at: walk.started_at + index.minutes)
+    end
+    walk
+  end
+
+  test "the arrival zone is the return near the start, until leaving it again" do
+    # start, leaves (444 m), comes back: 167 m (enters the zone), 33 m (back at the start), 11 m, then drives away
+    walk = walk_with_track(0, 2, 4, 6, 4, 1.5, 0.3, 0.1, 5, 9)
+    assert_equal({ from: 5, to: 7, suggested: 6 }, walk.arrival_zone)
+  end
+
+  test "the arrival zone is the last return near the start (figure-8 walks)" do
+    walk = walk_with_track(0, 4, 1, 0.2, 4, 1, 0.2)
+    assert_equal({ from: 5, to: 6, suggested: 6 }, walk.arrival_zone)
+  end
+
+  test "no arrival zone when the walk never really left or never came back" do
+    assert_nil walk_with_track(0, 1, 2, 1, 0).arrival_zone
+    assert_nil walk_with_track(0, 3, 6, 9).arrival_zone
+  end
+
   test "finds where we were at a given time, to place a photo" do
     walk = walks(:evening) # 18h05 → 18h40, points at 18h05 and 18h25
     at = ->(time) { walk.position_at(Time.zone.parse("2026-10-01 #{time}"))&.fetch(:latitude) }
