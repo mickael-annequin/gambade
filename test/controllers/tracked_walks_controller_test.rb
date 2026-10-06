@@ -8,11 +8,8 @@ class TrackedWalksControllerTest < ActionDispatch::IntegrationTest
   test "shows the live walk screen without the navigation bar" do
     get new_tracked_walk_path
     assert_response :success
-    assert_select "[data-controller~='tracking'][data-controller~='screen-lock']"
-    assert_select "button[data-action='screen-lock#lock']", "🔒 Verrouiller"
-    assert_select "[data-screen-lock-target='overlay'][hidden] [data-screen-lock-target='holdButton']"
-    # A long press fires "contextmenu" on Android: it must not cancel the unlock.
-    assert_select "[data-screen-lock-target='holdButton'][data-action*='contextmenu->screen-lock#preventMenu']"
+    assert_select "[data-controller='tracking']"
+    assert_select "button[data-action='tracking#finish']", "■ Terminer"
     assert_select "nav", count: 0
     assert_select "[data-tracking-target='dogPanel'][hidden] [data-tracking-mood-param='playful']"
     # The dog's name suggests the friends of the address book

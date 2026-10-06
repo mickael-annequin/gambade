@@ -2,7 +2,7 @@
 // Big numbers, big buttons at the bottom, under the thumb.
 .tracking {
   // svh = screen height with the phone's bars shown: it never changes, so the screen never
-  // becomes a few pixels too tall when a bar appears (dvh did, e.g. after the lock's long press).
+  // becomes a few pixels too tall when a bar appears (dvh did).
   min-height: calc(100svh - 2rem);
   display: flex;
   flex-direction: column;

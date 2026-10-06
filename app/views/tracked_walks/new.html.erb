@@ -1,6 +1,6 @@
 <% content_for :hide_nav, true %>
 
-<div class="tracking" data-controller="tracking screen-lock" data-tracking-save-url-value="<%= tracked_walks_path %>">
+<div class="tracking" data-controller="tracking" data-tracking-save-url-value="<%= tracked_walks_path %>">
   <div class="tracking-header">
     <span data-tracking-target="status">🟠 Recherche du GPS…</span>
     <span>avec <%= current_dog.name %> 🐶</span>
@@ -64,20 +64,7 @@
               data-action="tracking#toggleActivity" data-tracking-kind-param="swim">💦 BAIGNADE</button>
     </div>
 
-    <div class="tracking-row">
-      <button type="button" class="tracking-button tracking-button-lock" data-action="screen-lock#lock">🔒 Verrouiller</button>
-      <button type="button" class="tracking-button tracking-button-finish"
-              data-tracking-target="finishButton" data-action="tracking#finish">■ Terminer</button>
-    </div>
-  </div>
-
-  <%# Pocket mode: catches every touch; the numbers above stay visible through the veil. %>
-  <div class="screen-lock" data-screen-lock-target="overlay" hidden>
-    <div class="screen-lock-panel">
-      <strong>🔒 Écran verrouillé</strong>
-      <span>Appuie longuement pour déverrouiller</span>
-      <button type="button" class="screen-lock-button" data-screen-lock-target="holdButton" aria-label="Déverrouiller (appui long)"
-              data-action="pointerdown->screen-lock#startHold pointerup->screen-lock#cancelHold pointerleave->screen-lock#cancelHold pointercancel->screen-lock#cancelHold contextmenu->screen-lock#preventMenu">🔓</button>
-    </div>
+    <button type="button" class="tracking-button tracking-button-finish"
+            data-tracking-target="finishButton" data-action="tracking#finish">■ Terminer</button>
   </div>
 </div>
