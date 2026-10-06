@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Gambade paw (same shapes as public/icon.svg), centered in the 108dp
+     adaptive icon canvas. Also used as the launch screen icon. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.875"
+        android:scaleY="0.875"
+        android:translateX="10.25"
+        android:translateY="10.25">
+        <path
+            android:fillColor="#F5F0E6"
+            android:pathData="M33,63a17,14 0 1,0 34,0a17,14 0 1,0 -34,0z" />
+        <group android:rotation="-20" android:pivotX="29" android:pivotY="44">
+            <path
+                android:fillColor="#F5F0E6"
+                android:pathData="M22,44a7,9 0 1,0 14,0a7,9 0 1,0 -14,0z" />
+        </group>
+        <group android:rotation="-6" android:pivotX="42" android:pivotY="32">
+            <path
+                android:fillColor="#F5F0E6"
+                android:pathData="M35,32a7,9.5 0 1,0 14,0a7,9.5 0 1,0 -14,0z" />
+        </group>
+        <group android:rotation="6" android:pivotX="58" android:pivotY="32">
+            <path
+                android:fillColor="#F5F0E6"
+                android:pathData="M51,32a7,9.5 0 1,0 14,0a7,9.5 0 1,0 -14,0z" />
+        </group>
+        <group android:rotation="20" android:pivotX="71" android:pivotY="44">
+            <path
+                android:fillColor="#F5F0E6"
+                android:pathData="M64,44a7,9 0 1,0 14,0a7,9 0 1,0 -14,0z" />
+        </group>
+    </group>
+</vector>

@@ -5,4 +5,5 @@
     <string name="package_name">com.mickaelannequin.gambade</string>
     <string name="custom_url_scheme">com.mickaelannequin.gambade</string>
     <string name="capacitor_background_geolocation_notification_channel_name">Balade en cours</string>
+    <string name="capacitor_background_geolocation_notification_icon">drawable/ic_notification</string>
 </resources>
