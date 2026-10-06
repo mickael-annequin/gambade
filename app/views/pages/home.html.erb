@@ -52,4 +52,7 @@
   <%= render "walks/walk_card", walk: @last_walk %>
 <% end %>
 
-<p class="text-center mt-4"><%= link_to "+ Ajouter une balade à la main", new_walk_path %></p>
+<%# Rarely used: kept discreet, under everything else. %>
+<div class="text-center mt-4">
+  <%= link_to "✏️ Ajouter une balade à la main", new_walk_path, class: "manual-walk-link" %>
+</div>

@@ -1,0 +1,18 @@
+// "✏️ Ajouter une balade à la main" on the home page: a rarely used action, so a discreet
+// dashed pill in muted text, in the same rounded family as ".small-action".
+.manual-walk-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.45rem 1rem;
+  border: 1.5px dashed rgba($bark, 0.25);
+  border-radius: 2rem;
+  color: rgba($bark, 0.6);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.1s;
+
+  &:hover { color: $forest; border-color: rgba($forest, 0.4); }
+  &:active { transform: scale(0.95); }
+}
