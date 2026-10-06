@@ -1,16 +1,21 @@
 <% period = @stats.period %>
 <% labels = @stats.buckets.map { |bucket| stats_label(bucket[:start], period) } %>
+<% per = { "day" => "par jour", "week" => "par semaine", "month" => "par mois" }[period] %>
 <div class="title-row">
   <%= back_button root_path, label: "Retour à l'accueil" %>
   <h1 class="walk-title">Statistiques</h1>
 </div>
 
 <nav class="stats-periods" aria-label="Période">
+  <%= link_to "Par jour", stats_path(period: "day"), class: ("is-active" if period == "day") %>
   <%= link_to "Par semaine", stats_path(period: "week"), class: ("is-active" if period == "week") %>
   <%= link_to "Par mois", stats_path(period: "month"), class: ("is-active" if period == "month") %>
 </nav>
 
-<h2 class="section-title"><%= period == "week" ? "Les 12 dernières semaines" : "Les 12 derniers mois" %></h2>
+<h2 class="section-title">
+  <%= { "day" => "Les #{@stats.count} derniers jours", "week" => "Les #{@stats.count} dernières semaines",
+        "month" => "Les #{@stats.count} derniers mois" }[period] %>
+</h2>
 <div class="stat-cards">
   <div class="stat-card">
     <div class="stat-card-number"><%= number_with_precision(@stats.total(:km), precision: 1, separator: ",") %></div>
@@ -35,7 +40,7 @@
        data-stats-chart-unit-value="<%= unit %>"
        data-stats-chart-minutes-value="<%= key == :minutes %>">
     <canvas data-stats-chart-target="canvas" role="img"
-            aria-label="<%= title %> <%= period == "week" ? "par semaine" : "par mois" %>"></canvas>
+            aria-label="<%= title %> <%= per %>"></canvas>
   </div>
 <% end %>
 
@@ -44,12 +49,12 @@
   <summary>Voir les chiffres</summary>
   <table class="table table-sm mb-0">
     <thead>
-      <tr><th><%= period == "week" ? "Semaine du" : "Mois" %></th><th>Balades</th><th>km</th><th>Temps</th><th>Chiens</th></tr>
+      <tr><th><%= { "day" => "Jour", "week" => "Semaine du", "month" => "Mois" }[period] %></th><th>Balades</th><th>km</th><th>Temps</th><th>Chiens</th></tr>
     </thead>
     <tbody>
       <% @stats.buckets.reverse_each do |bucket| %>
         <tr>
-          <td><%= period == "week" ? l(bucket[:start], format: "%-d %b") : l(bucket[:start], format: "%B %Y").capitalize %></td>
+          <td><%= l(bucket[:start], format: { "day" => "%A %-d %b", "week" => "%-d %b", "month" => "%B %Y" }[period]).capitalize %></td>
           <td><%= bucket[:walks] %></td>
           <td><%= number_with_precision(bucket[:km], precision: 1, separator: ",") %></td>
           <td><%= bucket[:minutes].positive? ? walk_duration(bucket[:minutes] * 60) : "–" %></td>

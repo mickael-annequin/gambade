@@ -19,6 +19,14 @@ class WalkStatsTest < ActiveSupport::TestCase
     assert_equal 7.3, stats.total(:km)
   end
 
+  test "adds up the walks per day, the last 14 days" do
+    stats = WalkStats.new(dogs(:rex).walks, period: "day")
+    assert_equal 14, stats.buckets.size
+    assert_equal [ Date.new(2026, 9, 21), Date.new(2026, 10, 4) ], [ stats.buckets.first[:start], stats.buckets.last[:start] ]
+    assert_equal [ 1, 0, 1, 0 ], stats.buckets.last(4).map { |bucket| bucket[:walks] } # 1, 2, 3 and 4 Oct.
+    assert_equal 6.3, stats.total(:km) # the walk of 10 Sept. is too old
+  end
+
   test "adds up the walks per month" do
     stats = WalkStats.new(dogs(:rex).walks, period: "month")
     assert_equal [ Date.new(2026, 9, 1), Date.new(2026, 10, 1) ], stats.buckets.last(2).map { |bucket| bucket[:start] }

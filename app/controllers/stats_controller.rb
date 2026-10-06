@@ -1,4 +1,4 @@
-# Stats per week or per month, with charts (/stats?period=month).
+# Stats per day, week or month, with charts (/stats?period=day).
 class StatsController < ApplicationController
   before_action :require_dog
 

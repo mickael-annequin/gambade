@@ -13,6 +13,12 @@ class StatsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".stats-table tbody tr", 12
   end
 
+  test "shows the stats per day" do
+    get stats_path(period: "day")
+    assert_select ".stats-periods .is-active", "Par jour"
+    assert_select ".stats-table tbody tr", 14
+  end
+
   test "shows the stats per month" do
     get stats_path(period: "month")
     assert_select ".stats-periods .is-active", "Par mois"
