@@ -81,6 +81,29 @@
   font-size: 1.6rem;
 }
 
+// A play/swim button, with "✕ Annuler" under it while the phase is running.
+.tracking-activity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+// A white pill like ".small-action", with the red text of the delete actions.
+.tracking-activity-cancel {
+  align-self: center;
+  border: none;
+  padding: 0.45rem 1rem;
+  border-radius: 2rem;
+  background: white;
+  color: $danger;
+  font-size: 0.9rem;
+  font-weight: 800;
+  box-shadow: 0 1px 4px rgba($bark, 0.15);
+  transition: transform 0.1s;
+
+  &:active { transform: scale(0.95); }
+}
+
 .tracking-button-play { background: rgba($ochre, 0.35); }
 
 .tracking-button-swim { background: rgba($river, 0.3); }

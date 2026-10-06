@@ -17,8 +17,8 @@ const MIN_WALK_METERS_BEFORE_BACK = 1000
 const EARTH_RADIUS_METERS = 6371000
 
 const ACTIVITIES = {
-  play: { icon: "🎾", label: "🎾 JEU" },
-  swim: { icon: "💦", label: "💦 BAIGNADE" }
+  play: { icon: "🎾", label: "🎾 JEU", name: "jeu" },
+  swim: { icon: "💦", label: "💦 BAIGNADE", name: "baignade" }
 }
 
 const STATUSES = {
@@ -34,7 +34,7 @@ const STATUSES = {
 
 export default class extends Controller {
   static targets = ["status", "duration", "distance", "finishButton", "dogsCount", "suggestion", "suggestionMessage",
-    "playButton", "swimButton", "dogPanel", "dogPanelTitle", "dogName", "moodButton"]
+    "playButton", "swimButton", "playCancelButton", "swimCancelButton", "dogPanel", "dogPanelTitle", "dogName", "moodButton"]
   static values = { saveUrl: String }
 
   connect() {
@@ -109,6 +109,18 @@ export default class extends Controller {
     navigator.vibrate?.(60)
   }
 
+  // "✕ Annuler" under a running phase: it was started by mistake, it is deleted (after a confirmation,
+  // so that a press made by the phone in a pocket deletes nothing).
+  cancelActivity({ params: { kind } }) {
+    const running = this.#runningActivity(kind)
+    if (this.endedAt || !running || !confirm(`Annuler cette phase de ${ACTIVITIES[kind].name} ?`)) return
+
+    this.activities = this.activities.filter((activity) => activity !== running)
+    this.#persist()
+    this.#showActivities()
+    navigator.vibrate?.(60)
+  }
+
   // From the banner, the question was already asked: no confirmation (data-tracking-confirm-param="false").
   async finish({ params } = {}) {
     if (!this.endedAt) {
@@ -154,6 +166,7 @@ export default class extends Controller {
     this.#stopTracking()
     this.#persist()
     this.#showDuration()
+    this.#showActivities()
   }
 
   #restoreOrStart() {
@@ -413,12 +426,13 @@ export default class extends Controller {
     this.distanceTarget.textContent = `${(this.distanceMeters / 1000).toFixed(1).replace(".", ",")} km`
   }
 
-  // "🎾 JEU", or "🎾 03:12 ■ Arrêter" while the phase is running.
+  // "🎾 JEU", or "🎾 03:12 ■ Arrêter" (and "✕ Annuler" under it) while the phase is running.
   #showActivities() {
     for (const [kind, { icon, label }] of Object.entries(ACTIVITIES)) {
       const running = this.#runningActivity(kind)
       const button = this[`${kind}ButtonTarget`]
       button.classList.toggle("is-running", Boolean(running))
+      this[`${kind}CancelButtonTarget`].hidden = !running || Boolean(this.endedAt)
       if (running) {
         const seconds = Math.floor((new Date() - new Date(running.started_at)) / 1000)
         button.textContent = `${icon} ${formatMinutesSeconds(seconds)} ■ Arrêter`

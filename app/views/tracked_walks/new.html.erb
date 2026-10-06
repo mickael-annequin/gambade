@@ -57,11 +57,17 @@
       🐕 +1 CHIEN (<span data-tracking-target="dogsCount">0</span>)
     </button>
 
+    <%# "✕ Annuler" shows only while the phase is running: it deletes a phase started by mistake. %>
     <div class="tracking-row">
-      <button type="button" class="tracking-button tracking-button-play" data-tracking-target="playButton"
-              data-action="tracking#toggleActivity" data-tracking-kind-param="play">🎾 JEU</button>
-      <button type="button" class="tracking-button tracking-button-swim" data-tracking-target="swimButton"
-              data-action="tracking#toggleActivity" data-tracking-kind-param="swim">💦 BAIGNADE</button>
+      <% [ [ "play", "🎾 JEU", "jeu" ], [ "swim", "💦 BAIGNADE", "baignade" ] ].each do |kind, label, name| %>
+        <div class="tracking-activity">
+          <button type="button" class="tracking-button tracking-button-<%= kind %>" data-tracking-target="<%= kind %>Button"
+                  data-action="tracking#toggleActivity" data-tracking-kind-param="<%= kind %>"><%= label %></button>
+          <button type="button" class="tracking-activity-cancel" data-tracking-target="<%= kind %>CancelButton" hidden
+                  data-action="tracking#cancelActivity" data-tracking-kind-param="<%= kind %>"
+                  aria-label="Annuler cette phase de <%= name %>">✕ Annuler</button>
+        </div>
+      <% end %>
     </div>
 
     <button type="button" class="tracking-button tracking-button-finish"
