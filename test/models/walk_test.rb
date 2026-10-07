@@ -36,9 +36,20 @@ class WalkTest < ActiveSupport::TestCase
   end
 
   test "measures the distance along GPS points" do
-    points = [ { latitude: 48.4206, longitude: 1.5012 }, { latitude: 48.4296, longitude: 1.5012 },
-               { latitude: 48.4206, longitude: 1.5012 } ]
+    points = [ { latitude: 48.4206, longitude: 1.5012, recorded_at: "2026-10-01T08:00:00Z" },
+               { latitude: 48.4296, longitude: 1.5012, recorded_at: "2026-10-01T08:10:00Z" },
+               { latitude: 48.4206, longitude: 1.5012, recorded_at: "2026-10-01T08:20:00Z" } ]
     assert_in_delta 2002, Walk.distance_along(points), 2
+  end
+
+  # Walking 111 m north in 1 min 40 s, one point every 5 s, each one 7 m left or right of the path.
+  test "does not count the GPS zigzag as walked distance" do
+    start = Time.zone.parse("2026-10-01 08:00")
+    points = (0..20).map do |i|
+      { latitude: 48.42 + i * 0.00005, longitude: 1.5 + (i.even? ? 0.0001 : -0.0001), recorded_at: start + (i * 5).seconds }
+    end
+    assert_operator Walk.distance_along(points), :<, 125
+    assert_operator points.each_cons(2).sum { |from, to| Walk.distance_between(from, to) }, :>, 300
   end
 
   test "groups dogs met at the same place into one map marker" do

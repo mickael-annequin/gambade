@@ -63,9 +63,28 @@ class Walk < ApplicationRecord
     end
   end
 
-  # Total length of the path going through the points, in meters.
+  SMOOTHING_SECONDS = 20
+
+  # Total length of the path, in meters. Each GPS position is a few meters off, left or right:
+  # going through every point zigzags and added ~15 % on a real walk. So the points are grouped
+  # by slices of 20 seconds, and the path goes through the average position of each slice.
   def self.distance_along(points)
-    points.each_cons(2).sum { |from, to| distance_between(from, to) }
+    smoothed_track(points).each_cons(2).sum { |from, to| distance_between(from, to) }
+  end
+
+  # Points (in time order, with recorded_at) → one average position per slice of 20 seconds.
+  def self.smoothed_track(points)
+    slices = []
+    points.each do |point|
+      time = point[:recorded_at].to_time
+      slices << { started_at: time, points: [] } if slices.empty? || time - slices.last[:started_at] >= SMOOTHING_SECONDS
+      slices.last[:points] << point
+    end
+    slices.map do |slice|
+      size = slice[:points].size
+      { latitude: slice[:points].sum { |point| point[:latitude].to_f } / size,
+        longitude: slice[:points].sum { |point| point[:longitude].to_f } / size }
+    end
   end
 
   # Distance "as the crow flies" between two GPS points (haversine formula).
@@ -153,6 +172,12 @@ class Walk < ApplicationRecord
     { from: entered_at, to: last, suggested: suggested }
   end
 
+  # Length of the saved GPS track in meters, measured the current way.
+  def track_distance
+    points = track_points.in_order.map { |point| point.slice(:latitude, :longitude, :recorded_at).symbolize_keys }
+    self.class.distance_along(points).round
+  end
+
   # Removes everything recorded after ended_at (e.g. the drive home when "Terminer" was forgotten),
   # then recomputes the duration, the distance and the number of dogs met.
   def trim_end!(ended_at)
@@ -161,10 +186,9 @@ class Walk < ApplicationRecord
       encounters.where("met_at > ?", ended_at).destroy_all
       activities.where("started_at > ?", ended_at).delete_all
       activities.where("ended_at > ?", ended_at).update_all(ended_at: ended_at)
-      points = track_points.in_order.map { |point| { latitude: point.latitude, longitude: point.longitude } }
       update!(
         duration_seconds: [ (ended_at - started_at).round, 1 ].max,
-        distance_meters: self.class.distance_along(points).round,
+        distance_meters: track_distance,
         dogs_met_count: encounters.count
       )
     end
