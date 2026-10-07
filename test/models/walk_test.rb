@@ -131,7 +131,18 @@ class WalkTest < ActiveSupport::TestCase
     1000.times { |i| walk.track_points.build(latitude: 48.42 + i * 0.0001, longitude: 1.5, recorded_at: Time.current + i * 5) }
     track = walk.simplified_track(max_points: 80)
     assert_operator track.size, :<=, 81
-    assert_equal [ 1.5, 48.42 ], track.first
-    assert_in_delta 48.42 + 999 * 0.0001, track.last.last, 1e-9
+    # Smoothed: the ends are the average with their neighbours, ~10 m inside.
+    assert_in_delta 48.42, track.first.last, 0.0002
+    assert_in_delta 48.42 + 999 * 0.0001, track.last.last, 0.0002
+  end
+
+  test "smooths the GPS zigzag on the map but keeps every point" do
+    start = Time.zone.parse("2026-10-01 08:00")
+    points = (0..20).map do |i|
+      { latitude: 48.42 + i * 0.00005, longitude: 1.5 + (i.even? ? 0.0001 : -0.0001), recorded_at: start + (i * 5).seconds }
+    end
+    positions = Walk.smoothed_positions(points)
+    assert_equal 21, positions.size
+    positions[2..-3].each { |position| assert_in_delta 1.5, position[:longitude], 0.00003 } # 2 m instead of 7 m
   end
 end

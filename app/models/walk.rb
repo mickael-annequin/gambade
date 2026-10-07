@@ -84,6 +84,20 @@ class Walk < ApplicationRecord
     slices
   end
 
+  DISPLAY_SMOOTHING_SECONDS = 10
+
+  # For the maps: each point replaced by the average of the points recorded 10 seconds before and after it.
+  # The line follows the path instead of the GPS zigzag, and keeps its curves (all the points stay).
+  def self.smoothed_positions(points)
+    times = points.map { |point| point[:recorded_at].to_time }
+    first = last = 0
+    points.each_index.map do |index|
+      first += 1 while times[index] - times[first] > DISPLAY_SMOOTHING_SECONDS
+      last += 1 while last + 1 < points.size && times[last + 1] - times[index] <= DISPLAY_SMOOTHING_SECONDS
+      average_position(points[first..last])
+    end
+  end
+
   def self.average_position(points)
     { latitude: points.sum { |point| point[:latitude].to_f } / points.size,
       longitude: points.sum { |point| point[:longitude].to_f } / points.size }
@@ -101,11 +115,11 @@ class Walk < ApplicationRecord
   # The track with at most max_points points (one in every n, plus the last one): same shape,
   # short enough to fit in the address of a map image. Uses the points already loaded by `includes`.
   def simplified_track(max_points: 80)
-    points = track_points.sort_by(&:recorded_at)
-    step = (points.size / max_points.to_f).ceil.clamp(1..)
-    kept = points.each_slice(step).map(&:first)
-    kept << points.last if points.any? && kept.last != points.last
-    kept.map { |point| [ point.longitude.to_f, point.latitude.to_f ] }
+    positions = self.class.smoothed_positions(track_points.sort_by(&:recorded_at))
+    step = (positions.size / max_points.to_f).ceil.clamp(1..)
+    kept = positions.each_slice(step).map(&:first)
+    kept << positions.last if positions.any? && kept.last != positions.last
+    kept.map { |position| [ position[:longitude], position[:latitude] ] }
   end
 
   # [[longitude, latitude], ...] in time order, the format Mapbox expects.
@@ -134,7 +148,7 @@ class Walk < ApplicationRecord
   end
 
   def track_coordinates
-    track_points.in_order.pluck(:longitude, :latitude).map { |lng, lat| [ lng.to_f, lat.to_f ] }
+    self.class.smoothed_positions(track_points.in_order.to_a).map { |position| [ position[:longitude], position[:latitude] ] }
   end
 
   # Each GPS point with its time and the distance walked so far, for the "cut the end" slider.
