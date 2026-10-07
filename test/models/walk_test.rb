@@ -81,6 +81,16 @@ class WalkTest < ActiveSupport::TestCase
     assert_equal "18h05", progress.first[:time]
   end
 
+  test "track progress ends at the distance of the whole walk" do
+    walk = walk_with_track(0, 1, 2, 3)
+    walk.track_points.each_with_index { |point, index| point.update!(recorded_at: walk.started_at + (index * 5).seconds) }
+    assert_equal [ 0, 0, 0, 0 ], walk.track_progress.map { |step| step[:meters] }
+
+    walk.track_points.each_with_index { |point, index| point.update!(recorded_at: walk.started_at + (index * 15).seconds) }
+    assert_equal [ 0, 0, 167, 222 ], walk.track_progress.map { |step| step[:meters] }
+    assert_equal walk.track_distance, walk.track_progress.last[:meters]
+  end
+
   # A walk going north of the start: 0.001° of latitude ≈ 111 m.
   def walk_with_track(*thousandths_north)
     walk = dogs(:rex).walks.create!(started_at: Time.zone.parse("2026-10-01 18:00"), duration_seconds: 3600, tracked: true)

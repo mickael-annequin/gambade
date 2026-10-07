@@ -69,22 +69,24 @@ class Walk < ApplicationRecord
   # going through every point zigzags and added ~15 % on a real walk. So the points are grouped
   # by slices of 20 seconds, and the path goes through the average position of each slice.
   def self.distance_along(points)
-    smoothed_track(points).each_cons(2).sum { |from, to| distance_between(from, to) }
+    time_slices(points).map { |slice| average_position(slice) }
+                       .each_cons(2).sum { |from, to| distance_between(from, to) }
   end
 
-  # Points (in time order, with recorded_at) → one average position per slice of 20 seconds.
-  def self.smoothed_track(points)
+  # Points (in time order, with recorded_at) → groups of the points recorded within 20 seconds.
+  def self.time_slices(points)
     slices = []
     points.each do |point|
-      time = point[:recorded_at].to_time
-      slices << { started_at: time, points: [] } if slices.empty? || time - slices.last[:started_at] >= SMOOTHING_SECONDS
-      slices.last[:points] << point
+      new_slice = slices.empty? || point[:recorded_at].to_time - slices.last.first[:recorded_at].to_time >= SMOOTHING_SECONDS
+      slices << [] if new_slice
+      slices.last << point
     end
-    slices.map do |slice|
-      size = slice[:points].size
-      { latitude: slice[:points].sum { |point| point[:latitude].to_f } / size,
-        longitude: slice[:points].sum { |point| point[:longitude].to_f } / size }
-    end
+    slices
+  end
+
+  def self.average_position(points)
+    { latitude: points.sum { |point| point[:latitude].to_f } / points.size,
+      longitude: points.sum { |point| point[:longitude].to_f } / points.size }
   end
 
   # Distance "as the crow flies" between two GPS points (haversine formula).
@@ -136,14 +138,24 @@ class Walk < ApplicationRecord
   end
 
   # Each GPS point with its time and the distance walked so far, for the "cut the end" slider.
+  # Measured like distance_along: what the walk will measure if it is cut at this point.
   def track_progress
-    meters = 0
-    previous = nil
-    track_points.in_order.map do |point|
-      meters += self.class.distance_between(previous, point) if previous
-      previous = point
-      { at: point.recorded_at.iso8601, time: point.recorded_at.strftime("%Hh%M"),
-        meters: meters.round, coordinates: [ point.longitude.to_f, point.latitude.to_f ] }
+    meters_before = 0 # along the average positions of the previous slices
+    previous_average = nil
+    self.class.time_slices(track_points.in_order.to_a).flat_map do |slice|
+      progress = slice.each_index.map do |index|
+        meters = 0
+        if previous_average
+          meters = meters_before + self.class.distance_between(previous_average, self.class.average_position(slice.first(index + 1)))
+        end
+        point = slice[index]
+        { at: point.recorded_at.iso8601, time: point.recorded_at.strftime("%Hh%M"),
+          meters: meters.round, coordinates: [ point.longitude.to_f, point.latitude.to_f ] }
+      end
+      average = self.class.average_position(slice)
+      meters_before += self.class.distance_between(previous_average, average) if previous_average
+      previous_average = average
+      progress
     end
   end
 

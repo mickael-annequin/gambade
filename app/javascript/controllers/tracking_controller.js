@@ -16,6 +16,7 @@ const LEFT_START_METERS = 300 // farther than this from the start: the walk has 
 const BACK_TO_START_METERS = 50 // closer than this after having left: "back to start?" question
 const MIN_WALK_METERS_BEFORE_BACK = 1000
 const EARTH_RADIUS_METERS = 6371000
+const SMOOTHING_SECONDS = 20 // same as Walk::SMOOTHING_SECONDS on the server
 
 const ACTIVITIES = {
   play: { icon: "🎾", label: "🎾 JEU", name: "jeu" },
@@ -176,7 +177,7 @@ export default class extends Controller {
       this.startedAt = new Date(saved.startedAt)
       this.endedAt = saved.endedAt ? new Date(saved.endedAt) : null
       this.points = saved.points
-      this.distanceMeters = saved.distanceMeters
+      this.distanceMeters = smoothedDistance(this.points) // measured again: may have been saved by an older version
       this.encounters = saved.encounters || []
       this.leftStart = saved.leftStart || false
       this.activities = saved.activities || []
@@ -273,10 +274,9 @@ export default class extends Controller {
       // Standing still, the GPS "wobbles" by a few meters: don't count it as walking.
       const moved = distanceBetween(lastPoint, point)
       if (moved < Math.max(accuracy, MIN_MOVE_METERS)) return
-
-      this.distanceMeters += moved
     }
     this.points.push(point)
+    this.distanceMeters = smoothedDistance(this.points)
     this.#persist()
     this.#showDistance()
     this.#watchReturnToStart(point)
@@ -493,6 +493,22 @@ function distanceBetween(from, to) {
 }
 
 // 192 -> "03:12"
+// Same measure as Walk.distance_along on the server, so the counter shows what will be saved:
+// the path goes through the average position of each 20-second slice, not through the GPS zigzag.
+function smoothedDistance(points) {
+  const slices = []
+  for (const point of points) {
+    const sliceStart = slices.at(-1)?.[0]
+    if (!sliceStart || new Date(point.recorded_at) - new Date(sliceStart.recorded_at) >= SMOOTHING_SECONDS * 1000) slices.push([])
+    slices.at(-1).push(point)
+  }
+  const averages = slices.map((slice) => ({
+    latitude: slice.reduce((sum, point) => sum + point.latitude, 0) / slice.length,
+    longitude: slice.reduce((sum, point) => sum + point.longitude, 0) / slice.length
+  }))
+  return averages.slice(1).reduce((meters, average, index) => meters + distanceBetween(averages[index], average), 0)
+}
+
 function formatMinutesSeconds(seconds) {
   return [Math.floor(seconds / 60), seconds % 60].map((n) => String(n).padStart(2, "0")).join(":")
 }
